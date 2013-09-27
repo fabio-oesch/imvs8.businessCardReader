@@ -12,7 +12,7 @@ tmp/
 *.swp
 *~.nib
 local.properties
-.classpath
+# .classpath (dem jars and stöff)
 .settings/
 .loadpath
 
