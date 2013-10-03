@@ -12,29 +12,20 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public final class XMLTest {
-
-	private static HashMap<String, DivAttribute> scannerAttribute = new HashMap<>();
-	private static ArrayList<DivAttribute> tesseractAttribute = new ArrayList<>();
-
-	public static void main(String[] args) {
-		final String scannerFileName = "/School/Projekt/testdata/business-cards/christophe.meili@jaree.com/solution/scan_2013-10-02_12-15-55.xml";
-		final String tesseractFileName = "/School/Projekt/testdata/business-cards/christophe.meili@jaree.com/solution/output.html";
-		// readScannerXML(scannerFileName);
-		readTesseractHTML(tesseractFileName);
-	}
+public final class GetXMLAttributes {
 
 	/**
 	 * This method reads the tesseract HTML and gets all the XML span tags. The
-	 * result will be saved in the ArrayList tesseractAttribute which uses the
-	 * DivAttribute class. When creating a new instance of DivAttribute
-	 * tesseract only has dimensions so the last attribute needs to be "true".
+	 * result will be saved in the ArrayList which uses the DivAttribute class.
+	 * When creating a new instance of DivAttribute tesseract only has
+	 * dimensions so the last attribute needs to be "true".
 	 * 
 	 * @param fileName
 	 *            insert the path to the tesseract html file
+	 * @return an ArrayList of DivAttributes
 	 */
-	private static void readTesseractHTML(String fileName) {
-		System.out.println("lulz");
+	public ArrayList<DivAttribute> readTesseractHTML(String fileName) {
+		ArrayList<DivAttribute> tesseractAttribute = new ArrayList<>();
 		Document document;
 		DocumentBuilder documentBuilder;
 		DocumentBuilderFactory documentBuilderFactory;
@@ -74,18 +65,23 @@ public final class XMLTest {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
+		return tesseractAttribute;
 	}
 
 	/**
-	 * This method reads the tesseract HTML and gets all the XML span tags. The
-	 * result will be saved in the ArrayList tesseractAttribute which uses the
-	 * DivAttribute class. When creating a new instance of DivAttribute
-	 * tesseract only has dimensions so the last attribute needs to be "true".
+	 * This method reads the XMLFile of the scanner and gets multiple XML tags
+	 * (list, ocrField, boundingBox). The result will be saved in the ArrayList
+	 * which uses the DivAttribute class. When creating a new instance of
+	 * DivAttribute the scanner has no dimensions for the lower right one and
+	 * uses height and width so the last attribute needs to be "false".
 	 * 
 	 * @param fileName
 	 *            insert the path to the XML file
+	 * @return a Hashmap which has the nameTag as Key and Location and Info as
+	 *         Value
 	 */
-	private static void readScannerXML(String fileName) {
+	public HashMap<String, DivAttribute> readScannerXML(String fileName) {
+		HashMap<String, DivAttribute> scannerAttribute = new HashMap<>();
 		Document document;
 		DocumentBuilder documentBuilder;
 		DocumentBuilderFactory documentBuilderFactory;
@@ -131,5 +127,6 @@ public final class XMLTest {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
+		return scannerAttribute;
 	}
 }
