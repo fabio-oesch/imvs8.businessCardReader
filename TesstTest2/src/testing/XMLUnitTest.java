@@ -102,6 +102,7 @@ public class XMLUnitTest extends XMLTestCase {
 		GetXMLAttributes getXMLAttribute = new GetXMLAttributes();
 		XMLScanner = getXMLAttribute.readScannerXML(scannerFileName);
 		XMLTesseract = getXMLAttribute.readTesseractHTML(tesseractFileName);
+
 	}
 
 	public void testForEquality() throws Exception {
