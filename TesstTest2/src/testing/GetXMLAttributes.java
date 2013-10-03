@@ -38,9 +38,7 @@ public final class GetXMLAttributes {
 			xmlInputFile = new File(fileName);
 			documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			documentBuilder = documentBuilderFactory.newDocumentBuilder();
-			System.out.println("lulz2");
 			document = documentBuilder.parse(xmlInputFile);
-			System.out.println("lulz3");
 
 			nodeInformationList = document.getElementsByTagName("span");
 
