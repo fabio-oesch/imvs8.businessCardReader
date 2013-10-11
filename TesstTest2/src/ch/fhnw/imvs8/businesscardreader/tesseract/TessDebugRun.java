@@ -84,6 +84,8 @@ public class TessDebugRun {
 	}
 	
 	public static void main(String[] args) {
+		AnalysisResult res = new AnalysisResult(new File("htconex.jpg"));
+		res.readMetaInfo();
 		TessDebugRun t = new TessDebugRun(null);
 		try {t.analyzeImage(new File("eurotext.tif")); }
 		catch (Exception e) 
