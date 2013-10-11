@@ -1,7 +1,14 @@
 package ch.fhnw.imvs8.businesscardreader.tesseract;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+
+import javax.imageio.ImageIO;
 
 import com.sun.jna.Pointer;
 
@@ -9,35 +16,19 @@ import net.sourceforge.tess4j.TessAPI1.TessPageIterator;
 import net.sourceforge.tess4j.TessAPI1.TessPageIteratorLevel;
 import net.sourceforge.tess4j.TessAPI1.TessResultIterator;
 import net.sourceforge.tess4j.TessAPI1;
-import net.sourceforge.tess4j.Tesseract1;
+import net.sourceforge.vietocr.ImageIOHelper;
 
 public class TessDebugRun {
-	net.sourceforge.tess4j.TessAPI1.TessBaseAPI api;
+	private net.sourceforge.tess4j.TessAPI1.TessBaseAPI api;
+	private AbstractImageFilter filters;
 	
-	public TessDebugRun() {
+	public TessDebugRun(AbstractImageFilter filters) {
+		this.filters = filters;
 		api = TessAPI1.TessBaseAPICreate();
-
-		//path maybe null?
 		
-		//load image
-		/*File tiff = new File("eurotext.tif");
-        BufferedImage image = ImageIO.read(new FileInputStream(tiff)); // require jai-imageio lib to read TIFF
-        ByteBuffer buf = ImageIOHelper.convertImageData(image);
-        int bpp = image.getColorModel().getPixelSize();
-        int bytespp = bpp / 8;
-        int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);*/
-		
-		
+		//configuration
 		TessAPI1.TessBaseAPIInit3(api, "tessdata", "eng");
-        /*TessAPI1.TessBaseAPISetPageSegMode(handle, TessAPI1.TessPageSegMode.PSM_AUTO);
-        TessAPI1.TessBaseAPISetImage(handle, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
-        TessAPI1.TessBaseAPIRecognize(handle, null);*/
-		TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(api);
-		TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
-		
-		
-		
-		this.runThroughResult(pi, ri);		
+        TessAPI1.TessBaseAPISetPageSegMode(api, TessAPI1.TessPageSegMode.PSM_AUTO);
 	}
 	
 	private void runThroughResult(TessAPI1.TessPageIterator pi, TessResultIterator ri) {
@@ -58,17 +49,46 @@ public class TessDebugRun {
 			int right = rightB.get();
 			int bottom = bottomB.get();
 			
-			//TODO: here you have all info you need
+			//TODO: here you have all info you need, now do what you want
 			
 		} while (TessAPI1.TessPageIteratorNext(pi, TessAPI1.TessPageIteratorLevel.RIL_WORD) == TessAPI1.TRUE);
 	}
 	
-	public void analyzeImage(File im) {
+	/**
+	 * analyze an image
+	 * @param im
+	 * @throws FileNotFoundException
+	 */
+	public void analyzeImage(File im) throws FileNotFoundException{
+		//load image
 		
+		BufferedImage image = null;
+		try {
+			image = ImageIO.read(new FileInputStream(im));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		ByteBuffer buf = ImageIOHelper.convertImageData(image);	// require jai-imageio lib to read TIFF
+		int bpp = image.getColorModel().getPixelSize();			//bit per pixel
+		int bytespp = bpp / 8;
+		int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
+		
+		//analyze
+        TessAPI1.TessBaseAPISetImage(this.api, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
+        TessAPI1.TessBaseAPIRecognize(this.api, null);
+		TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(this.api);
+		TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
+		
+		this.runThroughResult(pi, ri);	
 	}
-
-
+	
 	public static void main(String[] args) {
-		
+		TessDebugRun t = new TessDebugRun(null);
+		try {t.analyzeImage(new File("eurotext.tif")); }
+		catch (Exception e) 
+		{
+			
+		}
 	}
 }
