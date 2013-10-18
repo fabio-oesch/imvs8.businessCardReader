@@ -4,11 +4,8 @@ import ij.ImagePlus;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.sourceforge.vietocr.ImageIOHelper;
 
 /**
  * This is the most generic filter bundle. It contains a list of filters and calls them sequentially

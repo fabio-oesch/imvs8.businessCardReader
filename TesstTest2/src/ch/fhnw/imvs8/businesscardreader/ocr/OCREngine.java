@@ -1,9 +1,5 @@
 package ch.fhnw.imvs8.businesscardreader.ocr;
 
-import ij.ImagePlus;
-import ij.io.FileSaver;
-
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -17,7 +13,6 @@ import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
 
-import ch.fhnw.imvs8.businesscardreader.imagefilters.BinaryFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.FilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
