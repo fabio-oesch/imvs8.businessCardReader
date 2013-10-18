@@ -9,7 +9,6 @@
 	<classpathentry kind="lib" path="lib/metadata-extractor-2.6.4.jar"/>
 	<classpathentry kind="lib" path="lib/xmpcore.jar"/>
 	<classpathentry kind="lib" path="lib/ij.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JDK 32Bit"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

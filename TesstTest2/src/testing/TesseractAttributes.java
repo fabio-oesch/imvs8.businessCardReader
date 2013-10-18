@@ -1,28 +1,52 @@
 package testing;
 
+/**
+ * An attribute of the tesseract HTML.
+ * 
+ * @author O Lry
+ * 
+ */
 public class TesseractAttributes {
 
-	private String attributeText;
-	private int x;
-	private int y;
-	private int width;
-	private int height;
+	private String attributeText; // The text which is in at the position x and
+									// y
+	private int x; // upper left x value of the bounding box
+	private int y; // upper left y value of the bounding box
+	private int width; // width of the text
+	private int height; // height of the text
 
-	public TesseractAttributes(String attributeText, String x, String y,
-			String width, String height) {
+	/**
+	 * text of the attribute as well as the coordinates of the upper left corner
+	 * and the lower right corner. This will transform the lower right corner
+	 * into height and width
+	 * 
+	 * @param attributeText
+	 *            text of the attribute
+	 * @param xUpperLeft
+	 *            upper left x value of the bounding box
+	 * @param yUpperLeft
+	 *            upper left y value of the bounding box
+	 * @param xLowerRight
+	 *            lower right x value of the bounding box
+	 * @param yLowerRight
+	 *            lower right y value of the bounding box
+	 */
+	public TesseractAttributes(String attributeText, String xUpperLeft,
+			String yUpperLeft, String xLowerRight, String yLowerRight) {
 		this.attributeText = attributeText;
 		try {
-			this.x = Integer.parseInt(x);
-			this.y = Integer.parseInt(y);
+			x = Integer.parseInt(xUpperLeft);
+			y = Integer.parseInt(yUpperLeft);
 
-			this.width = Integer.parseInt(width) - this.x;
-			this.height = Integer.parseInt(height) - this.y;
+			width = Integer.parseInt(xLowerRight) - x;
+			height = Integer.parseInt(yLowerRight) - y;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
 
+	// ----------------- Getters -------------------------
 	public int getX() {
 		return x;
 	}
