@@ -4,6 +4,7 @@ import ij.ImagePlus;
 import ij.io.FileSaver;
 
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
 
@@ -51,7 +53,8 @@ public class OCREngine {
 	 * @param im to analyse
 	 * @throws FileNotFoundException
 	 */
-	public void analyzeImage(File im) throws FileNotFoundException{
+	public AnalysisResult analyzeImage(File im) throws FileNotFoundException{
+		AnalysisResult res = null;
 		try {
 			BufferedImage image = ImageIO.read(new FileInputStream(im)); //load image
 			
@@ -70,21 +73,27 @@ public class OCREngine {
 			TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(this.api);
 			TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
 			
-			this.runThroughResult(pi, ri);	
+			res = this.runThroughResult(im, pi, ri);	
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+		
+		return res;
 	}
 	
-	private void runThroughResult(TessAPI1.TessPageIterator pi, TessResultIterator ri) {
+	private AnalysisResult runThroughResult(File im,TessAPI1.TessPageIterator pi, TessResultIterator ri) {
 		TessAPI1.TessPageIteratorBegin(pi);
+		LinkedList<Float> confidences  = new LinkedList<>();
+		LinkedList<Rectangle> bBoxes = new LinkedList<>();
+		LinkedList<String> words = new LinkedList<>();
 		
 		do {
 			Pointer ptr = TessAPI1.TessResultIteratorGetUTF8Text(ri, TessPageIteratorLevel.RIL_WORD);
-			String word = ptr.getString(0);
+			words.add(ptr.getString(0));
 			float conf = TessAPI1.TessResultIteratorConfidence(ri, TessPageIteratorLevel.RIL_WORD);
+			confidences.add(conf);
 			
 			IntBuffer leftB = IntBuffer.allocate(1);
 			IntBuffer topB = IntBuffer.allocate(1);
@@ -95,20 +104,28 @@ public class OCREngine {
 			int top = topB.get();
 			int right = rightB.get();
 			int bottom = bottomB.get();
-			
+			Rectangle r = new Rectangle(left,top,right-left,bottom-top);
+			bBoxes.add(r);
 			//TODO: here you have all info you need, now do what you want
 			
 		} while (TessAPI1.TessPageIteratorNext(pi, TessAPI1.TessPageIteratorLevel.RIL_WORD) == TessAPI1.TRUE);
+		
+		return new AnalysisResult(im,
+				(String[])words.toArray(),
+				(Rectangle[])bBoxes.toArray(),
+				(Float[])confidences.toArray());
 	}
 	
 	public static void main(String[] args) throws Exception {
-		AnalysisResult res = new AnalysisResult(new File("htconex.jpg"));
-		res.readMetaInfo();
+		//AnalysisResult res = new AnalysisResult(new File("htconex.jpg"));
+		//res.readMetaInfo();
 		
 		OCREngine t = new OCREngine(new GenericFilterBundle());
 		
-		
-		try {t.analyzeImage(new File("eurotext.tif")); }
+		try {
+			AnalysisResult res = t.analyzeImage(new File("eurotext.tif")); 
+			res.readMetaInfo();
+			}
 		catch (Exception e) 
 		{
 			

@@ -16,17 +16,51 @@ import com.drew.metadata.Tag;
  *
  */
 public class AnalysisResult {
-	//meta info
+	//meta infos
 	private File image;
 	//private String camera;
 	
-	private String word;
-	private Rectangle boundingBox;
-	private double confidence;
+	private String[] words;
+	private Rectangle[] boundingBoxes;
+	private Float[] confidences;
 	
-	public AnalysisResult(File image) {
+	/**
+	 * 
+	 * @param image 
+	 * @param words 
+	 * @param bBoxes
+	 * @param conf
+	 */
+	public AnalysisResult(File image,String[] words, Rectangle[] bBoxes, Float[] conf) {
 		this.image = image;
+		this.words = words;
+		this.boundingBoxes = bBoxes;
+		this.confidences = conf;
 	}
+	
+	public int getResultSize() {
+		return words.length;
+	}
+	
+	public String getWord(int index) {
+		if(index < words.length && index > 0)
+			return words[index];
+		return null;
+	}
+	
+	public Rectangle getBoundingBox(int index) {
+		if(index < boundingBoxes.length && index > 0 )
+			return boundingBoxes[index];
+		return null;
+	}
+	
+	public Float getConfidence(int index) {
+		if(index < confidences.length && index > 0) 
+			return confidences[index];
+		return null;
+	}
+	
+	
 	
 	/**
 	 * Debug method, should be removed eventually
@@ -36,6 +70,7 @@ public class AnalysisResult {
 			Metadata metadata = ImageMetadataReader.readMetadata(image);
 			
 			for (Directory directory : metadata.getDirectories()) {
+				System.out.println(directory.getName());
 			    for (Tag tag : directory.getTags()) {
 			        System.out.println(tag);
 			    }
