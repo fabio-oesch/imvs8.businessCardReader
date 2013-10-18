@@ -17,12 +17,14 @@ import ch.fhnw.imvs8.businesscardreader.imagefilters.FilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
 
+import com.recognition.software.jdeskew.ImageDeskew;
 import com.sun.jna.Pointer;
 
 import net.sourceforge.tess4j.TessAPI1.TessPageIterator;
 import net.sourceforge.tess4j.TessAPI1.TessPageIteratorLevel;
 import net.sourceforge.tess4j.TessAPI1.TessResultIterator;
 import net.sourceforge.tess4j.TessAPI1;
+import net.sourceforge.vietocr.ImageHelper;
 import net.sourceforge.vietocr.ImageIOHelper;
 
 /**
@@ -30,6 +32,7 @@ import net.sourceforge.vietocr.ImageIOHelper;
  * @author Jon
  */
 public class OCREngine {
+	private static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
 	private net.sourceforge.tess4j.TessAPI1.TessBaseAPI api;
 	private FilterBundle bundle;
 	
@@ -123,6 +126,15 @@ public class OCREngine {
 				new ArrayList<Float>(confidences));
 	}
 	
+	private void deskew() {
+		/*File imageFile = new File("eurotext_deskew.png");
+        BufferedImage bi = ImageIO.read(imageFile);
+        ImageDeskew id = new ImageDeskew(bi);
+        double imageSkewAngle = id.getSkewAngle(); // determine skew angle
+        if ((imageSkewAngle > MINIMUM_DESKEW_THRESHOLD || imageSkewAngle < -(MINIMUM_DESKEW_THRESHOLD))) {
+            bi = ImageHelper.rotateImage(bi, -imageSkewAngle); // deskew image
+        }*/
+	}
 	public static void main(String[] args) throws Exception {
 		//AnalysisResult res = new AnalysisResult(new File("htconex.jpg"));
 		//res.readMetaInfo();
