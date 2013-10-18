@@ -24,6 +24,7 @@ public class Source {
 		final String scannerFileName = "/School/Projekt/testdata/business-cards/christophe.meili@jaree.com/solution/scan_2013-10-02_12-15-55.xml";
 		final String tesseractFileName = "/School/Projekt/testdata/business-cards/christophe.meili@jaree.com/solution/output.html";
 
-		XMLTest test = new XMLTest(scannerFileName, tesseractFileName);
+		XMLTest test = new XMLTest(scannerFileName, tesseractFileName,
+				"christophe meili");
 	}
 }

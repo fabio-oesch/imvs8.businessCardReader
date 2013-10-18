@@ -10,11 +10,13 @@ import java.util.ArrayList;
  */
 public class XMLTest {
 
-	ArrayList<ScannerAttributes> xMLScanner; // the XML data structure which has
-												// the xml attributes of the
-												// tesseract file and
-												// attributes of the scanner
-												// file
+	// the XML data structure which has the xml attributes of the tesseract file
+	// and attributes of the scanner file
+	private ArrayList<ScannerAttributes> xMLScanner;
+	// name of test
+	private String testName;
+	// count of errors
+	private int error = 0;
 
 	/**
 	 * XMLTest gets the attributes of the files through GetXMLAttributes and
@@ -24,9 +26,13 @@ public class XMLTest {
 	 *            the location of the file where the scanner xml is
 	 * @param tesseractFileName
 	 *            the location of the file where the tesseract html is
+	 * @param testName
+	 *            name of the test
 	 */
-	public XMLTest(String scannerFileName, String tesseractFileName) {
+	public XMLTest(String scannerFileName, String tesseractFileName,
+			String testName) {
 
+		this.testName = testName;
 		System.out
 				.println("------------- Getting XML Attributes -------------");
 		double time = System.currentTimeMillis();
@@ -47,9 +53,11 @@ public class XMLTest {
 	 * are the same
 	 */
 	private void testTextMatch() {
+		System.out.println("-------------- " + testName + " ----------------");
 		for (int i = 0; i < xMLScanner.size(); i++) {
 			textMatch(i);
 		}
+		System.out.println("Count of errors: " + error);
 	}
 
 	/**
@@ -73,6 +81,7 @@ public class XMLTest {
 		// tesseract attributes
 		if (!(tesseractString.toString().equals(xMLScanner
 				.get(scannerCategories).getAttributeText().replace(" ", "")))) {
+			error++;
 			// Print information about the mistake
 			System.out.println("Catogory: "
 					+ xMLScanner.get(scannerCategories).getAttributeTyp()
