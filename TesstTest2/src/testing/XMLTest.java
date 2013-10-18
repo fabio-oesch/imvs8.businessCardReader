@@ -26,36 +26,6 @@ public class XMLTest {
 	 * 
 	 * @param scannerFileName
 	 *            the location of the file where the scanner xml is
-	 * @param tesseractFileName
-	 *            the location of the file where the tesseract html is
-	 * @param testName
-	 *            name of the test
-	 */
-	public XMLTest(String scannerFileName, String tesseractFileName,
-			String testName) {
-
-		this.testName = testName;
-		System.out
-				.println("------------- Getting XML Attributes -------------");
-		double time = System.currentTimeMillis();
-
-		// Get all the XML Attributes
-		xMLScanner = new GetXMLAttributes().readScannerXML(scannerFileName,
-				tesseractFileName);
-		System.out.println("------------- Got XML Attributes took "
-				+ (System.currentTimeMillis() - time) / 60000
-				+ " min -----------------");
-
-		// Test if the XML Attributes are the same
-		testTextMatch();
-	}
-
-	/**
-	 * XMLTest gets the attributes of the files through GetXMLAttributes and
-	 * matches the strings to each other
-	 * 
-	 * @param scannerFileName
-	 *            the location of the file where the scanner xml is
 	 * @param analysisResult
 	 *            analysisResult object of the file
 	 * @param testName
@@ -71,7 +41,7 @@ public class XMLTest {
 
 		// Get all the XML Attributes
 		xMLScanner = new GetXMLAttributes()
-				.readScannerXMLWithAnalysisResultObject(scannerFileName,
+				.readScannerXML(scannerFileName,
 						analysisResult);
 		System.out.println("------------- Got XML Attributes took "
 				+ (System.currentTimeMillis() - time) / 60000
