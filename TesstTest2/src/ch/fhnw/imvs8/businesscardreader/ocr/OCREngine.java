@@ -33,6 +33,15 @@ public class OCREngine {
 	private net.sourceforge.tess4j.TessAPI1.TessBaseAPI api;
 	private FilterBundle bundle;
 	
+	public OCREngine() {
+		bundle = null;
+		api = TessAPI1.TessBaseAPICreate();
+		
+		//configuration
+		TessAPI1.TessBaseAPIInit3(api, "tessdata", "eng");
+        TessAPI1.TessBaseAPISetPageSegMode(api, TessAPI1.TessPageSegMode.PSM_AUTO);
+	}
+	
 	public OCREngine(FilterBundle bundle) {
 		this.bundle = bundle;
 		api = TessAPI1.TessBaseAPICreate();
@@ -54,7 +63,9 @@ public class OCREngine {
 		try {
 			BufferedImage image = ImageIO.read(new FileInputStream(im)); //load image
 			
-			image = this.bundle.applyFilters(image);
+			if(bundle != null)
+				image = this.bundle.applyFilters(image);
+			
 			ByteBuffer buf = ImageIOHelper.convertImageData(image);	// require jai-imageio lib to read TIFF
 			
 			//maybe not needed, but still here from the copied 
@@ -115,7 +126,7 @@ public class OCREngine {
 	public static void main(String[] args) throws Exception {
 		//AnalysisResult res = new AnalysisResult(new File("htconex.jpg"));
 		//res.readMetaInfo();
-		GenericFilterBundle bundle = new GenericFilterBundle();
+		/*GenericFilterBundle bundle = new GenericFilterBundle();
 		bundle.appendFilter(new GrayScaleFilter());
 		OCREngine t = new OCREngine(bundle);
 	
@@ -127,6 +138,6 @@ public class OCREngine {
 		catch (Exception e) 
 		{
 			
-		}
+		}*/
 	}
 }
