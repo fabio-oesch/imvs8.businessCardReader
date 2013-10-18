@@ -3,6 +3,7 @@ package ch.fhnw.imvs8.businesscardreader.ocr;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
@@ -12,6 +13,7 @@ import com.drew.metadata.Tag;
 
 /**
  * Represents the result of the OCR analysis.
+ * It is responsible for metadata stuff
  * @author Jon
  *
  */
@@ -20,18 +22,17 @@ public class AnalysisResult {
 	private File image;
 	//private String camera;
 	
-	private String[] words;
-	private Rectangle[] boundingBoxes;
-	private Float[] confidences;
+	private ArrayList<String> words;
+	private ArrayList<Rectangle> boundingBoxes;
+	private ArrayList<Float> confidences;
 	
 	/**
-	 * 
-	 * @param image 
+	 * @param image File 
 	 * @param words 
 	 * @param bBoxes
 	 * @param conf
 	 */
-	public AnalysisResult(File image,String[] words, Rectangle[] bBoxes, Float[] conf) {
+	public AnalysisResult(File image,ArrayList<String> words, ArrayList<Rectangle> bBoxes, ArrayList<Float> conf) {
 		this.image = image;
 		this.words = words;
 		this.boundingBoxes = bBoxes;
@@ -39,25 +40,19 @@ public class AnalysisResult {
 	}
 	
 	public int getResultSize() {
-		return words.length;
+		return words.size();
 	}
 	
 	public String getWord(int index) {
-		if(index < words.length && index > 0)
-			return words[index];
-		return null;
+		return words.get(index);
 	}
 	
 	public Rectangle getBoundingBox(int index) {
-		if(index < boundingBoxes.length && index > 0 )
-			return boundingBoxes[index];
-		return null;
+		return boundingBoxes.get(index);
 	}
 	
 	public Float getConfidence(int index) {
-		if(index < confidences.length && index > 0) 
-			return confidences[index];
-		return null;
+		return confidences.get(index);
 	}
 	
 	
