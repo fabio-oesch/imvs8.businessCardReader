@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import net.sourceforge.tess4j.Tesseract;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
+import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
 public class Source {
 
@@ -24,13 +28,11 @@ public class Source {
 		final String scannerFileName = "/School/Projekt/testdata/business-cards/christophe.meili@jaree.com/solution/scan_2013-10-02_12-15-55.xml";
 		final String tesseractFileName = "/School/Projekt/testdata/business-cards/christophe.meili@jaree.com/solution/output.html";
 
-		// GenericFilterBundle filters = new GenericFilterBundle();
-		// filters.appendFilter(new GrayScaleFilter());
-		// OCREngine engine = new OCREngine(filters);
-		// AnalysisResult analysisResult = engine.analyzeImage(myImage);
-		// XMLTest test = new XMLTest(scannerFileName, analysisResult,
-		// "christophe meili");
-		XMLTest test2 = new XMLTest(scannerFileName, tesseractFileName,
+		GenericFilterBundle filters = new GenericFilterBundle();
+		filters.appendFilter(new GrayScaleFilter());
+		OCREngine engine = new OCREngine(filters);
+		AnalysisResult analysisResult = engine.analyzeImage(myImage);
+		XMLTest test = new XMLTest(scannerFileName, analysisResult,
 				"christophe meili");
 	}
 }
