@@ -11,6 +11,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * This is where the magic happens!
+ * 
+ * @author O Lry
+ * 
+ */
 public final class GetXMLAttributes {
 
 	/**
