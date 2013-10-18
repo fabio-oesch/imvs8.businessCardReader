@@ -1,4 +1,4 @@
-package ch.fhnw.imvs8.businesscardreader.tesseract;
+package ch.fhnw.imvs8.businesscardreader.ocr;
 
 import java.awt.Rectangle;
 import java.io.File;
@@ -10,6 +10,11 @@ import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 
+/**
+ * Represents the result of the OCR analysis.
+ * @author Jon
+ *
+ */
 public class AnalysisResult {
 	//meta info
 	private File image;
@@ -23,6 +28,9 @@ public class AnalysisResult {
 		this.image = image;
 	}
 	
+	/**
+	 * Debug method, should be removed eventually
+	 */
 	public void readMetaInfo() {
 		try {
 			Metadata metadata = ImageMetadataReader.readMetadata(image);
