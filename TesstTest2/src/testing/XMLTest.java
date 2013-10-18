@@ -2,6 +2,8 @@ package testing;
 
 import java.util.ArrayList;
 
+import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+
 /**
  * Tests if the scanner XML and the tesseract HTML file have the same attributes
  * 
@@ -40,6 +42,37 @@ public class XMLTest {
 		// Get all the XML Attributes
 		xMLScanner = new GetXMLAttributes().readScannerXML(scannerFileName,
 				tesseractFileName);
+		System.out.println("------------- Got XML Attributes took "
+				+ (System.currentTimeMillis() - time) / 60000
+				+ " min -----------------");
+
+		// Test if the XML Attributes are the same
+		testTextMatch();
+	}
+
+	/**
+	 * XMLTest gets the attributes of the files through GetXMLAttributes and
+	 * matches the strings to each other
+	 * 
+	 * @param scannerFileName
+	 *            the location of the file where the scanner xml is
+	 * @param analysisResult
+	 *            analysisResult object of the file
+	 * @param testName
+	 *            name of the test
+	 */
+	public XMLTest(String scannerFileName, AnalysisResult analysisResult,
+			String testName) {
+
+		this.testName = testName;
+		System.out
+				.println("------------- Getting XML Attributes -------------");
+		double time = System.currentTimeMillis();
+
+		// Get all the XML Attributes
+		xMLScanner = new GetXMLAttributes()
+				.readScannerXMLWithAnalysisResultObject(scannerFileName,
+						analysisResult);
 		System.out.println("------------- Got XML Attributes took "
 				+ (System.currentTimeMillis() - time) / 60000
 				+ " min -----------------");

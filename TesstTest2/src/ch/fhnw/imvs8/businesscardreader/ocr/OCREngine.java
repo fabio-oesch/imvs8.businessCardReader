@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
@@ -111,19 +112,21 @@ public class OCREngine {
 		} while (TessAPI1.TessPageIteratorNext(pi, TessAPI1.TessPageIteratorLevel.RIL_WORD) == TessAPI1.TRUE);
 		
 		return new AnalysisResult(im,
-				(String[])words.toArray(),
-				(Rectangle[])bBoxes.toArray(),
-				(Float[])confidences.toArray());
+				new ArrayList<String>(words),
+				new ArrayList<Rectangle>(bBoxes),
+				new ArrayList<Float>(confidences));
 	}
 	
 	public static void main(String[] args) throws Exception {
 		//AnalysisResult res = new AnalysisResult(new File("htconex.jpg"));
 		//res.readMetaInfo();
-		
-		OCREngine t = new OCREngine(new GenericFilterBundle());
-		
+		GenericFilterBundle bundle = new GenericFilterBundle();
+		bundle.appendFilter(new GrayScaleFilter());
+		OCREngine t = new OCREngine(bundle);
+	
 		try {
 			AnalysisResult res = t.analyzeImage(new File("eurotext.tif")); 
+			System.out.println(res.getResultSize());
 			res.readMetaInfo();
 			}
 		catch (Exception e) 

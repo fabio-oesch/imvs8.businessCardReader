@@ -46,6 +46,37 @@ public class TesseractAttributes {
 
 	}
 
+	/**
+	 * text of the attribute as well as the coordinates of the upper left corner
+	 * and the lower right corner. This will transform the lower right corner
+	 * into height and width
+	 * 
+	 * @param attributeText
+	 *            text of the attribute
+	 * @param x
+	 *            upper left x value of the bounding box
+	 * @param y
+	 *            upper left y value of the bounding box
+	 * @param width
+	 *            width of the text
+	 * @param height
+	 *            height of the text
+	 */
+	public TesseractAttributes(String attributeText, int x, int y, int width,
+			int height) {
+		this.attributeText = attributeText;
+		try {
+			this.x = x;
+			this.y = y;
+
+			this.width = width;
+			this.height = height;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	// ----------------- Getters -------------------------
 	public int getX() {
 		return x;
