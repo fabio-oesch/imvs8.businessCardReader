@@ -1,35 +1,26 @@
 package testing;
 
-public class DivAttribute {
+public class TesseractAttributes {
 
 	private String attributeText;
-
 	private int x;
 	private int y;
 	private int width;
 	private int height;
 
-	public DivAttribute(String attributeText, String x, String y, String width,
-			String height, boolean hasDimensions) {
+	public TesseractAttributes(String attributeText, String x, String y,
+			String width, String height) {
 		this.attributeText = attributeText;
 		try {
 			this.x = Integer.parseInt(x);
 			this.y = Integer.parseInt(y);
-			if (hasDimensions) {
-				this.width = Integer.parseInt(width) - this.x;
-				this.height = Integer.parseInt(height) - this.y;
-			} else {
-				this.width = Integer.parseInt(width);
-				this.height = Integer.parseInt(height);
-			}
+
+			this.width = Integer.parseInt(width) - this.x;
+			this.height = Integer.parseInt(height) - this.y;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-	}
-
-	public String getAttributeText() {
-		return attributeText;
 	}
 
 	public int getX() {
@@ -47,4 +38,9 @@ public class DivAttribute {
 	public int getHeight() {
 		return height;
 	}
+
+	public String getAttributeText() {
+		return attributeText;
+	}
+
 }

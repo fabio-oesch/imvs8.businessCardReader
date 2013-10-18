@@ -39,7 +39,6 @@ package testing;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.transform.stream.StreamSource;
@@ -92,20 +91,20 @@ public class XMLUnitTest extends XMLTestCase {
 		super(name);
 	}
 
-	ArrayList<DivAttribute> XMLTesseract;
-	HashMap<String, DivAttribute> XMLScanner;
+	ArrayList<ScannerAttributes> XMLScanner;
 
 	@Override
 	public void setUp() {
 		final String scannerFileName = "/School/Projekt/testdata/business-cards/christophe.meili@jaree.com/solution/scan_2013-10-02_12-15-55.xml";
 		final String tesseractFileName = "/School/Projekt/testdata/business-cards/christophe.meili@jaree.com/solution/output.html";
-		GetXMLAttributes getXMLAttribute = new GetXMLAttributes();
-		XMLScanner = getXMLAttribute.readScannerXML(scannerFileName);
-		XMLTesseract = getXMLAttribute.readTesseractHTML(tesseractFileName);
+
+		XMLScanner = new GetXMLAttributes().readScannerXML(scannerFileName,
+				tesseractFileName);
 
 	}
 
 	public void testForEquality() throws Exception {
+
 		String myControlXML = "<msg><uuid>0x00435A8C</uuid></msg>";
 		String myTestXML = "<msg><localId>2376</localId></msg>";
 		assertXMLEqual("comparing test xml to control xml", myControlXML,

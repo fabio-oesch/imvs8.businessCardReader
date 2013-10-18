@@ -2,7 +2,6 @@ package testing;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,8 +23,8 @@ public final class GetXMLAttributes {
 	 *            insert the path to the tesseract html file
 	 * @return an ArrayList of DivAttributes
 	 */
-	public ArrayList<DivAttribute> readTesseractHTML(String fileName) {
-		ArrayList<DivAttribute> tesseractAttribute = new ArrayList<>();
+	private ArrayList<TesseractAttributes> readTesseractHTML(String fileName) {
+		ArrayList<TesseractAttributes> tesseractAttribute = new ArrayList<>();
 		Document document;
 		DocumentBuilder documentBuilder;
 		DocumentBuilderFactory documentBuilderFactory;
@@ -53,9 +52,9 @@ public final class GetXMLAttributes {
 						String[] bBox = elementInformation
 								.getAttribute("title").split(" ");
 
-						tesseractAttribute.add(new DivAttribute(
+						tesseractAttribute.add(new TesseractAttributes(
 								elementInformation.getTextContent(), bBox[1],
-								bBox[2], bBox[3], bBox[4], true));
+								bBox[2], bBox[3], bBox[4]));
 					}
 
 				}
@@ -73,13 +72,18 @@ public final class GetXMLAttributes {
 	 * DivAttribute the scanner has no dimensions for the lower right one and
 	 * uses height and width so the last attribute needs to be "false".
 	 * 
-	 * @param fileName
+	 * @param tesseractFileName
 	 *            insert the path to the XML file
 	 * @return a Hashmap which has the nameTag as Key and Location and Info as
 	 *         Value
 	 */
-	public HashMap<String, DivAttribute> readScannerXML(String fileName) {
-		HashMap<String, DivAttribute> scannerAttribute = new HashMap<>();
+	public ArrayList<ScannerAttributes> readScannerXML(String scannerFileName,
+			String tesseractFileName) {
+		GetXMLAttributes xml = new GetXMLAttributes();
+		ArrayList<TesseractAttributes> tesseractAttribute = xml
+				.readTesseractHTML(tesseractFileName);
+		ArrayList<ScannerAttributes> scannerAttribute = new ArrayList<>();
+
 		Document document;
 		DocumentBuilder documentBuilder;
 		DocumentBuilderFactory documentBuilderFactory;
@@ -91,7 +95,7 @@ public final class GetXMLAttributes {
 		File xmlInputFile;
 
 		try {
-			xmlInputFile = new File(fileName);
+			xmlInputFile = new File(scannerFileName);
 			documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			documentBuilder = documentBuilderFactory.newDocumentBuilder();
 			document = documentBuilder.parse(xmlInputFile);
@@ -106,19 +110,23 @@ public final class GetXMLAttributes {
 				Node nodeLabel = nodeLabelList.item(index);
 				Node nodeOcrField = nodeOcrFieldList.item(index);
 				Node nodeBBox = nodeBBoxList.item(index);
+
 				if (nodeLabel.getNodeType() == Node.ELEMENT_NODE) {
 					Element elementLabel = (Element) nodeLabel;
 					Element elementOcrField = (Element) nodeOcrField;
 					Element elementBBox = (Element) nodeBBox;
 
-					scannerAttribute.put(
-							elementLabel.getAttribute("fieldName"),
-							new DivAttribute(elementOcrField
-									.getAttribute("text"), elementBBox
-									.getAttribute("x"), elementBBox
-									.getAttribute("y"), elementBBox
-									.getAttribute("width"), elementBBox
-									.getAttribute("height"), false));
+					scannerAttribute.add(new ScannerAttributes(elementOcrField
+							.getAttribute("text"), elementLabel
+							.getAttribute("fieldName"), elementBBox
+							.getAttribute("x"), elementBBox.getAttribute("y"),
+							elementBBox.getAttribute("width"), elementBBox
+									.getAttribute("height")));
+
+					for (int i = 0; i < tesseractAttribute.size(); i++) {
+						scannerAttribute.get(index).addTesseractBox(
+								tesseractAttribute.get(i));
+					}
 
 				}
 			}
