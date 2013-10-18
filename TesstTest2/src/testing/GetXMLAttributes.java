@@ -59,8 +59,8 @@ public final class GetXMLAttributes {
 	 * @return a ArrayList which has the nameTag as Key and Location and Info as
 	 *         Value
 	 */
-	public ArrayList<ScannerAttributes> readScannerXML(
-			String scannerFileName, AnalysisResult analysisResult) {
+	public ArrayList<ScannerAttributes> readScannerXML(File xmlInputFile,
+			AnalysisResult analysisResult) {
 		// get the tesseract HTML attributes
 		ArrayList<TesseractAttributes> tesseractAttribute = getAnalysisResult(analysisResult);
 
@@ -76,10 +76,7 @@ public final class GetXMLAttributes {
 		NodeList nodeOcrFieldList;
 		NodeList nodeBBoxList;
 
-		File xmlInputFile;
-
 		try {
-			xmlInputFile = new File(scannerFileName);
 			documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			documentBuilder = documentBuilderFactory.newDocumentBuilder();
 			document = documentBuilder.parse(xmlInputFile);

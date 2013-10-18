@@ -1,5 +1,6 @@
 package testing;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
@@ -31,21 +32,14 @@ public class XMLTest {
 	 * @param testName
 	 *            name of the test
 	 */
-	public XMLTest(String scannerFileName, AnalysisResult analysisResult,
+	public XMLTest(File scannerFileName, AnalysisResult analysisResult,
 			String testName) {
 
 		this.testName = testName;
-		System.out
-				.println("------------- Getting XML Attributes -------------");
-		double time = System.currentTimeMillis();
 
 		// Get all the XML Attributes
-		xMLScanner = new GetXMLAttributes()
-				.readScannerXML(scannerFileName,
-						analysisResult);
-		System.out.println("------------- Got XML Attributes took "
-				+ (System.currentTimeMillis() - time) / 60000
-				+ " min -----------------");
+		xMLScanner = new GetXMLAttributes().readScannerXML(scannerFileName,
+				analysisResult);
 
 		// Test if the XML Attributes are the same
 		testTextMatch();
