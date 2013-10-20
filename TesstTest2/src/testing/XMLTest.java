@@ -34,6 +34,7 @@ public class XMLTest {
 	 */
 	public XMLTest(File scannerFileName, AnalysisResult analysisResult,
 			String testName) {
+		System.out.println("-------------- " + testName + " ----------------");
 
 		this.testName = testName;
 
@@ -50,7 +51,6 @@ public class XMLTest {
 	 * are the same
 	 */
 	private void testTextMatch() {
-		System.out.println("-------------- " + testName + " ----------------");
 		for (int i = 0; i < xMLScanner.size(); i++) {
 			textMatch(i);
 		}
