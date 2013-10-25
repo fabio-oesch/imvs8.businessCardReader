@@ -39,27 +39,36 @@ public class Test {
 			AnalysisResult analysisResult = null;
 			PictureDisplayTest pictureDisplay = null;
 			File[] solutionFolderList = solutionFolder.listFiles();
-			for (int file = 0; file < solutionFolderList.length; file++) {
-				analysisResult = engine.analyzeImage(solutionFolderList[file]);
-				pictureDisplay = new PictureDisplayTest(
-						solutionFolderList[file]);
-				for (int i = 0; i < analysisResult.getResultSize(); i++) {
-					pictureDisplay.addText(
-							new Color((int) ((100 - analysisResult
-									.getConfidence(i)) * 2.5), 0, 0),
-							analysisResult.getBoundingBox(i).x, analysisResult
-									.getBoundingBox(i).y, analysisResult
-									.getWord(i));
+			for (int file = 0; solutionFolderList != null
+					&& file < solutionFolderList.length; file++) {
+				if (!solutionFolderList[file].getAbsolutePath().contains(
+						"test.")) {
+
+					analysisResult = engine
+							.analyzeImage(solutionFolderList[file]);
+					pictureDisplay = new PictureDisplayTest(
+							solutionFolderList[file]);
+					for (int word = 0; word < analysisResult.getResultSize(); word++) {
+						pictureDisplay.addText(
+								new Color((int) ((100 - analysisResult
+										.getConfidence(word)) * 2.5), 0, 0),
+								analysisResult.getBoundingBox(word).height,
+								analysisResult.getBoundingBox(word).x,
+								analysisResult.getBoundingBox(word).y,
+								analysisResult.getWord(word));
+					}
+					pictureDisplay.finish(solutionFolderList[file]
+							.getAbsolutePath().substring(
+									0,
+									solutionFolderList[file].getAbsolutePath()
+											.lastIndexOf('.'))
+							+ "test"
+							+ solutionFolderList[file].getAbsolutePath()
+									.substring(
+											solutionFolderList[file]
+													.getAbsolutePath()
+													.lastIndexOf('.')));
 				}
-				pictureDisplay.finish(solutionFolderList[file]
-						.getAbsolutePath().substring(
-								0,
-								solutionFolderList[file].getAbsolutePath()
-										.lastIndexOf('.'))
-						+ "test"
-						+ solutionFolderList[file].getAbsolutePath().substring(
-								solutionFolderList[file].getAbsolutePath()
-										.lastIndexOf('.')));
 			}
 
 		}

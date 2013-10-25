@@ -117,12 +117,11 @@ public class OCREngine {
 		do {
 			Pointer ptr = TessAPI1.TessResultIteratorGetUTF8Text(ri,
 					TessPageIteratorLevel.RIL_WORD);
-			String word = ptr.getString(0);
 
 			// tesseract can return a null string, so if it did that, don't add
 			// it
-			if (word != null) {
-				words.add(word);
+			if (ptr != null) {
+				words.add(ptr.getString(0));
 				float conf = TessAPI1.TessResultIteratorConfidence(ri,
 						TessPageIteratorLevel.RIL_WORD);
 				confidences.add(conf);
