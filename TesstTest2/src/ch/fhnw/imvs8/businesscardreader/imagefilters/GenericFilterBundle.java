@@ -11,7 +11,7 @@ import java.util.List;
  * This is the most generic filter bundle. It contains a list of filters and calls them sequentially
  * @author Jon
  */
-public class GenericFilterBundle implements FilterBundle {
+public class GenericFilterBundle extends FilterBundle {
 	List<ImageFilter> filters;
 	
 	public GenericFilterBundle() {
@@ -32,12 +32,7 @@ public class GenericFilterBundle implements FilterBundle {
 		for(ImageFilter f :filters)
 			plus = f.filter(plus);
 		
-		/*there is no way to 'nicely' convert an ImageJ ImagePlus object to a BufferedImage object.
-		 I don't like it but it works.*/
-		Image image = plus.getImage();
-		BufferedImage buffered = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_BYTE_GRAY);
-		buffered.getGraphics().drawImage(image, 0, 0 , null);
-		return buffered;
+		return this.convert(plus);
 	}
 	
 	/**
