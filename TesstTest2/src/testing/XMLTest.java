@@ -54,7 +54,7 @@ public class XMLTest {
 		for (int i = 0; i < xMLScanner.size(); i++) {
 			textMatch(i);
 		}
-		System.out.println("Count of errors: " + error);
+		System.out.println("Count of errors: " + error + "\n");
 	}
 
 	/**
