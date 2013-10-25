@@ -20,12 +20,12 @@ public class Test {
 		testImageDisplay();
 	}
 
-	// File scannerImage = new File(
-	// "/School/Projekt/testdata/business-cards/christophe.meili@jaree.com/solution/scan_2013-10-02_12-15-55-image-preprocessed.png");
-	//
-	// File scannerFile = new File(
-	// "/School/Projekt/testdata/business-cards/christophe.meili@jaree.com/solution/scan_2013-10-02_12-15-55.xml");
-	//
+	/**
+	 * creates a new file which writes the texts which it reads from the picture
+	 * into a new picture with the ending test.png
+	 * 
+	 * @throws IOException
+	 */
 	public static void testImageDisplay() throws IOException {
 		GenericFilterBundle filters = new GenericFilterBundle();
 		filters.appendFilter(new GrayScaleFilter());
