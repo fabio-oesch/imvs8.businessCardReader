@@ -13,7 +13,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 public class RGBFilterTest {
-	private static String colorImg = "images.jpg";
+	private static String colorImg = "colors.png";
 
 	/**
 	 * The RGBFilter expects a colored image on light background. It should find
@@ -27,7 +27,10 @@ public class RGBFilterTest {
 
 			RGBFilterBundle bundle = new RGBFilterBundle();
 			BufferedImage out = bundle.applyFilters(image);
-			ImageIO.write(out, ".png", new File("RGBFilterTest"));
+			if (ImageIO.write(out, "png", new File("RGBFilterTest.png"))) {
+
+			} else
+				Assert.fail();
 		} catch (FileNotFoundException e) {
 			Assert.fail();
 

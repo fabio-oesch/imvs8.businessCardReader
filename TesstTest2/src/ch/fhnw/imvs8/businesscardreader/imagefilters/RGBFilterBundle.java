@@ -2,6 +2,7 @@ package ch.fhnw.imvs8.businesscardreader.imagefilters;
 
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.io.FileSaver;
 import ij.process.ColorProcessor;
 
 import java.awt.image.BufferedImage;
@@ -24,36 +25,41 @@ public class RGBFilterBundle extends FilterBundle {
 		filters = new ArrayList<>(2);
 		// filters.add(new LightFilter());
 		filters.add(new AutoBinaryFilter());
+		filters.add(new InverseFilter());
 	}
 
 	@Override
 	public BufferedImage applyFilters(BufferedImage im) {
 		ImagePlus plus = new ImagePlus("filtered_image", im);
-		System.out.println(ImagePlus.COLOR_RGB);
-		System.out.println(plus.getType());
-
 		ImagePlus[] channels = this.splitRGB(plus);
-
 		// filter
 		for (int i = 0; i < channels.length; i++)
 			for (ImageFilter f : filters)
 				channels[i] = f.filter(channels[i]);
 
-		System.out.println(channels.length);
+		for (int i = 0; i < channels.length; i++) {
+			FileSaver f = new FileSaver(channels[i]);
+			f.saveAsBmp("bla.bmp");
+		}
+
+		// create new output image
 		BufferedImage out = new BufferedImage(channels[0].getWidth(),
 				channels[0].getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+
 		// create output
-		for (int i = 0; i < out.getWidth(); i++)
+		for (int i = 0; i < out.getWidth(); i++) {
 			for (int j = 0; j < out.getHeight(); j++) {
 
 				// get minimum from channels
 				int min = 255;
-				for (int k = 0; k < channels.length; k++)
-					if (min > (channels[k].getPixel(i, j))[k])
-						min = (channels[k].getPixel(i, j))[k];
+				for (int k = 0; k < channels.length; k++) {
+					if (min > (channels[k].getPixel(i, j))[0])
+						min = channels[k].getPixel(i, j)[0];
+				}
 
-				out.setRGB(i, j, min);
+				out.setRGB(i, j, (byte) min);
 			}
+		}
 
 		return out;
 	}
@@ -72,7 +78,7 @@ public class RGBFilterBundle extends FilterBundle {
 
 		ImagePlus rImp = new ImagePlus("red", channels[0]);
 		ImagePlus gImp = new ImagePlus("green", channels[1]);
-		ImagePlus bImp = new ImagePlus("blue)", channels[2]);
+		ImagePlus bImp = new ImagePlus("blue", channels[2]);
 		return new ImagePlus[] { rImp, gImp, bImp };
 	}
 
