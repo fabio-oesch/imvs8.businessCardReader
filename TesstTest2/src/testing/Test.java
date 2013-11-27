@@ -16,8 +16,8 @@ public class Test {
 			"/School/Projekt/testdata/business-cards");
 
 	public static void main(String[] args) throws IOException {
-		// testXMLS();
-		testImageDisplay();
+		testXMLS();
+		// testImageDisplay();
 	}
 
 	/**

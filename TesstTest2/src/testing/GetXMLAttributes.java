@@ -22,6 +22,8 @@ import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
  */
 public final class GetXMLAttributes {
 
+	public String[] uniqueAttributes;
+
 	/**
 	 * This method gets an analysisResult object and returns an array list of
 	 * all attributes of the analyisResult object
@@ -117,8 +119,6 @@ public final class GetXMLAttributes {
 					// case if the bounding boxes are roughly at the same
 					// location
 					for (int i = 0; i < tesseractAttribute.size(); i++) {
-						scannerAttribute.get(index).addTesseractBox(
-								tesseractAttribute.get(i));
 					}
 
 				}
@@ -126,6 +126,100 @@ public final class GetXMLAttributes {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
+
+		getUniqueAttributes(tesseractAttribute, scannerAttribute);
+		for (int i = 0; i < scannerAttribute.size(); i++) {
+			for (int j = 0; j < tesseractAttribute.size(); j++) {
+				scannerAttribute.get(i).addTesseractBox(
+						tesseractAttribute.get(j));
+			}
+		}
+
 		return scannerAttribute;
+	}
+
+	public void getUniqueAttributes(
+			ArrayList<TesseractAttributes> tesseractAttributes,
+			ArrayList<ScannerAttributes> scannerAttributes) {
+
+		ArrayList<TesseractAttributes> uniqueTesseractAttributes = new ArrayList<>();
+		ArrayList<ScannerAttributes> uniqueScannerAttributes = new ArrayList<>();
+
+		for (int i = 0; i < tesseractAttributes.size(); i++) {
+			boolean exists = false;
+			boolean unique = true;
+			int foundAttribute = 0;
+			for (int j = 0; j < scannerAttributes.size(); j++) {
+				if (scannerAttributes
+						.get(j)
+						.getAttributeText()
+						.contains(tesseractAttributes.get(i).getAttributeText())
+						&& unique) {
+					if (!exists) {
+						exists = true;
+						foundAttribute = j;
+					} else {
+						unique = false;
+					}
+				}
+			}
+			if (exists && unique) {
+				if (scannerAttributes
+						.get(foundAttribute)
+						.getAttributeText()
+						.startsWith(
+								tesseractAttributes.get(i).getAttributeText())) {
+					uniqueScannerAttributes.add(scannerAttributes
+							.get(foundAttribute));
+					uniqueTesseractAttributes.add(tesseractAttributes.get(i));
+				}
+			}
+		}
+		calculate(uniqueTesseractAttributes, uniqueScannerAttributes,
+				scannerAttributes);
+	}
+
+	public void calculate(
+			ArrayList<TesseractAttributes> uniqueTesseractAttributes,
+			ArrayList<ScannerAttributes> uniqueScannerAttributes,
+			ArrayList<ScannerAttributes> scannerAttributes) {
+		double scaleX = 0;
+		double scaleY = 0;
+		double offsetX = 0;
+		double offsetY = 0;
+		int counter = 0;
+
+		for (int i = 0; i < uniqueTesseractAttributes.size(); i++) {
+			for (int j = i; j < uniqueScannerAttributes.size(); j++) {
+				double distScannerX = uniqueScannerAttributes.get(i).getX()
+						- uniqueScannerAttributes.get(j).getX();
+				double distScannerY = uniqueScannerAttributes.get(i).getY()
+						- uniqueScannerAttributes.get(j).getY();
+				double distTesseractX = uniqueTesseractAttributes.get(i).getX()
+						- uniqueTesseractAttributes.get(j).getX();
+				double distTesseractY = uniqueTesseractAttributes.get(i).getY()
+						- uniqueTesseractAttributes.get(j).getY();
+
+				scaleX += distScannerX / distTesseractX;
+				scaleY += distScannerY / distTesseractY;
+				counter++;
+			}
+		}
+		scaleX /= counter;
+		scaleY /= counter;
+
+		for (int i = 0; i < uniqueTesseractAttributes.size(); i++) {
+			offsetX += (uniqueTesseractAttributes.get(i).getX() * scaleX)
+					- uniqueScannerAttributes.get(i).getX();
+			offsetY += (uniqueTesseractAttributes.get(i).getY() * scaleY)
+					- uniqueScannerAttributes.get(i).getY();
+		}
+		offsetX /= uniqueTesseractAttributes.size();
+		offsetY /= uniqueTesseractAttributes.size();
+
+		for (int i = 0; i < scannerAttributes.size(); i++) {
+			scannerAttributes.get(i).setTesseractCorrection(scaleX, scaleY,
+					offsetX, offsetY);
+		}
 	}
 }

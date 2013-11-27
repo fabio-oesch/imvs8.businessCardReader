@@ -19,6 +19,11 @@ public class ScannerAttributes {
 	private int width; // width of the text
 	private int height; // height of the text
 
+	private double scaleX;
+	private double scaleY;
+	private double offsetX;
+	private double offsetY;
+
 	// Array list of attributes which have all the tesseract Objects
 	private ArrayList<TesseractAttributes> tessAtts = new ArrayList<>();
 
@@ -65,16 +70,25 @@ public class ScannerAttributes {
 	 */
 	public void addTesseractBox(TesseractAttributes tessBox) {
 		int pixelOffset = 5;
-		if (x - pixelOffset <= tessBox.getX()
-				&& x + width + pixelOffset >= tessBox.getX()
-						+ tessBox.getWidth()) {
-			if (y - pixelOffset <= tessBox.getY()
-					&& y + height + pixelOffset >= tessBox.getY()
-							+ tessBox.getHeight()) {
+		if (x - pixelOffset <= (tessBox.getX() * scaleX) - offsetX
+				&& x + width + pixelOffset >= ((tessBox.getX() + tessBox
+						.getWidth()) * scaleX) - offsetX) {
+			if (y - pixelOffset <= (tessBox.getY() * scaleY) - offsetY
+					&& y + height + pixelOffset >= ((tessBox.getY() + tessBox
+							.getHeight()) * scaleY) - offsetY) {
 				tessAtts.add(tessBox);
 			}
 
 		}
+	}
+
+	// ----------------- Setters -------------------------
+	public void setTesseractCorrection(double scaleX, double scaleY,
+			double offsetX, double offsetY) {
+		this.scaleX = scaleX;
+		this.scaleY = scaleY;
+		this.offsetX = offsetX;
+		this.offsetY = offsetY;
 	}
 
 	// ----------------- Getters -------------------------
