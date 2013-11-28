@@ -24,8 +24,6 @@ public class ScannerAttributes {
 	private double offsetX;
 	private double offsetY;
 
-	private double euclid;
-
 	// Array list of attributes which have all the tesseract Objects
 	private ArrayList<TesseractAttributes> tessAtts = new ArrayList<>();
 
@@ -95,11 +93,6 @@ public class ScannerAttributes {
 		this.scaleY = scaleY;
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
-	}
-
-	public void setEuclid(double euclid) {
-		this.euclid = euclid;
-
 	}
 
 	// ----------------- Getters -------------------------

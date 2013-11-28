@@ -183,12 +183,8 @@ public final class GetXMLAttributes {
 			ArrayList<TesseractAttributes> uniqueTesseractAttributes,
 			ArrayList<ScannerAttributes> uniqueScannerAttributes,
 			ArrayList<ScannerAttributes> scannerAttributes) {
-		double scaleX = 0;
-		double scaleY = 0;
 		double offsetX = 0;
 		double offsetY = 0;
-		int counterX = 0;
-		int counterY = 0;
 		double euclid = 0;
 		double counter = 0;
 
@@ -202,15 +198,6 @@ public final class GetXMLAttributes {
 						- uniqueTesseractAttributes.get(j).getX();
 				double distTesseractY = uniqueTesseractAttributes.get(i).getY()
 						- uniqueTesseractAttributes.get(j).getY();
-
-				if (Math.abs(distTesseractX) > 0 && Math.abs(distScannerX) > 0) {
-					scaleX += Math.abs(distScannerX / distTesseractX);
-					counterX++;
-				}
-				if (Math.abs(distTesseractY) > 0 && Math.abs(distScannerY) > 0) {
-					scaleY += Math.abs(distScannerY / distTesseractY);
-					counterY++;
-				}
 				euclid += Math.sqrt(distScannerX * distScannerX + distScannerY
 						* distScannerY)
 						/ Math.sqrt(distTesseractX * distTesseractX
@@ -218,8 +205,6 @@ public final class GetXMLAttributes {
 				counter++;
 			}
 		}
-		scaleX /= counterX;
-		scaleY /= counterY;
 		euclid /= counter;
 
 		for (int i = 0; i < uniqueTesseractAttributes.size(); i++) {
@@ -234,7 +219,6 @@ public final class GetXMLAttributes {
 		offsetY /= uniqueTesseractAttributes.size();
 
 		for (int i = 0; i < scannerAttributes.size(); i++) {
-			scannerAttributes.get(i).setEuclid(euclid);
 			scannerAttributes.get(i).setTesseractCorrection(euclid, euclid,
 					offsetX, offsetY);
 		}
