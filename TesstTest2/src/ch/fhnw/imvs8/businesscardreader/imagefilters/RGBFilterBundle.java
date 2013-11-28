@@ -2,7 +2,6 @@ package ch.fhnw.imvs8.businesscardreader.imagefilters;
 
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.io.FileSaver;
 import ij.process.ColorProcessor;
 
 import java.awt.image.BufferedImage;
@@ -10,50 +9,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a filter bundle which processes the R,G and B channel seperately.
- * It converts them into binary images and then substracts each channel for the
- * final binary image output.
+ * Represents a filter bundle which processes the RGB channels seperately.
+ * 
  * 
  * @author Jon
  * 
  */
 public class RGBFilterBundle extends FilterBundle {
-	private List<ImageFilter> filters;
+	private List<ImageFilter> channelFilters;
 
 	public RGBFilterBundle() {
-		// TODO: add LightFilter
-		filters = new ArrayList<>(2);
+		channelFilters = new ArrayList<>(2);
 		// filters.add(new LightFilter());
-		filters.add(new AutoBinaryFilter());
-		filters.add(new InverseFilter());
+		channelFilters.add(new AutoBinaryFilter());
+		//filters.add(new InverseFilter());
 	}
 
 	@Override
 	public BufferedImage applyFilters(BufferedImage im) {
 		ImagePlus plus = new ImagePlus("filtered_image", im);
+
+		//filter image
+
 		ImagePlus[] channels = this.splitRGB(plus);
-		// filter
+		// filter channels
 		for (int i = 0; i < channels.length; i++)
-			for (ImageFilter f : filters)
+			for (ImageFilter f : channelFilters)
 				channels[i] = f.filter(channels[i]);
 
-		for (int i = 0; i < channels.length; i++) {
-			FileSaver f = new FileSaver(channels[i]);
-			f.saveAsBmp("bla.bmp");
-		}
-
 		// create new output image
-		BufferedImage out = new BufferedImage(channels[0].getWidth(),
-				channels[0].getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+		BufferedImage out = new BufferedImage(channels[0].getWidth(), channels[0].getHeight(), BufferedImage.TYPE_BYTE_GRAY);
 
-		// create output
+		// calculate the result image from the three seperate rgb channels
 		for (int i = 0; i < out.getWidth(); i++) {
 			for (int j = 0; j < out.getHeight(); j++) {
 
 				// get minimum from channels
 				int min = 255;
 				for (int k = 0; k < channels.length; k++) {
-					if (min > (channels[k].getPixel(i, j))[0])
+					if (min > channels[k].getPixel(i, j)[0])
 						min = channels[k].getPixel(i, j)[0];
 				}
 
@@ -82,7 +76,7 @@ public class RGBFilterBundle extends FilterBundle {
 		return new ImagePlus[] { rImp, gImp, bImp };
 	}
 
-	public static ImageStack[] splitRGB(ImageStack rgb, boolean keepSource) {
+	private static ImageStack[] splitRGB(ImageStack rgb, boolean keepSource) {
 		int w = rgb.getWidth();
 		int h = rgb.getHeight();
 		ImageStack[] channels = new ImageStack[3];
