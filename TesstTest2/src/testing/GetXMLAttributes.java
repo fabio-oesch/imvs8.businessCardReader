@@ -187,10 +187,13 @@ public final class GetXMLAttributes {
 		double scaleY = 0;
 		double offsetX = 0;
 		double offsetY = 0;
-		int counter = 0;
+		int counterX = 0;
+		int counterY = 0;
+		double euclid = 0;
+		double counter = 0;
 
 		for (int i = 0; i < uniqueTesseractAttributes.size(); i++) {
-			for (int j = i; j < uniqueScannerAttributes.size(); j++) {
+			for (int j = i + 1; j < uniqueScannerAttributes.size(); j++) {
 				double distScannerX = uniqueScannerAttributes.get(i).getX()
 						- uniqueScannerAttributes.get(j).getX();
 				double distScannerY = uniqueScannerAttributes.get(i).getY()
@@ -200,25 +203,39 @@ public final class GetXMLAttributes {
 				double distTesseractY = uniqueTesseractAttributes.get(i).getY()
 						- uniqueTesseractAttributes.get(j).getY();
 
-				scaleX += distScannerX / distTesseractX;
-				scaleY += distScannerY / distTesseractY;
+				if (Math.abs(distTesseractX) > 0 && Math.abs(distScannerX) > 0) {
+					scaleX += Math.abs(distScannerX / distTesseractX);
+					counterX++;
+				}
+				if (Math.abs(distTesseractY) > 0 && Math.abs(distScannerY) > 0) {
+					scaleY += Math.abs(distScannerY / distTesseractY);
+					counterY++;
+				}
+				euclid += Math.sqrt(distScannerX * distScannerX + distScannerY
+						* distScannerY)
+						/ Math.sqrt(distTesseractX * distTesseractX
+								+ distTesseractY * distTesseractY);
 				counter++;
 			}
 		}
-		scaleX /= counter;
-		scaleY /= counter;
+		scaleX /= counterX;
+		scaleY /= counterY;
+		euclid /= counter;
 
 		for (int i = 0; i < uniqueTesseractAttributes.size(); i++) {
-			offsetX += (uniqueTesseractAttributes.get(i).getX() * scaleX)
-					- uniqueScannerAttributes.get(i).getX();
-			offsetY += (uniqueTesseractAttributes.get(i).getY() * scaleY)
-					- uniqueScannerAttributes.get(i).getY();
+			offsetX += Math
+					.abs((uniqueTesseractAttributes.get(i).getX() * euclid)
+							- uniqueScannerAttributes.get(i).getX());
+			offsetY += Math
+					.abs((uniqueTesseractAttributes.get(i).getY() * euclid)
+							- uniqueScannerAttributes.get(i).getY());
 		}
 		offsetX /= uniqueTesseractAttributes.size();
 		offsetY /= uniqueTesseractAttributes.size();
 
 		for (int i = 0; i < scannerAttributes.size(); i++) {
-			scannerAttributes.get(i).setTesseractCorrection(scaleX, scaleY,
+			scannerAttributes.get(i).setEuclid(euclid);
+			scannerAttributes.get(i).setTesseractCorrection(euclid, euclid,
 					offsetX, offsetY);
 		}
 	}

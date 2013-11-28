@@ -81,26 +81,34 @@ public class Test {
 		OCREngine engine = new OCREngine(filters);
 
 		String[] folderList = folder.list();
-		for (int folders = 0; folders < folderList.length; folders++) {
-			File solutionFolder = new File(folder.getAbsolutePath() + "/"
-					+ folderList[folders] + "/solution/");
+		// for (int folders = 0; folders < folderList.length; folders++) {
+		// File solutionFolder = new File(folder.getAbsolutePath() + "/"
+		// + folderList[folders] + "/solution/");
+		File solutionFolder = new File(folder.getAbsolutePath()
+				+ "/christophe.meili@jaree.com/solution/");
 
-			AnalysisResult analysisResult = null;
-			File scannerFile = null;
-			File[] solutionFolderList = solutionFolder.listFiles();
-			for (int file = 0; file < solutionFolderList.length; file++) {
-				if (solutionFolderList[file].getAbsolutePath().contains(
-						"preprocessed.png")) {
-					analysisResult = engine
-							.analyzeImage(solutionFolderList[file]);
-				}
-				if (solutionFolderList[file].getAbsolutePath().contains(".xml")) {
-					scannerFile = solutionFolderList[file];
-				}
+		File tesseractFolder = new File(folder.getAbsolutePath()
+				+ "/christophe.meili@jaree.com/testimages/20131021_114720.jpg");
+
+		AnalysisResult analysisResult = null;
+		File scannerFile = null;
+		File[] solutionFolderList = solutionFolder.listFiles();
+		for (int file = 0; file < solutionFolderList.length; file++) {
+			if (solutionFolderList[file].getAbsolutePath().contains(
+					"preprocessed.png")) {
+				analysisResult = engine.analyzeImage(tesseractFolder);
+				// analysisResult =
+				// engine.analyzeImage(solutionFolderList[file]);
 			}
-
-			XMLTest test = new XMLTest(scannerFile, analysisResult,
-					folderList[folders]);
+			if (solutionFolderList[file].getAbsolutePath().contains(".xml")) {
+				scannerFile = solutionFolderList[file];
+			}
 		}
+
+		// XMLTest test = new XMLTest(scannerFile, analysisResult,
+		// folderList[folders]);
+		XMLTest test = new XMLTest(scannerFile, analysisResult,
+				solutionFolder.getAbsolutePath());
+		// }
 	}
 }

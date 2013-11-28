@@ -24,6 +24,8 @@ public class ScannerAttributes {
 	private double offsetX;
 	private double offsetY;
 
+	private double euclid;
+
 	// Array list of attributes which have all the tesseract Objects
 	private ArrayList<TesseractAttributes> tessAtts = new ArrayList<>();
 
@@ -69,13 +71,17 @@ public class ScannerAttributes {
 	 *            a new TesseractAttributes Object
 	 */
 	public void addTesseractBox(TesseractAttributes tessBox) {
-		int pixelOffset = 5;
-		if (x - pixelOffset <= (tessBox.getX() * scaleX) - offsetX
-				&& x + width + pixelOffset >= ((tessBox.getX() + tessBox
-						.getWidth()) * scaleX) - offsetX) {
-			if (y - pixelOffset <= (tessBox.getY() * scaleY) - offsetY
-					&& y + height + pixelOffset >= ((tessBox.getY() + tessBox
-							.getHeight()) * scaleY) - offsetY) {
+		int pixelOffset = 15;
+		double tesseractLeft = (tessBox.getX() * scaleX) - offsetX;
+		double tesseractRight = ((tessBox.getX() + tessBox.getWidth()) * scaleX)
+				- offsetX;
+		double tesseractTop = (tessBox.getY() * scaleY) - offsetY;
+		double tesseractBottom = ((tessBox.getY() + tessBox.getHeight()) * scaleY)
+				- offsetY;
+		if (x - pixelOffset <= tesseractLeft
+				&& x + width + pixelOffset >= tesseractRight) {
+			if (y - pixelOffset <= tesseractTop
+					&& y + height + pixelOffset >= tesseractBottom) {
 				tessAtts.add(tessBox);
 			}
 
@@ -89,6 +95,11 @@ public class ScannerAttributes {
 		this.scaleY = scaleY;
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
+	}
+
+	public void setEuclid(double euclid) {
+		this.euclid = euclid;
+
 	}
 
 	// ----------------- Getters -------------------------
