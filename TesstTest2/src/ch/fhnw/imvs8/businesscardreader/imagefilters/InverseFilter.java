@@ -3,6 +3,10 @@ package ch.fhnw.imvs8.businesscardreader.imagefilters;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 
+/**
+ * 
+ * @author Jon
+ */
 public class InverseFilter implements ImageFilter {
 
 	int[] lut;
