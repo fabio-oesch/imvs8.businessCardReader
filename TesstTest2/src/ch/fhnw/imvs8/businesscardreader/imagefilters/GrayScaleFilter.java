@@ -3,6 +3,12 @@ package ch.fhnw.imvs8.businesscardreader.imagefilters;
 import ij.ImagePlus;
 import ij.process.ImageConverter;
 
+/**
+ * Simple grayscale filter.
+ * 
+ * @author Jon
+ * 
+ */
 public class GrayScaleFilter implements ImageFilter {
 
 	@Override
@@ -11,7 +17,7 @@ public class GrayScaleFilter implements ImageFilter {
 		c.convertToGray8();
 		return im;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Grayscale filter";

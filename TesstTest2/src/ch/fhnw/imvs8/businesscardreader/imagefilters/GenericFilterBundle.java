@@ -12,7 +12,7 @@ import java.util.List;
  * 
  * @author Jon
  */
-public class GenericFilterBundle extends FilterBundle {
+public class GenericFilterBundle implements FilterBundle {
 	List<ImageFilter> filters;
 
 	public GenericFilterBundle() {

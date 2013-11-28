@@ -4,7 +4,12 @@ import ij.ImagePlus;
 import ij.process.ImageProcessor;
 
 /**
- * @author Jon
+ * Filter which should remove a linear light gradient out of an 24 Bit RGB Image
+ * 
+ * it assumes that the corner pixels should have the same color and corrects the
+ * image accordingly.
+ * 
+ * @author Jonas Schwammberger, Fabio Oesch
  */
 public class LightFilter implements ImageFilter {
 

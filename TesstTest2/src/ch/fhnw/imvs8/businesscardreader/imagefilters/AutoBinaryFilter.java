@@ -6,7 +6,8 @@ import ij.process.ImageProcessor;
 
 /**
  * Converts an 8bit Grayscale image to binary image with a specific
- * Auto-Threshold strategy.
+ * Auto-Threshold strategy. It uses the Auto-Threshold strategy of the imageJ
+ * API
  * 
  * @author Jon
  * 
@@ -19,13 +20,6 @@ public class AutoBinaryFilter implements ImageFilter {
 	 */
 	public AutoBinaryFilter() {
 		m = Method.MaxEntropy;
-	}
-
-	/**
-	 * @param m
-	 */
-	public AutoBinaryFilter(Method m) {
-		this.m = m;
 	}
 
 	@Override
