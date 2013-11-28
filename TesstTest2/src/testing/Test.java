@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import ch.fhnw.imvs8.businesscardreader.imagefilters.AutoBinaryFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
@@ -74,41 +75,43 @@ public class Test {
 		}
 	}
 
+	private static void testXMLForName(OCREngine engine, String name)
+			throws FileNotFoundException {
+		File solutionFolder = new File(folder.getAbsolutePath() + "/" + name
+				+ "/solution/");
+
+		File testFolder = new File(folder.getAbsolutePath() + "/" + name
+				+ "/testimages/");
+
+		// Get xml File from Scanner
+		File scannerFile = null;
+		File[] solutionFolderList = solutionFolder.listFiles();
+		int index = 0;
+		while (!solutionFolderList[index++].getAbsolutePath().contains(".xml")) {
+		}
+		scannerFile = solutionFolderList[index - 1];
+
+		// Compare with every file in folder
+		File[] testFolderList = testFolder.listFiles();
+		for (int file = 0; file < testFolderList.length; file++) {
+			XMLTest test = new XMLTest(scannerFile,
+					engine.analyzeImage(testFolderList[file]), name);
+
+		}
+	}
+
 	public static void testXMLS() throws FileNotFoundException {
 
 		GenericFilterBundle filters = new GenericFilterBundle();
 		filters.appendFilter(new GrayScaleFilter());
+		filters.appendFilter(new AutoBinaryFilter());
 		OCREngine engine = new OCREngine(filters);
 
-		String[] folderList = folder.list();
+		testXMLForName(engine, "bernhard.schmidt@a-design.ch");
+
+		// String[] folderList = folder.list();
 		// for (int folders = 0; folders < folderList.length; folders++) {
-		// File solutionFolder = new File(folder.getAbsolutePath() + "/"
-		// + folderList[folders] + "/solution/");
-		File solutionFolder = new File(folder.getAbsolutePath()
-				+ "/christophe.meili@jaree.com/solution/");
-
-		File tesseractFolder = new File(folder.getAbsolutePath()
-				+ "/christophe.meili@jaree.com/testimages/20131021_114720.jpg");
-
-		AnalysisResult analysisResult = null;
-		File scannerFile = null;
-		File[] solutionFolderList = solutionFolder.listFiles();
-		for (int file = 0; file < solutionFolderList.length; file++) {
-			if (solutionFolderList[file].getAbsolutePath().contains(
-					"preprocessed.png")) {
-				analysisResult = engine.analyzeImage(tesseractFolder);
-				// analysisResult =
-				// engine.analyzeImage(solutionFolderList[file]);
-			}
-			if (solutionFolderList[file].getAbsolutePath().contains(".xml")) {
-				scannerFile = solutionFolderList[file];
-			}
-		}
-
-		// XMLTest test = new XMLTest(scannerFile, analysisResult,
-		// folderList[folders]);
-		XMLTest test = new XMLTest(scannerFile, analysisResult,
-				solutionFolder.getAbsolutePath());
+		// testXMLForName(engine, folderList[folders]);
 		// }
 	}
 }
