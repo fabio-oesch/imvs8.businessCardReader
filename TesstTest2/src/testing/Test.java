@@ -15,6 +15,7 @@ public class Test {
 
 	final static File folder = new File(
 			"/School/Projekt/testdata/business-cards");
+	final static File logs = new File("/School/Projekt/testdata/Logs");
 
 	public static void main(String[] args) throws IOException {
 		testXMLS();
@@ -107,11 +108,11 @@ public class Test {
 		filters.appendFilter(new AutoBinaryFilter());
 		OCREngine engine = new OCREngine(filters);
 
-		testXMLForName(engine, "bernhard.schmidt@a-design.ch");
+		// testXMLForName(engine, "bernhard.schmidt@a-design.ch");
 
-		// String[] folderList = folder.list();
-		// for (int folders = 0; folders < folderList.length; folders++) {
-		// testXMLForName(engine, folderList[folders]);
-		// }
+		String[] folderList = folder.list();
+		for (int folders = 0; folders < folderList.length; folders++) {
+			testXMLForName(engine, folderList[folders]);
+		}
 	}
 }

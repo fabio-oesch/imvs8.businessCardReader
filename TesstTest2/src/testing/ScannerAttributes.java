@@ -58,7 +58,6 @@ public class ScannerAttributes {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
