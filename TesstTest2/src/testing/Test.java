@@ -81,6 +81,16 @@ public class Test {
 		}
 	}
 
+	/**
+	 * Test an xml file and writes the logs to the logs folder
+	 * 
+	 * @param engine
+	 *            OCREngine
+	 * @param name
+	 *            name of the e-mail which should be tested
+	 * @throws IOException
+	 *             needs permission to write and create a new file
+	 */
 	private static void testXMLForName(OCREngine engine, String name)
 			throws IOException {
 		File solutionFolder = new File(folder.getAbsolutePath() + "/" + name
@@ -106,6 +116,7 @@ public class Test {
 		BufferedWriter bw = new BufferedWriter(fw);
 
 		double errorsPerCard = 0;
+		double percentagePerMail = 0;
 
 		// Compare with every file in folder
 		File[] testFolderList = testFolder.listFiles();
@@ -118,32 +129,42 @@ public class Test {
 			}
 
 			errorsPerCard += test.getErrors();
-			errorsPerMail += test.getPercentageErrors();
+			percentagePerMail += test.getPercentageErrors();
 
 			bw.write("Picturename: " + testFolderList[file].getName() + "\n");
 			bw.write("Average # of errors: " + test.getPercentageErrors()
 					+ "\n");
 		}
+		errorsPerMail += percentagePerMail / testFolderList.length;
 		bw.write("Total # of errors: " + errorsPerCard);
 		bw.close();
 	}
 
+	/**
+	 * test all the xml files in a folder
+	 * 
+	 * @throws IOException
+	 *             needs permission to write into a file and create it
+	 */
 	public static void testXMLS() throws IOException {
 
+		// Add filters to the engine
 		GenericFilterBundle filters = new GenericFilterBundle();
 		filters.appendFilter(new GrayScaleFilter());
 		filters.appendFilter(new AutoBinaryFilter());
 		OCREngine engine = new OCREngine(filters);
 
+		// test for a specific name
 		// testXMLForName(engine, "franco.dalmolin@collanos.com");
 
+		// tests all the files in the folder
 		String[] folderList = folder.list();
 		for (int folders = 0; folders < folderList.length; folders++) {
 			testXMLForName(engine, folderList[folders]);
-
 		}
 
-		File logFile = new File(logs + "aa_logs.txt");
+		// logs for the entire folder
+		File logFile = new File(logs + "_logs.txt");
 		if (!logFile.exists()) {
 			logFile.createNewFile();
 		}

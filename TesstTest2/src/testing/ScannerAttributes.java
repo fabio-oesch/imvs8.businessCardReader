@@ -19,10 +19,10 @@ public class ScannerAttributes {
 	private int width; // width of the text
 	private int height; // height of the text
 
-	private double scaleX;
-	private double scaleY;
-	private double offsetX;
-	private double offsetY;
+	private double scaleX; // ratio of x-Axis
+	private double scaleY; // ratio of y-Axis
+	private double offsetX; // offset of the picture of x-Axis
+	private double offsetY; // offset of the picture of y-Axis
 
 	// Array list of attributes which have all the tesseract Objects
 	private ArrayList<TesseractAttributes> tessAtts = new ArrayList<>();
