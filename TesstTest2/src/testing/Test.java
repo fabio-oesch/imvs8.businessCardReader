@@ -1,8 +1,9 @@
 package testing;
 
 import java.awt.Color;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import ch.fhnw.imvs8.businesscardreader.imagefilters.AutoBinaryFilter;
@@ -13,9 +14,13 @@ import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
 public class Test {
 
+	// path to place where business cards are
 	final static File folder = new File(
 			"/School/Projekt/testdata/business-cards");
-	final static File logs = new File("/School/Projekt/testdata/Logs");
+	// path to place where logs are stored
+	final static String logs = "/School/Projekt/testdata/Logs/";
+	// average errors/Mail adresse
+	static double errorsPerMail = 0;
 
 	public static void main(String[] args) throws IOException {
 		testXMLS();
@@ -77,7 +82,7 @@ public class Test {
 	}
 
 	private static void testXMLForName(OCREngine engine, String name)
-			throws FileNotFoundException {
+			throws IOException {
 		File solutionFolder = new File(folder.getAbsolutePath() + "/" + name
 				+ "/solution/");
 
@@ -92,27 +97,60 @@ public class Test {
 		}
 		scannerFile = solutionFolderList[index - 1];
 
+		// Write into log file
+		File logFile = new File(logs + name + "_logs.txt");
+		if (!logFile.exists()) {
+			logFile.createNewFile();
+		}
+		FileWriter fw = new FileWriter(logFile.getAbsoluteFile());
+		BufferedWriter bw = new BufferedWriter(fw);
+
+		double errorsPerCard = 0;
+
 		// Compare with every file in folder
 		File[] testFolderList = testFolder.listFiles();
 		for (int file = 0; file < testFolderList.length; file++) {
 			XMLTest test = new XMLTest(scannerFile,
-					engine.analyzeImage(testFolderList[file]), name);
+					engine.analyzeImage(testFolderList[file]));
 
+			if (file == 0) {
+				bw.write("# of pictures: " + testFolderList.length + "\n");
+			}
+
+			errorsPerCard += test.getErrors();
+			errorsPerMail += test.getPercentageErrors();
+
+			bw.write("Picturename: " + testFolderList[file].getName() + "\n");
+			bw.write("Average # of errors: " + test.getPercentageErrors()
+					+ "\n");
 		}
+		bw.write("Total # of errors: " + errorsPerCard);
+		bw.close();
 	}
 
-	public static void testXMLS() throws FileNotFoundException {
+	public static void testXMLS() throws IOException {
 
 		GenericFilterBundle filters = new GenericFilterBundle();
 		filters.appendFilter(new GrayScaleFilter());
 		filters.appendFilter(new AutoBinaryFilter());
 		OCREngine engine = new OCREngine(filters);
 
-		// testXMLForName(engine, "bernhard.schmidt@a-design.ch");
+		// testXMLForName(engine, "franco.dalmolin@collanos.com");
 
 		String[] folderList = folder.list();
 		for (int folders = 0; folders < folderList.length; folders++) {
 			testXMLForName(engine, folderList[folders]);
+
 		}
+
+		File logFile = new File(logs + "aa_logs.txt");
+		if (!logFile.exists()) {
+			logFile.createNewFile();
+		}
+		FileWriter fw = new FileWriter(logFile.getAbsoluteFile());
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write("Average Percentage Errors per Mail: " + errorsPerMail
+				/ folderList.length + "\n");
+		bw.close();
 	}
 }

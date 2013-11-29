@@ -2,15 +2,15 @@ package testing;
 
 import java.awt.Rectangle;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
@@ -60,9 +60,10 @@ public final class GetXMLAttributes {
 	 *            insert the path to the XML file
 	 * @return a ArrayList which has the nameTag as Key and Location and Info as
 	 *         Value
+	 * @throws UnsupportedEncodingException
 	 */
 	public ArrayList<ScannerAttributes> readScannerXML(File xmlInputFile,
-			AnalysisResult analysisResult) {
+			AnalysisResult analysisResult) throws UnsupportedEncodingException {
 		// get the tesseract HTML attributes
 		ArrayList<TesseractAttributes> tesseractAttribute = getAnalysisResult(analysisResult);
 
@@ -70,61 +71,34 @@ public final class GetXMLAttributes {
 		// saved in
 		ArrayList<ScannerAttributes> scannerAttribute = new ArrayList<>();
 
-		Document document;
-		DocumentBuilder documentBuilder;
-		DocumentBuilderFactory documentBuilderFactory;
-
-		NodeList nodeLabelList;
-		NodeList nodeOcrFieldList;
-		NodeList nodeBBoxList;
-
+		XMLInputFactory inputFactor = XMLInputFactory.newInstance();
 		try {
-			documentBuilderFactory = DocumentBuilderFactory.newInstance();
-			documentBuilder = documentBuilderFactory.newDocumentBuilder();
-			document = documentBuilder.parse(xmlInputFile);
+			XMLStreamReader reader = inputFactor
+					.createXMLStreamReader(new InputStreamReader(
+							new FileInputStream(xmlInputFile), "ISO-8859-1"));
+			String text = null;
+			String fieldName = null;
 
-			// get all the nodes which have either list, ocrField or boundingBox
-			// as name
-			nodeLabelList = document.getElementsByTagName("list");
-			nodeOcrFieldList = document.getElementsByTagName("ocrField");
-			nodeBBoxList = document.getElementsByTagName("boundingBox");
-
-			document.getDocumentElement().normalize();
-
-			// go through all the nodes of the labellist. The labellist could be
-			// described as the catogery
-			for (int index = 0; index < nodeLabelList.getLength(); index++) {
-				// get the index item of each list
-				Node nodeLabel = nodeLabelList.item(index);
-				Node nodeOcrField = nodeOcrFieldList.item(index);
-				Node nodeBBox = nodeBBoxList.item(index);
-
-				if (nodeLabel.getNodeType() == Node.ELEMENT_NODE) {
-					// turn them into an element
-					Element elementLabel = (Element) nodeLabel;
-					Element elementOcrField = (Element) nodeOcrField;
-					Element elementBBox = (Element) nodeBBox;
-
-					// add a new scannerAttribute to the to the list. The
-					// attributes are being read at the same time
-					scannerAttribute.add(new ScannerAttributes(elementOcrField
-							.getAttribute("text"), elementLabel
-							.getAttribute("fieldName"), elementBBox
-							.getAttribute("x"), elementBBox.getAttribute("y"),
-							elementBBox.getAttribute("width"), elementBBox
-									.getAttribute("height")));
-
-					// check if a tesseract Attributes needs to be in the
-					// arraylist of the current scanner attribute. This is the
-					// case if the bounding boxes are roughly at the same
-					// location
-					for (int i = 0; i < tesseractAttribute.size(); i++) {
+			while (reader.hasNext()) {
+				if (reader.isStartElement()) {
+					if (reader.getLocalName() == "list") {
+						fieldName = reader.getAttributeValue(0);
+					} else if (reader.getLocalName() == "ocrField") {
+						text = reader.getAttributeValue(0);
+					} else if (reader.getLocalName() == "boundingBox") {
+						scannerAttribute.add(new ScannerAttributes(text,
+								fieldName, reader.getAttributeValue(0), reader
+										.getAttributeValue(1), reader
+										.getAttributeValue(2), reader
+										.getAttributeValue(3)));
 					}
-
 				}
+				reader.next();
 			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (XMLStreamException e) {
+			e.printStackTrace();
 		}
 
 		getUniqueAttributes(tesseractAttribute, scannerAttribute);

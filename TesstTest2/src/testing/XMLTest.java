@@ -1,6 +1,7 @@
 package testing;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
@@ -16,10 +17,10 @@ public class XMLTest {
 	// the XML data structure which has the xml attributes of the tesseract file
 	// and attributes of the scanner file
 	private ArrayList<ScannerAttributes> xMLScanner;
-	// name of test
-	private String testName;
 	// count of errors
-	private int error = 0;
+	private double error = 0;
+	// count of xmlScannerAttributes
+	private double countScannerAttributes = 0;
 
 	/**
 	 * XMLTest gets the attributes of the files through GetXMLAttributes and
@@ -31,19 +32,19 @@ public class XMLTest {
 	 *            analysisResult object of the file
 	 * @param testName
 	 *            name of the test
+	 * @throws IOException
 	 */
-	public XMLTest(File scannerFileName, AnalysisResult analysisResult,
-			String testName) {
-		System.out.println("-------------- " + testName + " ----------------");
-
-		this.testName = testName;
+	public XMLTest(File scannerFileName, AnalysisResult analysisResult)
+			throws IOException {
 
 		// Get all the XML Attributes
 		xMLScanner = new GetXMLAttributes().readScannerXML(scannerFileName,
 				analysisResult);
 
 		// Test if the XML Attributes are the same
-		testTextMatch();
+		if (xMLScanner != null) {
+			testTextMatch();
+		}
 	}
 
 	/**
@@ -54,7 +55,7 @@ public class XMLTest {
 		for (int i = 0; i < xMLScanner.size(); i++) {
 			textMatch(i);
 		}
-		System.out.println("Count of errors: " + error + "\n");
+		countScannerAttributes = xMLScanner.size();
 	}
 
 	/**
@@ -80,14 +81,24 @@ public class XMLTest {
 				.get(scannerCategories).getAttributeText().replace(" ", "")))) {
 			error++;
 			// Print information about the mistake
-			System.out.println("Catogory: "
-					+ xMLScanner.get(scannerCategories).getAttributeTyp()
-					+ ", tesseract Text: "
-					+ tesseractString.toString()
-					+ ", scanner text: "
-					+ xMLScanner.get(scannerCategories).getAttributeText()
-							.replace(" ", ""));
+			/*
+			 * System.out.println("Catogory: " +
+			 * xMLScanner.get(scannerCategories).getAttributeTyp() +
+			 * ", tesseract Text: " + tesseractString.toString() +
+			 * ", scanner text: " +
+			 * xMLScanner.get(scannerCategories).getAttributeText()
+			 * .replace(" ", ""));
+			 */
+
 		}
+	}
+
+	public double getPercentageErrors() {
+		return error * 100 / countScannerAttributes;
+	}
+
+	public double getErrors() {
+		return error;
 	}
 
 }
