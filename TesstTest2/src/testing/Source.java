@@ -37,7 +37,7 @@ public class Source {
 		filters.appendFilter(new GrayScaleFilter());
 		OCREngine engine = new OCREngine(filters);
 		AnalysisResult analysisResult = engine.analyzeImage(scannerImage);
-		XMLTest test = new XMLTest(scannerFile, analysisResult,
-				"christophe meili");
+		// XMLTest test = new XMLTest(scannerFile, analysisResult,
+		// "christophe meili", );
 	}
 }
