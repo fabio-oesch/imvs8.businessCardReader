@@ -104,8 +104,10 @@ public final class GetXMLAttributes {
 				reader.next();
 			}
 		} catch (FileNotFoundException e) {
+			System.out.println(xmlInputFile.getAbsolutePath());
 			e.printStackTrace();
 		} catch (XMLStreamException e) {
+			System.out.println(xmlInputFile.getAbsolutePath());
 			e.printStackTrace();
 		}
 
