@@ -19,38 +19,33 @@ public class LightFilter implements ImageFilter {
 
 	@Override
 	public ImagePlus filter(ImagePlus im) {
+		final int width = im.WIDTH - 1;
+		final int height = im.HEIGHT - 1;
+
+		final double w = width;
+		final double h = height;
 		int[] intensities = new int[4];
 		ImageProcessor p = im.getProcessor();
 
-		intensities[0] = p.getPixel(0, 0); //upper left
-		intensities[1] = p.getPixel(im.WIDTH - 1, 0); //upper right
-		intensities[2] = p.getPixel(0, im.HEIGHT - 1); //lower left
-		intensities[3] = p.getPixel(im.WIDTH - 1, im.HEIGHT - 1);
+		intensities[0] = p.getPixel(0, 0); // upper left
+		intensities[1] = p.getPixel(width, 0); // upper right
+		intensities[2] = p.getPixel(0, height); // lower left
+		intensities[3] = p.getPixel(width, height);
 
 		int max = findMax(intensities);
 		for (int i = 0; i < intensities.length; i++)
 			intensities[i] -= max;
 
-		double dY1 = (intensities[2] - intensities[0]) / (double) im.WIDTH;
-		double dY2 = (intensities[3] - intensities[1]) / (double) im.WIDTH;
+		for (int j = 0; j < h; j++) {
+			for (int i = 0; i < w; i++) {
+				double value = p.getPixelValue(i, j) + intensities[0]
+						* ((w - i) / w * (h - j) / h) + intensities[1]
+						* (i / w * (h - j) / h) + intensities[2]
+						* ((w - i) / w * j / h) + intensities[3]
+						* (i / w * j / h);
 
-		double yCorr1 = intensities[0]; //correction value for left y axis
-		double yCorr2 = intensities[0];
-		; //correction value for right y axis
-
-		for (int j = 0; j < im.HEIGHT; j++) {
-			double dX = (yCorr2 - yCorr1) / im.WIDTH;
-			double xCorr = p.getPixel(0, j);
-
-			for (int i = 0; i < im.WIDTH; i++) {
-				int val = (int) (p.getPixel(i, j) + xCorr);
-				p.putPixel(i, j, val);
-
-				xCorr += dX;
+				p.putPixelValue(i, j, value);
 			}
-
-			yCorr1 += dY1;
-			yCorr2 += dY2;
 		}
 
 		return im;
