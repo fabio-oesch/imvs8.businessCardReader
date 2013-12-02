@@ -38,7 +38,7 @@ public class OCREngine {
 		api = TessAPI1.TessBaseAPICreate();
 
 		// configuration
-		TessAPI1.TessBaseAPIInit3(api, "tessdata", "eng");
+		TessAPI1.TessBaseAPIInit3(api, "tessdata", "deu");
 		TessAPI1.TessBaseAPISetPageSegMode(api, TessAPI1.TessPageSegMode.PSM_AUTO);
 	}
 
