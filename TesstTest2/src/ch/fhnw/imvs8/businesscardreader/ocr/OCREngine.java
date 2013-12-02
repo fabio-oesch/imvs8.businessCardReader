@@ -17,9 +17,11 @@ import net.sourceforge.tess4j.TessAPI1;
 import net.sourceforge.tess4j.TessAPI1.TessPageIterator;
 import net.sourceforge.tess4j.TessAPI1.TessPageIteratorLevel;
 import net.sourceforge.tess4j.TessAPI1.TessResultIterator;
+import net.sourceforge.vietocr.ImageHelper;
 import net.sourceforge.vietocr.ImageIOHelper;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.FilterBundle;
 
+import com.recognition.software.jdeskew.ImageDeskew;
 import com.sun.jna.Pointer;
 
 /**
@@ -61,16 +63,14 @@ public class OCREngine {
 	public AnalysisResult analyzeImage(File im) throws FileNotFoundException {
 		AnalysisResult res = null;
 		try {
-			BufferedImage image = ImageIO.read(new FileInputStream(im)); // load
-																			// image
-
+			BufferedImage image = ImageIO.read(new FileInputStream(im)); // loadimage
 			if (bundle != null)
 				image = this.bundle.applyFilters(image);
 
-			ByteBuffer buf = ImageIOHelper.convertImageData(image); // require
-																	// jai-imageio
-																	// lib to
-																	// read TIFF
+			//image = this.deskew(image);
+			//ImageIO.write(image, "png", new File(im.getAbsoluteFile() + ".png"));
+
+			ByteBuffer buf = ImageIOHelper.convertImageData(image); // require jai-imageio lib to read TIFF
 
 			// maybe not needed, but still here from the copied
 			int bpp = image.getColorModel().getPixelSize(); // bit per pixel
@@ -137,15 +137,22 @@ public class OCREngine {
 		return new AnalysisResult(im, new ArrayList<String>(words), new ArrayList<Rectangle>(bBoxes), new ArrayList<Float>(confidences));
 	}
 
-	private void deskew() {
-		/*
-		 * File imageFile = new File("eurotext_deskew.png"); BufferedImage bi =
-		 * ImageIO.read(imageFile); ImageDeskew id = new ImageDeskew(bi); double
-		 * imageSkewAngle = id.getSkewAngle(); // determine skew angle if
-		 * ((imageSkewAngle > MINIMUM_DESKEW_THRESHOLD || imageSkewAngle <
-		 * -(MINIMUM_DESKEW_THRESHOLD))) { bi = ImageHelper.rotateImage(bi,
-		 * -imageSkewAngle); // deskew image }
-		 */
+	/**
+	 * Uses the Tess4j library to deskew an image It works nicely most of the
+	 * times. But implementing this kills our testing framework. More work is
+	 * needed to implement deskew, so currently not in use.
+	 * 
+	 * @param bi
+	 * @return
+	 */
+	private BufferedImage deskew(BufferedImage bi) {
+		ImageDeskew id = new ImageDeskew(bi);
+		double imageSkewAngle = id.getSkewAngle(); // determine skew angle if
+		if (imageSkewAngle > MINIMUM_DESKEW_THRESHOLD || imageSkewAngle < -MINIMUM_DESKEW_THRESHOLD) {
+			return ImageHelper.rotateImage(bi, -imageSkewAngle); // deskew image 
+		}
+
+		return bi;
 	}
 
 	public static void main(String[] args) throws Exception {
