@@ -22,10 +22,12 @@ public class Test {
 	final static String logs = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\Logs\\";
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
+	static boolean generateDebugImages = true;
 
 	public static void main(String[] args) throws IOException {
 		testXMLS();
-		// testImageDisplay();
+		//testImageDisplay();
+
 	}
 
 	/**
@@ -53,7 +55,7 @@ public class Test {
 					pictureDisplay = new PictureDisplayTest(solutionFolderList[file]);
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
 						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
-								analysisResult.getBoundingBox(word).x, analysisResult.getBoundingBox(word).y, analysisResult.getWord(word));
+								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
 					}
 					pictureDisplay.finish(solutionFolderList[file].getAbsolutePath().substring(0, solutionFolderList[file].getAbsolutePath().lastIndexOf('.')) + "test"
 							+ solutionFolderList[file].getAbsolutePath().substring(solutionFolderList[file].getAbsolutePath().lastIndexOf('.')));
@@ -100,6 +102,8 @@ public class Test {
 		// Compare with every file in folder
 		File[] testFolderList = testFolder.listFiles();
 		for (int file = 0; file < testFolderList.length; file++) {
+			AnalysisResult analysisResult = engine.analyzeImage(testFolderList[file]);
+			XMLTest test = new XMLTest(scannerFile, analysisResult, bw);
 
 			if (file == 0) {
 				bw.write("# of pictures: " + testFolderList.length + "\n");
@@ -113,6 +117,15 @@ public class Test {
 			bw.write(name + "_" + testFolderList[file].getName() + "_" + test.getPrecision() + "_" + test.getRecall() + "_" + test.f_Measure() + "_" + test.getPercentageErrors()
 					+ "\n");
 
+			//write really cool debug picture
+			if (generateDebugImages) {
+				PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(testFolderList[file].getAbsolutePath() + "_debug.png"));
+				for (int word = 0; word < analysisResult.getResultSize(); word++) {
+					pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
+							analysisResult.getBoundingBox(word), analysisResult.getWord(word));
+				}
+				pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_tesseract.png");
+			}
 		}
 		errorsPerMail += percentagePerMail / testFolderList.length;
 		bw.write("Total # of errors: " + errorsPerCard);
@@ -133,6 +146,8 @@ public class Test {
 		filters.appendFilter(new AutoBinaryFilter());
 		OCREngine engine = new OCREngine(filters);
 
+		if (generateDebugImages)
+			engine.enableDebugMode();
 		// test for a specific name
 		// testXMLForName(engine, "franco.dalmolin@collanos.com");
 
