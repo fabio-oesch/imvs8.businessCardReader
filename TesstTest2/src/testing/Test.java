@@ -15,9 +15,11 @@ import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 public class Test {
 
 	// path to place where business cards are
-	final static File folder = new File("/School/Projekt/testdata/business-cards");
+	//final static File folder = new File("/School/Projekt/testdata/business-cards");
 	// path to place where logs are stored
-	final static String logs = "/School/Projekt/testdata/Logs/";
+	//final static String logs = "/School/Projekt/testdata/Logs/";
+	final static File folder = new File("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\business-cards");
+	final static String logs = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\Logs\\";
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
 
@@ -50,15 +52,11 @@ public class Test {
 					analysisResult = engine.analyzeImage(solutionFolderList[file]);
 					pictureDisplay = new PictureDisplayTest(solutionFolderList[file]);
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
-						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0),
-								analysisResult.getBoundingBox(word).height, analysisResult.getBoundingBox(word).x,
-								analysisResult.getBoundingBox(word).y, analysisResult.getWord(word));
+						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
+								analysisResult.getBoundingBox(word).x, analysisResult.getBoundingBox(word).y, analysisResult.getWord(word));
 					}
-					pictureDisplay.finish(solutionFolderList[file].getAbsolutePath().substring(0,
-							solutionFolderList[file].getAbsolutePath().lastIndexOf('.'))
-							+ "test"
-							+ solutionFolderList[file].getAbsolutePath().substring(
-									solutionFolderList[file].getAbsolutePath().lastIndexOf('.')));
+					pictureDisplay.finish(solutionFolderList[file].getAbsolutePath().substring(0, solutionFolderList[file].getAbsolutePath().lastIndexOf('.')) + "test"
+							+ solutionFolderList[file].getAbsolutePath().substring(solutionFolderList[file].getAbsolutePath().lastIndexOf('.')));
 				}
 			}
 
@@ -112,8 +110,8 @@ public class Test {
 			errorsPerCard += test.getErrors();
 			percentagePerMail += test.getPercentageErrors();
 
-			bw.write(name + "_" + testFolderList[file].getName() + "_" + test.getPrecision() + "_" + test.getRecall() + "_"
-					+ test.f_Measure() + "_" + test.getPercentageErrors() + "\n");
+			bw.write(name + "_" + testFolderList[file].getName() + "_" + test.getPrecision() + "_" + test.getRecall() + "_" + test.f_Measure() + "_" + test.getPercentageErrors()
+					+ "\n");
 
 		}
 		errorsPerMail += percentagePerMail / testFolderList.length;
