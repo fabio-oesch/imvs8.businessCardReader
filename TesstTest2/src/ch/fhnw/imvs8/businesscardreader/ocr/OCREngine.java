@@ -54,7 +54,11 @@ public class OCREngine {
 		TessAPI1.TessBaseAPISetPageSegMode(api, TessAPI1.TessPageSegMode.PSM_AUTO);
 	}
 
-	public void enableDebug() {
+	/**
+	 * Enables the debug mode. It writes the preprocessed images to the same
+	 * folder as the input image as "{filename}_debug.png"
+	 */
+	public void enableDebugMode() {
 		this.debugEnabled = true;
 	}
 

@@ -20,11 +20,12 @@ public class Test {
 	final static String logs = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\Logs\\";
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
+	static boolean generateDebugImages = true;
 
 	public static void main(String[] args) throws IOException {
-		//testXMLS();
+		testXMLS();
+		//testImageDisplay();
 
-		testImageDisplay();
 	}
 
 	/**
@@ -111,13 +112,15 @@ public class Test {
 
 			bw.write(name + "_" + testFolderList[file].getName() + "_" + test.getPrecision() + "_" + test.getRecall() + "_" + test.f_Measure() + "_" + test.getPercentageErrors());
 
-			//write really cool debug output picture
-			PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(testFolderList[file].getAbsolutePath() + "_debug.png"));
-			for (int word = 0; word < analysisResult.getResultSize(); word++) {
-				pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
-						analysisResult.getBoundingBox(word), analysisResult.getWord(word));
+			//write really cool debug picture
+			if (generateDebugImages) {
+				PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(testFolderList[file].getAbsolutePath() + "_debug.png"));
+				for (int word = 0; word < analysisResult.getResultSize(); word++) {
+					pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
+							analysisResult.getBoundingBox(word), analysisResult.getWord(word));
+				}
+				pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_tesseract.png");
 			}
-			pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_tesseract.png");
 		}
 		errorsPerMail += percentagePerMail / testFolderList.length;
 		bw.write("Total # of errors: " + errorsPerCard);
@@ -138,6 +141,8 @@ public class Test {
 		filters.appendFilter(new AutoBinaryFilter());
 		OCREngine engine = new OCREngine(filters);
 
+		if (generateDebugImages)
+			engine.enableDebugMode();
 		// test for a specific name
 		// testXMLForName(engine, "franco.dalmolin@collanos.com");
 
