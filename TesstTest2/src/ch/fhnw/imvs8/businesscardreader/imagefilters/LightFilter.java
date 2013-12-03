@@ -6,15 +6,20 @@ import ij.process.ImageProcessor;
 /**
  * Filter which should remove a linear light gradient out of an 24 Bit RGB Image
  * 
- * it assumes that the corner pixels should have the same color and corrects the
- * image accordingly.
+ * it assumes that the corner pixels should have the same color and corrects the image accordingly.
  * 
  * @author Jonas Schwammberger, Fabio Oesch
  */
 public class LightFilter implements ImageFilter {
 
+	int pixelCount = 20;
+
 	public LightFilter() {
 
+	}
+
+	public LightFilter(int pixelCount) {
+		this.pixelCount = pixelCount;
 	}
 
 	@Override
@@ -27,10 +32,18 @@ public class LightFilter implements ImageFilter {
 		int[] intensities = new int[4];
 		ImageProcessor p = im.getProcessor();
 
-		intensities[0] = p.getPixel(0, 0); // upper left
-		intensities[1] = p.getPixel(width, 0); // upper right
-		intensities[2] = p.getPixel(0, height); // lower left
-		intensities[3] = p.getPixel(width, height);
+		for (int i = 0; i < pixelCount; i++) {
+			for (int j = 0; j < pixelCount; j++) {
+				intensities[0] = p.getPixel(i, j); // upper left
+				intensities[1] = p.getPixel(width - i, j); // upper right
+				intensities[2] = p.getPixel(i, height - j); // lower left
+				intensities[3] = p.getPixel(width - i, height - j);
+			}
+		}
+
+		for (int i = 0; i < intensities.length; i++) {
+			intensities[i] /= pixelCount * pixelCount;
+		}
 
 		int max = findMax(intensities);
 		for (int i = 0; i < intensities.length; i++)
@@ -38,8 +51,9 @@ public class LightFilter implements ImageFilter {
 
 		for (int j = 0; j < h; j++) {
 			for (int i = 0; i < w; i++) {
-				double value = p.getPixelValue(i, j) + intensities[0] * ((w - i) / w * (h - j) / h) + intensities[1] * (i / w * (h - j) / h) + intensities[2]
-						* ((w - i) / w * j / h) + intensities[3] * (i / w * j / h);
+				double value = p.getPixelValue(i, j) + intensities[0] * ((w - i) / w * (h - j) / h)
+						+ intensities[1] * (i / w * (h - j) / h) + intensities[2] * ((w - i) / w * j / h)
+						+ intensities[3] * (i / w * j / h);
 
 				p.putPixelValue(i, j, value);
 			}
