@@ -39,8 +39,8 @@ public class Test {
 	}
 
 	/**
-	 * creates a new file which writes the texts which it reads from the picture into a new picture with the
-	 * ending test.png
+	 * creates a new file which writes the texts which it reads from the picture
+	 * into a new picture with the ending test.png
 	 * 
 	 * @throws IOException
 	 */
@@ -62,11 +62,6 @@ public class Test {
 					analysisResult = engine.analyzeImage(solutionFolderList[file]);
 					pictureDisplay = new PictureDisplayTest(solutionFolderList[file]);
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
-						pictureDisplay.addText(new Color(
-								(int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0),
-								analysisResult.getBoundingBox(word).height, analysisResult
-										.getBoundingBox(word).x, analysisResult.getBoundingBox(word).y,
-								analysisResult.getWord(word));
 						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
 								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
 					}
@@ -116,19 +111,18 @@ public class Test {
 		File[] testFolderList = testFolder.listFiles();
 		for (int file = 0; file < testFolderList.length; file++) {
 			AnalysisResult analysisResult = engine.analyzeImage(testFolderList[file]);
-				AnalysisResult analysisResult = engine.analyzeImage(testFolderList[file]);
 
-				if (file == 0) {
-					bw.write("# of pictures: " + testFolderList.length + "\n");
-				}
+			if (file == 0) {
+				bw.write("# of pictures: " + testFolderList.length + "\n");
+			}
 
-				XMLTest test = new XMLTest(scannerFile, engine.analyzeImage(testFolderList[file]), bw);
+			XMLTest test = new XMLTest(scannerFile, engine.analyzeImage(testFolderList[file]), bw);
 
-				errorsPerCard += test.getErrors();
-				percentagePerMail += test.getPercentageErrors();
+			errorsPerCard += test.getErrors();
+			percentagePerMail += test.getPercentageErrors();
 
-			bw.write(name + ";" + testFolderList[file].getName() + ";" + test.getPrecision() + ";"
-					+ test.getRecall() + ";" + test.f_Measure() + ";" + test.getPercentageErrors() + "\n");
+			bw.write(name + ";" + testFolderList[file].getName() + ";" + test.getPrecision() + ";" + test.getRecall() + ";" + test.f_Measure() + ";" + test.getPercentageErrors()
+					+ "\n");
 
 			//write really cool debug picture
 			if (generateDebugImages) {
@@ -138,7 +132,6 @@ public class Test {
 							analysisResult.getBoundingBox(word), analysisResult.getWord(word));
 				}
 				pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_tesseract.png");
-			}
 			}
 		}
 		errorsPerMail += percentagePerMail / testFolderList.length;
