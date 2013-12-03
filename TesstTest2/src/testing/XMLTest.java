@@ -26,9 +26,9 @@ public class XMLTest {
 	BufferedWriter bw;
 
 	// f measure
-	double truePositive;
-	double falsePositive;
-	double falseNegative;
+	private double truePositive;
+	private double falsePositive;
+	private double falseNegative;
 
 	/**
 	 * XMLTest gets the attributes of the files through GetXMLAttributes and
@@ -51,7 +51,7 @@ public class XMLTest {
 		xMLScanner = xmlAttributes.readScannerXML(scannerFileName,
 				analysisResult);
 
-		// falsePositive = xmlAttributes xmlAttributes.getTesseractCorrectBox()
+		falsePositive = xmlAttributes.getFalsePositive();
 
 		// Test if the XML Attributes are the same
 		if (xMLScanner != null) {
@@ -118,6 +118,20 @@ public class XMLTest {
 
 	public double getErrors() {
 		return error;
+	}
+
+	public double getPrecision() {
+		return truePositive / (truePositive + falsePositive);
+	}
+
+	public double getRecall() {
+		return truePositive / (truePositive + falseNegative);
+	}
+
+	public double f_Measure() {
+		double precision = getPrecision();
+		double recall = getRecall();
+		return 2 * (precision * recall / (precision + recall));
 	}
 
 }
