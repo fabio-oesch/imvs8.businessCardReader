@@ -122,7 +122,7 @@ public class Test {
 		File[] testFolderList = testFolder.listFiles();
 		for (int file = 0; file < testFolderList.length; file++) {
 			XMLTest test = new XMLTest(scannerFile,
-					engine.analyzeImage(testFolderList[file]));
+					engine.analyzeImage(testFolderList[file]), bw);
 
 			if (file == 0) {
 				bw.write("# of pictures: " + testFolderList.length + "\n");
@@ -130,6 +130,8 @@ public class Test {
 
 			errorsPerCard += test.getErrors();
 			percentagePerMail += test.getPercentageErrors();
+
+			bw.write(name + "_" + testFolderList[file].getName());
 
 			bw.write("Picturename: " + testFolderList[file].getName() + "\n");
 			bw.write("Average # of errors: " + test.getPercentageErrors()

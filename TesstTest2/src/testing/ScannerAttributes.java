@@ -67,7 +67,7 @@ public class ScannerAttributes {
 	 * @param tessBox
 	 *            a new TesseractAttributes Object
 	 */
-	public void addTesseractBox(TesseractAttributes tessBox) {
+	public boolean addTesseractBox(TesseractAttributes tessBox) {
 		int pixelOffset = 15;
 		double tesseractLeft = (tessBox.getX() * scaleX) - offsetX;
 		double tesseractRight = ((tessBox.getX() + tessBox.getWidth()) * scaleX)
@@ -80,9 +80,11 @@ public class ScannerAttributes {
 			if (y - pixelOffset <= tesseractTop
 					&& y + height + pixelOffset >= tesseractBottom) {
 				tessAtts.add(tessBox);
+				return true;
 			}
 
 		}
+		return false;
 	}
 
 	// ----------------- Setters -------------------------

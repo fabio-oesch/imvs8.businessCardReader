@@ -23,6 +23,8 @@ import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 public final class GetXMLAttributes {
 
 	public String[] uniqueAttributes;
+	// has the count of tesseract bounding boxes which are at the same place
+	private int tesseractCorrectBox;
 
 	/**
 	 * This method gets an analysisResult object and returns an array list of
@@ -113,10 +115,13 @@ public final class GetXMLAttributes {
 
 		// Calculate unique attributes and get the offset and scale
 		getUniqueAttributes(tesseractAttribute, scannerAttribute);
+
+		tesseractCorrectBox = 0;
 		for (int i = 0; i < scannerAttribute.size(); i++) {
 			for (int j = 0; j < tesseractAttribute.size(); j++) {
-				scannerAttribute.get(i).addTesseractBox(
-						tesseractAttribute.get(j));
+				if (scannerAttribute.get(i).addTesseractBox(
+						tesseractAttribute.get(j)))
+					tesseractCorrectBox++;
 			}
 		}
 
@@ -246,5 +251,9 @@ public final class GetXMLAttributes {
 			scannerAttributes.get(i).setTesseractCorrection(euclid, euclid,
 					offsetX, offsetY);
 		}
+	}
+
+	public int getTesseractCorrectBox() {
+		return tesseractCorrectBox;
 	}
 }
