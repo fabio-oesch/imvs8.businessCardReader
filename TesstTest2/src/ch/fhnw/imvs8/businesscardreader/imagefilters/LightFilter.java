@@ -19,8 +19,8 @@ public class LightFilter implements ImageFilter {
 
 	@Override
 	public ImagePlus filter(ImagePlus im) {
-		final int width = im.WIDTH - 1;
-		final int height = im.HEIGHT - 1;
+		final int width = im.getWidth() - 1;
+		final int height = im.getHeight() - 1;
 
 		final double w = width;
 		final double h = height;
@@ -34,15 +34,12 @@ public class LightFilter implements ImageFilter {
 
 		int max = findMax(intensities);
 		for (int i = 0; i < intensities.length; i++)
-			intensities[i] -= max;
+			intensities[i] = max - intensities[i];
 
 		for (int j = 0; j < h; j++) {
 			for (int i = 0; i < w; i++) {
-				double value = p.getPixelValue(i, j) + intensities[0]
-						* ((w - i) / w * (h - j) / h) + intensities[1]
-						* (i / w * (h - j) / h) + intensities[2]
-						* ((w - i) / w * j / h) + intensities[3]
-						* (i / w * j / h);
+				double value = p.getPixelValue(i, j) + intensities[0] * ((w - i) / w * (h - j) / h) + intensities[1] * (i / w * (h - j) / h) + intensities[2]
+						* ((w - i) / w * j / h) + intensities[3] * (i / w * j / h);
 
 				p.putPixelValue(i, j, value);
 			}

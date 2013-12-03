@@ -9,6 +9,7 @@ import java.io.IOException;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.AutoBinaryFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.LightFilter;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
@@ -102,28 +103,30 @@ public class Test {
 		// Compare with every file in folder
 		File[] testFolderList = testFolder.listFiles();
 		for (int file = 0; file < testFolderList.length; file++) {
-			AnalysisResult analysisResult = engine.analyzeImage(testFolderList[file]);
+			if (!testFolderList[file].getAbsolutePath().contains("debug")) {
+				AnalysisResult analysisResult = engine.analyzeImage(testFolderList[file]);
 
-			if (file == 0) {
-				bw.write("# of pictures: " + testFolderList.length + "\n");
-			}
-
-			XMLTest test = new XMLTest(scannerFile, engine.analyzeImage(testFolderList[file]), bw);
-
-			errorsPerCard += test.getErrors();
-			percentagePerMail += test.getPercentageErrors();
-
-			bw.write(name + "_" + testFolderList[file].getName() + "_" + test.getPrecision() + "_" + test.getRecall() + "_" + test.f_Measure() + "_" + test.getPercentageErrors()
-					+ "\n");
-
-			//write really cool debug picture
-			if (generateDebugImages) {
-				PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(testFolderList[file].getAbsolutePath() + "_debug.png"));
-				for (int word = 0; word < analysisResult.getResultSize(); word++) {
-					pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
-							analysisResult.getBoundingBox(word), analysisResult.getWord(word));
+				if (file == 0) {
+					bw.write("# of pictures: " + testFolderList.length + "\n");
 				}
-				pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_tesseract.png");
+
+				XMLTest test = new XMLTest(scannerFile, engine.analyzeImage(testFolderList[file]), bw);
+
+				errorsPerCard += test.getErrors();
+				percentagePerMail += test.getPercentageErrors();
+
+				bw.write(name + "_" + testFolderList[file].getName() + "_" + test.getPrecision() + "_" + test.getRecall() + "_" + test.f_Measure() + "_"
+						+ test.getPercentageErrors() + "\n");
+
+				//write really cool debug picture
+				if (generateDebugImages) {
+					PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(testFolderList[file].getAbsolutePath() + "_debug.png"));
+					for (int word = 0; word < analysisResult.getResultSize(); word++) {
+						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
+								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
+					}
+					pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_results.png");
+				}
 			}
 		}
 		errorsPerMail += percentagePerMail / testFolderList.length;
@@ -142,6 +145,7 @@ public class Test {
 		// Add filters to the engine
 		GenericFilterBundle filters = new GenericFilterBundle();
 		filters.appendFilter(new GrayScaleFilter());
+		filters.appendFilter(new LightFilter());
 		filters.appendFilter(new AutoBinaryFilter());
 		OCREngine engine = new OCREngine(filters);
 

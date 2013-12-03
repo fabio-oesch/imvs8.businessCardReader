@@ -10,6 +10,11 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+/**
+ * 
+ * @author Fabio, Jon
+ * 
+ */
 public class PictureDisplayTest {
 	private final BufferedImage image;
 	private Graphics g;

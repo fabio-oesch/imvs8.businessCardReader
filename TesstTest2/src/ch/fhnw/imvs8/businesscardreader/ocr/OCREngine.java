@@ -63,7 +63,7 @@ public class OCREngine {
 	}
 
 	/**
-	 * analyze an image
+	 * analyze this image
 	 * 
 	 * @param im
 	 *            to analyse
