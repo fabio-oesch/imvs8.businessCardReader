@@ -19,17 +19,16 @@ import net.sourceforge.tess4j.TessAPI1.TessPageIteratorLevel;
 import net.sourceforge.tess4j.TessAPI1.TessResultIterator;
 import net.sourceforge.vietocr.ImageHelper;
 import net.sourceforge.vietocr.ImageIOHelper;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.AutoBinaryFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.FilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.LightFilter;
 
 import com.recognition.software.jdeskew.ImageDeskew;
 import com.sun.jna.Pointer;
 
 /**
- * Represents an OCR engine which is able to analyse an image and return an
- * AnalysisResult object.
+ * Represents an OCR engine which is able to analyse an image and return an AnalysisResult object.
  * 
  * @author Jon
  */
@@ -58,8 +57,8 @@ public class OCREngine {
 	}
 
 	/**
-	 * Enables the debug mode. It writes the preprocessed images to the same
-	 * folder as the input image as "{filename}_debug.png"
+	 * Enables the debug mode. It writes the preprocessed images to the same folder as the input image as
+	 * "{filename}_debug.png"
 	 */
 	public void enableDebugMode() {
 		this.debugEnabled = true;
@@ -79,7 +78,7 @@ public class OCREngine {
 			if (bundle != null)
 				image = this.bundle.applyFilters(image);
 
-			//image = this.deskew(image);
+			// image = this.deskew(image);
 			if (this.debugEnabled)
 				ImageIO.write(image, "png", new File(im.getAbsoluteFile() + "_debug.png"));
 
@@ -108,8 +107,7 @@ public class OCREngine {
 	}
 
 	/**
-	 * Iterates over the tesseract result per word and puts them in a
-	 * AnalysisResult object
+	 * Iterates over the tesseract result per word and puts them in a AnalysisResult object
 	 * 
 	 * @param im
 	 * @param pi
@@ -136,7 +134,8 @@ public class OCREngine {
 				IntBuffer topB = IntBuffer.allocate(1);
 				IntBuffer rightB = IntBuffer.allocate(1);
 				IntBuffer bottomB = IntBuffer.allocate(1);
-				TessAPI1.TessPageIteratorBoundingBox(pi, TessPageIteratorLevel.RIL_WORD, leftB, topB, rightB, bottomB);
+				TessAPI1.TessPageIteratorBoundingBox(pi, TessPageIteratorLevel.RIL_WORD, leftB, topB, rightB,
+						bottomB);
 				int left = leftB.get();
 				int top = topB.get();
 				int right = rightB.get();
@@ -147,13 +146,13 @@ public class OCREngine {
 
 		} while (TessAPI1.TessPageIteratorNext(pi, TessAPI1.TessPageIteratorLevel.RIL_WORD) == TessAPI1.TRUE);
 
-		return new AnalysisResult(im, new ArrayList<String>(words), new ArrayList<Rectangle>(bBoxes), new ArrayList<Float>(confidences));
+		return new AnalysisResult(im, new ArrayList<String>(words), new ArrayList<Rectangle>(bBoxes),
+				new ArrayList<Float>(confidences));
 	}
 
 	/**
-	 * Uses the Tess4j library to deskew an image It works nicely most of the
-	 * times. But implementing this kills our testing framework. More work is
-	 * needed to implement deskew, so currently not in use.
+	 * Uses the Tess4j library to deskew an image It works nicely most of the times. But implementing this
+	 * kills our testing framework. More work is needed to implement deskew, so currently not in use.
 	 * 
 	 * @param bi
 	 * @return
@@ -162,7 +161,7 @@ public class OCREngine {
 		ImageDeskew id = new ImageDeskew(bi);
 		double imageSkewAngle = id.getSkewAngle(); // determine skew angle if
 		if (imageSkewAngle > MINIMUM_DESKEW_THRESHOLD || imageSkewAngle < -MINIMUM_DESKEW_THRESHOLD) {
-			return ImageHelper.rotateImage(bi, -imageSkewAngle); // deskew image 
+			return ImageHelper.rotateImage(bi, -imageSkewAngle); // deskew image
 		}
 
 		return bi;
@@ -172,10 +171,11 @@ public class OCREngine {
 		// AnalysisResult res = new AnalysisResult(new File("htconex.jpg"));
 		// res.readMetaInfo();
 
-		String file = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\business-cards\\matthias.zimmermann@bsiag.com\\testimages\\20131021_114713.jpg";
+		String file = "C:/School/Projekt/testdata/business-cards/aku@bestence.com/testimages/IMAG0234.jpg";
 		GenericFilterBundle bundle = new GenericFilterBundle();
 		bundle.appendFilter(new GrayScaleFilter());
-		bundle.appendFilter(new LightFilter());
+		// bundle.appendFilter(new LightFilter());
+		bundle.appendFilter(new AutoBinaryFilter());
 		BufferedImage image = ImageIO.read(new FileInputStream(file));
 		image = bundle.applyFilters(image);
 		ImageIO.write(image, "png", new File(file + "_debug.png"));

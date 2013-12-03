@@ -121,7 +121,7 @@ public class AutoBinaryFilter implements ImageFilter {
 
 		ImagePlus Meanimp, Varimp;
 		ImageProcessor ip = imp.getProcessor(), ipMean, ipVar;
-		int radius = 200;
+		int radius = 25;
 		double k_value = 0.5;
 		double r_value = 128;
 		byte object;
