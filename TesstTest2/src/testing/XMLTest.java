@@ -1,5 +1,6 @@
 package testing;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +22,13 @@ public class XMLTest {
 	private double error = 0;
 	// count of xmlScannerAttributes
 	private double countScannerAttributes = 0;
+	// to write into log file
+	BufferedWriter bw;
+
+	// f measure
+	double truePositive;
+	double falsePositive;
+	double falseNegative;
 
 	/**
 	 * XMLTest gets the attributes of the files through GetXMLAttributes and
@@ -34,27 +42,37 @@ public class XMLTest {
 	 *            name of the test
 	 * @throws IOException
 	 */
-	public XMLTest(File scannerFileName, AnalysisResult analysisResult)
-			throws IOException {
+	public XMLTest(File scannerFileName, AnalysisResult analysisResult,
+			BufferedWriter bw) throws IOException {
+
+		GetXMLAttributes xmlAttributes = new GetXMLAttributes();
 
 		// Get all the XML Attributes
-		xMLScanner = new GetXMLAttributes().readScannerXML(scannerFileName,
+		xMLScanner = xmlAttributes.readScannerXML(scannerFileName,
 				analysisResult);
+
+		// falsePositive = xmlAttributes xmlAttributes.getTesseractCorrectBox()
 
 		// Test if the XML Attributes are the same
 		if (xMLScanner != null) {
 			testTextMatch();
 		}
+
+		this.bw = bw;
 	}
 
 	/**
 	 * goes through all the catogeries of the XMLScanner file and checks if they
 	 * are the same
+	 * 
+	 * @throws IOException
 	 */
-	private void testTextMatch() {
+	private void testTextMatch() throws IOException {
 		for (int i = 0; i < xMLScanner.size(); i++) {
 			textMatch(i);
 		}
+		truePositive = xMLScanner.size() - error;
+		falseNegative = error;
 		countScannerAttributes = xMLScanner.size();
 	}
 
@@ -64,8 +82,9 @@ public class XMLTest {
 	 * 
 	 * @param scannerCategories
 	 *            goes through the categories of the scanner file xml
+	 * @throws IOException
 	 */
-	private void textMatch(int scannerCategories) {
+	private void textMatch(int scannerCategories) throws IOException {
 		StringBuilder tesseractString = new StringBuilder();
 		// builds a string with the elements which are in the data structure in
 		// the specific category
@@ -81,14 +100,14 @@ public class XMLTest {
 				.get(scannerCategories).getAttributeText().replace(" ", "")))) {
 			error++;
 			// Print information about the mistake
-			/*
-			 * System.out.println("Catogory: " +
-			 * xMLScanner.get(scannerCategories).getAttributeTyp() +
-			 * ", tesseract Text: " + tesseractString.toString() +
-			 * ", scanner text: " +
-			 * xMLScanner.get(scannerCategories).getAttributeText()
-			 * .replace(" ", ""));
-			 */
+
+			bw.write("# Catogory: "
+					+ xMLScanner.get(scannerCategories).getAttributeTyp()
+					+ ", tesseract Text: "
+					+ tesseractString.toString()
+					+ ", scanner text: "
+					+ xMLScanner.get(scannerCategories).getAttributeText()
+							.replace(" ", ""));
 
 		}
 	}
