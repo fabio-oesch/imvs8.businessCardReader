@@ -21,7 +21,7 @@ public class Test {
 	static String logs;
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
-	static boolean generateDebugImages = true;
+	static boolean generateDebugImages = false;
 
 	public static void main(String[] args) throws IOException {
 		boolean schwambi = true;
