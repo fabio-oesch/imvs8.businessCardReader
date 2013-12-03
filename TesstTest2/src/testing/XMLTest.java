@@ -29,6 +29,8 @@ public class XMLTest {
 	private double truePositive;
 	private double falsePositive;
 	private double falseNegative;
+	private int uniqueTessCount;
+	private int uniqueScannerCount;
 
 	/**
 	 * XMLTest gets the attributes of the files through GetXMLAttributes and
@@ -50,6 +52,8 @@ public class XMLTest {
 		// Get all the XML Attributes
 		xMLScanner = xmlAttributes.readScannerXML(scannerFileName, analysisResult);
 
+		this.uniqueScannerCount = xmlAttributes.getUniqueScannerCount();
+		this.uniqueTessCount = xmlAttributes.getUniqueTesseractCount();
 		falsePositive = xmlAttributes.getFalsePositive();
 
 		// Test if the XML Attributes are the same
@@ -68,6 +72,7 @@ public class XMLTest {
 		for (int i = 0; i < xMLScanner.size(); i++) {
 			textMatch(i);
 		}
+		bw.write("# UniqueScannerAttributes: " + this.uniqueScannerCount + " UniqueTessAttributes: " + this.uniqueTessCount + "\n");
 		truePositive = xMLScanner.size() - error;
 		falseNegative = error;
 		countScannerAttributes = xMLScanner.size();
@@ -99,6 +104,7 @@ public class XMLTest {
 					+ xMLScanner.get(scannerCategories).getAttributeText().replace(" ", "") + "\n");
 
 		}
+
 	}
 
 	public double getPercentageErrors() {
