@@ -20,6 +20,9 @@ import net.sourceforge.tess4j.TessAPI1.TessResultIterator;
 import net.sourceforge.vietocr.ImageHelper;
 import net.sourceforge.vietocr.ImageIOHelper;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.FilterBundle;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.LightFilter;
 
 import com.recognition.software.jdeskew.ImageDeskew;
 import com.sun.jna.Pointer;
@@ -168,16 +171,13 @@ public class OCREngine {
 	public static void main(String[] args) throws Exception {
 		// AnalysisResult res = new AnalysisResult(new File("htconex.jpg"));
 		// res.readMetaInfo();
-		/*
-		 * GenericFilterBundle bundle = new GenericFilterBundle();
-		 * bundle.appendFilter(new GrayScaleFilter()); OCREngine t = new
-		 * OCREngine(bundle);
-		 * 
-		 * try { AnalysisResult res = t.analyzeImage(new File("eurotext.tif"));
-		 * System.out.println(res.getResultSize()); res.readMetaInfo(); } catch
-		 * (Exception e) {
-		 * 
-		 * }
-		 */
+
+		String file = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\business-cards\\matthias.zimmermann@bsiag.com\\testimages\\20131021_114713.jpg";
+		GenericFilterBundle bundle = new GenericFilterBundle();
+		bundle.appendFilter(new GrayScaleFilter());
+		bundle.appendFilter(new LightFilter());
+		BufferedImage image = ImageIO.read(new FileInputStream(file));
+		image = bundle.applyFilters(image);
+		ImageIO.write(image, "png", new File(file + "_debug.png"));
 	}
 }
