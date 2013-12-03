@@ -89,7 +89,8 @@ public class Test {
 	 * @throws IOException
 	 *             needs permission to write and create a new file
 	 */
-	private static void testXMLForName(OCREngine engine, String name) throws IOException {
+	private static void testXMLForName(OCREngine engine, String name, BufferedWriter bwLog)
+			throws IOException {
 		File solutionFolder = new File(folder.getAbsolutePath() + "/" + name + "/solution/");
 
 		File testFolder = new File(folder.getAbsolutePath() + "/" + name + "/testimages/");
@@ -127,12 +128,13 @@ public class Test {
 
 				errorsPerCard += test.getErrors();
 				percentagePerMail += test.getPercentageErrors();
-
-				bw.write(name + ";" + testFolderList[file].getName() + ";"
+				String logline = name + ";" + testFolderList[file].getName() + ";"
 						+ String.format("%.3f", test.getPrecision()) + ";"
 						+ String.format("%.3f", test.getRecall()) + ";"
 						+ String.format("%.3f", test.f_Measure()) + ";"
-						+ String.format("%.3f", test.getPercentageErrors()) + "\n");
+						+ String.format("%.3f", test.getPercentageErrors()) + "\n";
+				bwLog.write(logline);
+				bw.write(logline);
 
 				// write really cool debug picture
 				if (generateDebugImages) {
@@ -174,21 +176,23 @@ public class Test {
 		// test for a specific name
 		// testXMLForName(engine, "franco.dalmolin@collanos.com");
 
-		// tests all the files in the folder
-		String[] folderList = folder.list();
-		for (int folders = 0; folders < folderList.length; folders++) {
-			testXMLForName(engine, folderList[folders]);
-		}
-
 		// logs for the entire folder
-		File logFile = new File(logs + "_logs.txt");
+		File logFile = new File(logs + "_logs.csv");
 		if (!logFile.exists()) {
 			logFile.createNewFile();
 		}
 		FileWriter fw = new FileWriter(logFile.getAbsoluteFile());
-		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write("Average Percentage Errors per Mail: "
-				+ String.format("%.3f", errorsPerMail / folderList.length) + "\n");
-		bw.close();
+		BufferedWriter bwLog = new BufferedWriter(fw);
+		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;Average Errors per Picture \n");
+
+		// tests all the files in the folder
+		String[] folderList = folder.list();
+		for (int folders = 0; folders < folderList.length; folders++) {
+			testXMLForName(engine, folderList[folders], bwLog);
+		}
+
+		// bwLog.write("Average Percentage Errors per Mail: "
+		// + String.format("%.3f", errorsPerMail / folderList.length) + "\n");
+		bwLog.close();
 	}
 }
