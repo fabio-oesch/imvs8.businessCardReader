@@ -117,8 +117,7 @@ public class Test {
 				pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
 						analysisResult.getBoundingBox(word), analysisResult.getWord(word));
 			}
-			pictureDisplay.finish(solutionFolderList[file].getAbsolutePath().substring(0, solutionFolderList[file].getAbsolutePath().lastIndexOf('.')) + "test"
-					+ solutionFolderList[file].getAbsolutePath().substring(solutionFolderList[file].getAbsolutePath().lastIndexOf('.')));
+			pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_tesseract.png");
 		}
 		errorsPerMail += percentagePerMail / testFolderList.length;
 		bw.write("Total # of errors: " + errorsPerCard);

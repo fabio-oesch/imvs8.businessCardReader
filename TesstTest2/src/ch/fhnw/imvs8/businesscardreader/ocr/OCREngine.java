@@ -34,6 +34,7 @@ public class OCREngine {
 	private static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
 	private net.sourceforge.tess4j.TessAPI1.TessBaseAPI api;
 	private FilterBundle bundle;
+	private boolean debugEnabled = false;
 
 	public OCREngine() {
 		bundle = null;
@@ -53,6 +54,10 @@ public class OCREngine {
 		TessAPI1.TessBaseAPISetPageSegMode(api, TessAPI1.TessPageSegMode.PSM_AUTO);
 	}
 
+	public void enableDebug() {
+		this.debugEnabled = true;
+	}
+
 	/**
 	 * analyze an image
 	 * 
@@ -68,7 +73,8 @@ public class OCREngine {
 				image = this.bundle.applyFilters(image);
 
 			//image = this.deskew(image);
-			ImageIO.write(image, "png", new File(im.getAbsoluteFile() + "_debug.png"));
+			if (this.debugEnabled)
+				ImageIO.write(image, "png", new File(im.getAbsoluteFile() + "_debug.png"));
 
 			ByteBuffer buf = ImageIOHelper.convertImageData(image); // require jai-imageio lib to read TIFF
 
