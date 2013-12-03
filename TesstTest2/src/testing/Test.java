@@ -15,10 +15,9 @@ import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 public class Test {
 
 	// path to place where business cards are
-	final static File folder = new File(
-			"/School/Projekt/testdata/business-cards");
+	final static File folder = new File("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\business-cards");
 	// path to place where logs are stored
-	final static String logs = "/School/Projekt/testdata/Logs/";
+	final static String logs = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\Logs\\";
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
 
@@ -40,41 +39,22 @@ public class Test {
 
 		String[] folderList = folder.list();
 		for (int folders = 0; folders < folderList.length; folders++) {
-			File solutionFolder = new File(folder.getAbsolutePath() + "/"
-					+ folderList[folders] + "/testimages/");
+			File solutionFolder = new File(folder.getAbsolutePath() + "/" + folderList[folders] + "/testimages/");
 
 			AnalysisResult analysisResult = null;
 			PictureDisplayTest pictureDisplay = null;
 			File[] solutionFolderList = solutionFolder.listFiles();
-			for (int file = 0; solutionFolderList != null
-					&& file < solutionFolderList.length; file++) {
-				if (!solutionFolderList[file].getAbsolutePath().contains(
-						"test.")) {
+			for (int file = 0; solutionFolderList != null && file < solutionFolderList.length; file++) {
+				if (!solutionFolderList[file].getAbsolutePath().contains("test.")) {
 
-					analysisResult = engine
-							.analyzeImage(solutionFolderList[file]);
-					pictureDisplay = new PictureDisplayTest(
-							solutionFolderList[file]);
+					analysisResult = engine.analyzeImage(solutionFolderList[file]);
+					pictureDisplay = new PictureDisplayTest(solutionFolderList[file]);
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
-						pictureDisplay.addText(
-								new Color((int) ((100 - analysisResult
-										.getConfidence(word)) * 2.5), 0, 0),
-								analysisResult.getBoundingBox(word).height,
-								analysisResult.getBoundingBox(word).x,
-								analysisResult.getBoundingBox(word).y,
-								analysisResult.getWord(word));
+						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
+								analysisResult.getBoundingBox(word).x, analysisResult.getBoundingBox(word).y, analysisResult.getWord(word));
 					}
-					pictureDisplay.finish(solutionFolderList[file]
-							.getAbsolutePath().substring(
-									0,
-									solutionFolderList[file].getAbsolutePath()
-											.lastIndexOf('.'))
-							+ "test"
-							+ solutionFolderList[file].getAbsolutePath()
-									.substring(
-											solutionFolderList[file]
-													.getAbsolutePath()
-													.lastIndexOf('.')));
+					pictureDisplay.finish(solutionFolderList[file].getAbsolutePath().substring(0, solutionFolderList[file].getAbsolutePath().lastIndexOf('.')) + "test"
+							+ solutionFolderList[file].getAbsolutePath().substring(solutionFolderList[file].getAbsolutePath().lastIndexOf('.')));
 				}
 			}
 
@@ -91,13 +71,10 @@ public class Test {
 	 * @throws IOException
 	 *             needs permission to write and create a new file
 	 */
-	private static void testXMLForName(OCREngine engine, String name)
-			throws IOException {
-		File solutionFolder = new File(folder.getAbsolutePath() + "/" + name
-				+ "/solution/");
+	private static void testXMLForName(OCREngine engine, String name) throws IOException {
+		File solutionFolder = new File(folder.getAbsolutePath() + "/" + name + "/solution/");
 
-		File testFolder = new File(folder.getAbsolutePath() + "/" + name
-				+ "/testimages/");
+		File testFolder = new File(folder.getAbsolutePath() + "/" + name + "/testimages/");
 
 		// Get xml File from Scanner
 		File scannerFile = null;
@@ -121,8 +98,7 @@ public class Test {
 		// Compare with every file in folder
 		File[] testFolderList = testFolder.listFiles();
 		for (int file = 0; file < testFolderList.length; file++) {
-			XMLTest test = new XMLTest(scannerFile,
-					engine.analyzeImage(testFolderList[file]), bw);
+			XMLTest test = new XMLTest(scannerFile, engine.analyzeImage(testFolderList[file]), bw);
 
 			if (file == 0) {
 				bw.write("# of pictures: " + testFolderList.length + "\n");
@@ -134,8 +110,7 @@ public class Test {
 			bw.write(name + "_" + testFolderList[file].getName());
 
 			bw.write("Picturename: " + testFolderList[file].getName() + "\n");
-			bw.write("Average # of errors: " + test.getPercentageErrors()
-					+ "\n");
+			bw.write("Average # of errors: " + test.getPercentageErrors() + "\n");
 		}
 		errorsPerMail += percentagePerMail / testFolderList.length;
 		bw.write("Total # of errors: " + errorsPerCard);
@@ -172,8 +147,7 @@ public class Test {
 		}
 		FileWriter fw = new FileWriter(logFile.getAbsoluteFile());
 		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write("Average Percentage Errors per Mail: " + errorsPerMail
-				/ folderList.length + "\n");
+		bw.write("Average Percentage Errors per Mail: " + errorsPerMail / folderList.length + "\n");
 		bw.close();
 	}
 }
