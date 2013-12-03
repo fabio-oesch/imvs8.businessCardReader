@@ -102,11 +102,12 @@ public class Test {
 		// Compare with every file in folder
 		File[] testFolderList = testFolder.listFiles();
 		for (int file = 0; file < testFolderList.length; file++) {
-			XMLTest test = new XMLTest(scannerFile, engine.analyzeImage(testFolderList[file]), bw);
 
 			if (file == 0) {
 				bw.write("# of pictures: " + testFolderList.length + "\n");
 			}
+
+			XMLTest test = new XMLTest(scannerFile, engine.analyzeImage(testFolderList[file]), bw);
 
 			errorsPerCard += test.getErrors();
 			percentagePerMail += test.getPercentageErrors();

@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -110,13 +111,24 @@ public final class GetXMLAttributes {
 		// Calculate unique attributes and get the offset and scale
 		getUniqueAttributes(tesseractAttribute, scannerAttribute);
 
+		// Hashmap checks if a scannerAttribute has already been tested.
+		HashMap<String, Boolean> boundingBox = new HashMap<>();
 		falsePositive = 0;
 		for (int i = 0; i < scannerAttribute.size(); i++) {
 			for (int j = 0; j < tesseractAttribute.size(); j++) {
-				if (scannerAttribute.get(i).addTesseractBox(tesseractAttribute.get(j)))
-					falsePositive++;
+				if (scannerAttribute.get(i).addTesseractBox(tesseractAttribute.get(j))) {
+					String key = tesseractAttribute.get(j).getX() + " " + tesseractAttribute.get(j).getY() + " "
+							+ tesseractAttribute.get(j).getWidth() + " " + tesseractAttribute.get(j).getHeight();
+					if (!boundingBox.containsKey(key)) {
+						boundingBox.put(key, true);
+						// at this point returns all bounding boxes which are
+						// the same.
+						falsePositive++;
+					}
+				}
 			}
 		}
+		// get all bounding boxes which are not a scanner attribute
 		falsePositive = tesseractAttribute.size() - falsePositive;
 
 		return scannerAttribute;

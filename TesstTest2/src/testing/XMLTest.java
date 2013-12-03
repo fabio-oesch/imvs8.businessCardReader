@@ -42,14 +42,14 @@ public class XMLTest {
 	 *            name of the test
 	 * @throws IOException
 	 */
-	public XMLTest(File scannerFileName, AnalysisResult analysisResult,
-			BufferedWriter bw) throws IOException {
+	public XMLTest(File scannerFileName, AnalysisResult analysisResult, BufferedWriter bw) throws IOException {
+
+		this.bw = bw;
 
 		GetXMLAttributes xmlAttributes = new GetXMLAttributes();
 
 		// Get all the XML Attributes
-		xMLScanner = xmlAttributes.readScannerXML(scannerFileName,
-				analysisResult);
+		xMLScanner = xmlAttributes.readScannerXML(scannerFileName, analysisResult);
 
 		falsePositive = xmlAttributes.getFalsePositive();
 
@@ -57,8 +57,6 @@ public class XMLTest {
 		if (xMLScanner != null) {
 			testTextMatch();
 		}
-
-		this.bw = bw;
 	}
 
 	/**
@@ -88,26 +86,19 @@ public class XMLTest {
 		StringBuilder tesseractString = new StringBuilder();
 		// builds a string with the elements which are in the data structure in
 		// the specific category
-		for (int index = 0; index < xMLScanner.get(scannerCategories)
-				.getTessAtts().size(); index++) {
-			tesseractString.append(xMLScanner.get(scannerCategories)
-					.getTessAtts().get(index).getAttributeText());
+		for (int index = 0; index < xMLScanner.get(scannerCategories).getTessAtts().size(); index++) {
+			tesseractString.append(xMLScanner.get(scannerCategories).getTessAtts().get(index).getAttributeText());
 		}
 
 		// check if scanner attribute (- spaces) are not the same as the
 		// tesseract attributes
-		if (!(tesseractString.toString().equals(xMLScanner
-				.get(scannerCategories).getAttributeText().replace(" ", "")))) {
+		if (!(tesseractString.toString().equals(xMLScanner.get(scannerCategories).getAttributeText().replace(" ", "")))) {
 			error++;
 			// Print information about the mistake
 
-			bw.write("# Catogory: "
-					+ xMLScanner.get(scannerCategories).getAttributeTyp()
-					+ ", tesseract Text: "
-					+ tesseractString.toString()
-					+ ", scanner text: "
-					+ xMLScanner.get(scannerCategories).getAttributeText()
-							.replace(" ", ""));
+			bw.write("# Catogory: " + xMLScanner.get(scannerCategories).getAttributeTyp() + ", tesseract Text: "
+					+ tesseractString.toString() + ", scanner text: "
+					+ xMLScanner.get(scannerCategories).getAttributeText().replace(" ", "") + "\n");
 
 		}
 	}
@@ -131,6 +122,9 @@ public class XMLTest {
 	public double f_Measure() {
 		double precision = getPrecision();
 		double recall = getRecall();
+		if (precision == 0 && recall == 0) {
+			return 0;
+		}
 		return 2 * (precision * recall / (precision + recall));
 	}
 
