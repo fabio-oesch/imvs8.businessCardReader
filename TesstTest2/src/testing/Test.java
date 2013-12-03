@@ -9,7 +9,6 @@ import java.io.IOException;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.AutoBinaryFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.LightFilter;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
@@ -21,7 +20,7 @@ public class Test {
 	static String logs;
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
-	static boolean generateDebugImages = false;
+	static boolean generateDebugImages = true;
 
 	public static void main(String[] args) throws IOException {
 		boolean schwambi = true;
@@ -124,7 +123,7 @@ public class Test {
 				String logline = name + ";" + testFolderList[file].getName() + ";" + String.format("%.3f", test.getPrecision()) + ";" + String.format("%.3f", test.getRecall())
 						+ ";" + String.format("%.3f", test.f_Measure()) + ";" + String.format("%.3f", test.getPercentageErrors()) + "\n";
 				bwLog.write(logline);
-				bw.write(logline);
+				test.bw.write(logline);
 
 				// write really cool debug picture
 				if (generateDebugImages) {
@@ -154,7 +153,7 @@ public class Test {
 		// Add filters to the engine
 		GenericFilterBundle filters = new GenericFilterBundle();
 		filters.appendFilter(new GrayScaleFilter());
-		filters.appendFilter(new LightFilter());
+		//filters.appendFilter(new LightFilter());
 		filters.appendFilter(new AutoBinaryFilter());
 		OCREngine engine = new OCREngine(filters);
 

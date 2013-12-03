@@ -99,7 +99,8 @@ public class ScannerAttributes {
 		this.scaleY = scaleY;
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
-		pixelOffset = (int) (20.0 * (1.0 - scaleX)) + 3;
+		double f = Math.abs(1.0 - scaleX);
+		pixelOffset = (int) (20.0 * f) + 5;
 	}
 
 	// ----------------- Getters -------------------------
