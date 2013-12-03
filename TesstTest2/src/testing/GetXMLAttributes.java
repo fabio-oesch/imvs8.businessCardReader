@@ -24,7 +24,7 @@ public final class GetXMLAttributes {
 
 	public String[] uniqueAttributes;
 	// has the count of tesseract bounding boxes which are at the same place
-	private int tesseractCorrectBox;
+	private int falsePositive;
 
 	/**
 	 * This method gets an analysisResult object and returns an array list of
@@ -116,14 +116,15 @@ public final class GetXMLAttributes {
 		// Calculate unique attributes and get the offset and scale
 		getUniqueAttributes(tesseractAttribute, scannerAttribute);
 
-		tesseractCorrectBox = 0;
+		falsePositive = 0;
 		for (int i = 0; i < scannerAttribute.size(); i++) {
 			for (int j = 0; j < tesseractAttribute.size(); j++) {
 				if (scannerAttribute.get(i).addTesseractBox(
 						tesseractAttribute.get(j)))
-					tesseractCorrectBox++;
+					falsePositive++;
 			}
 		}
+		falsePositive = scannerAttribute.size() - falsePositive;
 
 		return scannerAttribute;
 	}
@@ -253,7 +254,7 @@ public final class GetXMLAttributes {
 		}
 	}
 
-	public int getTesseractCorrectBox() {
-		return tesseractCorrectBox;
+	public int getFalsePositive() {
+		return falsePositive;
 	}
 }
