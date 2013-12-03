@@ -49,7 +49,7 @@ public class Test {
 			PictureDisplayTest pictureDisplay = null;
 			File[] solutionFolderList = solutionFolder.listFiles();
 			for (int file = 0; solutionFolderList != null && file < solutionFolderList.length; file++) {
-				if (!solutionFolderList[file].getAbsolutePath().contains("test.")) {
+				if (!solutionFolderList[file].getAbsolutePath().contains("debug")) {
 
 					analysisResult = engine.analyzeImage(solutionFolderList[file]);
 					pictureDisplay = new PictureDisplayTest(solutionFolderList[file]);
@@ -103,7 +103,6 @@ public class Test {
 		File[] testFolderList = testFolder.listFiles();
 		for (int file = 0; file < testFolderList.length; file++) {
 			AnalysisResult analysisResult = engine.analyzeImage(testFolderList[file]);
-			XMLTest test = new XMLTest(scannerFile, analysisResult, bw);
 
 			if (file == 0) {
 				bw.write("# of pictures: " + testFolderList.length + "\n");
