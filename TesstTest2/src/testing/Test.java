@@ -34,13 +34,13 @@ public class Test {
 		}
 
 		testXMLS();
-		//testImageDisplay();
+		// testImageDisplay();
 
 	}
 
 	/**
-	 * creates a new file which writes the texts which it reads from the picture
-	 * into a new picture with the ending test.png
+	 * creates a new file which writes the texts which it reads from the picture into a new picture with the
+	 * ending test.png
 	 * 
 	 * @throws IOException
 	 */
@@ -51,7 +51,8 @@ public class Test {
 
 		String[] folderList = folder.list();
 		for (int folders = 0; folders < folderList.length; folders++) {
-			File solutionFolder = new File(folder.getAbsolutePath() + "/" + folderList[folders] + "/testimages/");
+			File solutionFolder = new File(folder.getAbsolutePath() + "/" + folderList[folders]
+					+ "/testimages/");
 
 			AnalysisResult analysisResult = null;
 			PictureDisplayTest pictureDisplay = null;
@@ -62,11 +63,16 @@ public class Test {
 					analysisResult = engine.analyzeImage(solutionFolderList[file]);
 					pictureDisplay = new PictureDisplayTest(solutionFolderList[file]);
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
-						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
-								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
+						pictureDisplay.addText(new Color(
+								(int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0),
+								analysisResult.getBoundingBox(word).height, analysisResult
+										.getBoundingBox(word), analysisResult.getWord(word));
 					}
-					pictureDisplay.finish(solutionFolderList[file].getAbsolutePath().substring(0, solutionFolderList[file].getAbsolutePath().lastIndexOf('.')) + "test"
-							+ solutionFolderList[file].getAbsolutePath().substring(solutionFolderList[file].getAbsolutePath().lastIndexOf('.')));
+					pictureDisplay.finish(solutionFolderList[file].getAbsolutePath().substring(0,
+							solutionFolderList[file].getAbsolutePath().lastIndexOf('.'))
+							+ "test"
+							+ solutionFolderList[file].getAbsolutePath().substring(
+									solutionFolderList[file].getAbsolutePath().lastIndexOf('.')));
 				}
 			}
 
@@ -121,15 +127,20 @@ public class Test {
 			errorsPerCard += test.getErrors();
 			percentagePerMail += test.getPercentageErrors();
 
-			bw.write(name + ";" + testFolderList[file].getName() + ";" + test.getPrecision() + ";" + test.getRecall() + ";" + test.f_Measure() + ";" + test.getPercentageErrors()
-					+ "\n");
+			bw.write(name + ";" + testFolderList[file].getName() + ";"
+					+ String.format("%.3f", test.getPrecision()) + ";"
+					+ String.format("%.3f", test.getRecall()) + ";" + String.format("%.3f", test.f_Measure())
+					+ ";" + String.format("%.3f", test.getPercentageErrors()) + "\n");
 
-			//write really cool debug picture
+			// write really cool debug picture
 			if (generateDebugImages) {
-				PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(testFolderList[file].getAbsolutePath() + "_debug.png"));
+				PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(
+						testFolderList[file].getAbsolutePath() + "_debug.png"));
 				for (int word = 0; word < analysisResult.getResultSize(); word++) {
-					pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
-							analysisResult.getBoundingBox(word), analysisResult.getWord(word));
+					pictureDisplay.addText(new Color(
+							(int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult
+							.getBoundingBox(word).height, analysisResult.getBoundingBox(word), analysisResult
+							.getWord(word));
 				}
 				pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_tesseract.png");
 			}
@@ -172,7 +183,8 @@ public class Test {
 		}
 		FileWriter fw = new FileWriter(logFile.getAbsoluteFile());
 		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write("Average Percentage Errors per Mail: " + errorsPerMail / folderList.length + "\n");
+		bw.write("Average Percentage Errors per Mail: "
+				+ String.format("%.3f", errorsPerMail / folderList.length) + "\n");
 		bw.close();
 	}
 }
