@@ -128,20 +128,22 @@ public class Test {
 				errorsPerCard += test.getErrors();
 				percentagePerMail += test.getPercentageErrors();
 
-			bw.write(name + ";" + testFolderList[file].getName() + ";"
-					+ String.format("%.3f", test.getPrecision()) + ";"
-					+ String.format("%.3f", test.getRecall()) + ";" + String.format("%.3f", test.f_Measure())
-					+ ";" + String.format("%.3f", test.getPercentageErrors()) + "\n");
+				bw.write(name + ";" + testFolderList[file].getName() + ";"
+						+ String.format("%.3f", test.getPrecision()) + ";"
+						+ String.format("%.3f", test.getRecall()) + ";"
+						+ String.format("%.3f", test.f_Measure()) + ";"
+						+ String.format("%.3f", test.getPercentageErrors()) + "\n");
 
-				//write really cool debug picture
+				// write really cool debug picture
 				if (generateDebugImages) {
-					PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(testFolderList[file].getAbsolutePath() + "_debug.png"));
-						testFolderList[file].getAbsolutePath() + "_debug.png"));
+					PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(
+							testFolderList[file].getAbsolutePath() + "_debug.png"));
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
-						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
-								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
-							.getBoundingBox(word).height, analysisResult.getBoundingBox(word), analysisResult
-							.getWord(word));
+						pictureDisplay.addText(new Color(
+								(int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0),
+								analysisResult.getBoundingBox(word).height, analysisResult
+										.getBoundingBox(word), analysisResult.getWord(word));
+
 					}
 					pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_tesseract.png");
 				}
