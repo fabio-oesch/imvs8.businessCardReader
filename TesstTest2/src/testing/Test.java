@@ -16,24 +16,31 @@ import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 public class Test {
 
 	// path to place where business cards are
-	//final static File folder = new File("/School/Projekt/testdata/business-cards");
+	static File folder;
 	// path to place where logs are stored
-	//final static String logs = "/School/Projekt/testdata/Logs/";
-	final static File folder = new File("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\business-cards");
-	final static String logs = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\Logs\\";
+	static String logs;
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
 	static boolean generateDebugImages = true;
 
 	public static void main(String[] args) throws IOException {
+		boolean schwambi = false;
+		if (schwambi) {
+			folder = new File("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\business-cards");
+			logs = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\Logs\\";
+		} else {
+			folder = new File("/School/Projekt/testdata/business-cards");
+			logs = "/School/Projekt/testdata/Logs/";
+		}
+
 		testXMLS();
 		//testImageDisplay();
 
 	}
 
 	/**
-	 * creates a new file which writes the texts which it reads from the picture
-	 * into a new picture with the ending test.png
+	 * creates a new file which writes the texts which it reads from the picture into a new picture with the
+	 * ending test.png
 	 * 
 	 * @throws IOException
 	 */
@@ -55,6 +62,11 @@ public class Test {
 					analysisResult = engine.analyzeImage(solutionFolderList[file]);
 					pictureDisplay = new PictureDisplayTest(solutionFolderList[file]);
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
+						pictureDisplay.addText(new Color(
+								(int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0),
+								analysisResult.getBoundingBox(word).height, analysisResult
+										.getBoundingBox(word).x, analysisResult.getBoundingBox(word).y,
+								analysisResult.getWord(word));
 						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
 								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
 					}
@@ -103,7 +115,7 @@ public class Test {
 		// Compare with every file in folder
 		File[] testFolderList = testFolder.listFiles();
 		for (int file = 0; file < testFolderList.length; file++) {
-			if (!testFolderList[file].getAbsolutePath().contains("debug")) {
+			AnalysisResult analysisResult = engine.analyzeImage(testFolderList[file]);
 				AnalysisResult analysisResult = engine.analyzeImage(testFolderList[file]);
 
 				if (file == 0) {
@@ -115,18 +127,18 @@ public class Test {
 				errorsPerCard += test.getErrors();
 				percentagePerMail += test.getPercentageErrors();
 
-				bw.write(name + "_" + testFolderList[file].getName() + "_" + test.getPrecision() + "_" + test.getRecall() + "_" + test.f_Measure() + "_"
-						+ test.getPercentageErrors() + "\n");
+			bw.write(name + ";" + testFolderList[file].getName() + ";" + test.getPrecision() + ";"
+					+ test.getRecall() + ";" + test.f_Measure() + ";" + test.getPercentageErrors() + "\n");
 
-				//write really cool debug picture
-				if (generateDebugImages) {
-					PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(testFolderList[file].getAbsolutePath() + "_debug.png"));
-					for (int word = 0; word < analysisResult.getResultSize(); word++) {
-						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
-								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
-					}
-					pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_results.png");
+			//write really cool debug picture
+			if (generateDebugImages) {
+				PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(testFolderList[file].getAbsolutePath() + "_debug.png"));
+				for (int word = 0; word < analysisResult.getResultSize(); word++) {
+					pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
+							analysisResult.getBoundingBox(word), analysisResult.getWord(word));
 				}
+				pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_tesseract.png");
+			}
 			}
 		}
 		errorsPerMail += percentagePerMail / testFolderList.length;
