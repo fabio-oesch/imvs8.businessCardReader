@@ -68,7 +68,7 @@ public class OCREngine {
 				image = this.bundle.applyFilters(image);
 
 			//image = this.deskew(image);
-			//ImageIO.write(image, "png", new File(im.getAbsoluteFile() + ".png"));
+			ImageIO.write(image, "png", new File(im.getAbsoluteFile() + "_debug.png"));
 
 			ByteBuffer buf = ImageIOHelper.convertImageData(image); // require jai-imageio lib to read TIFF
 
