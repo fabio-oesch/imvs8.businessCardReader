@@ -28,7 +28,8 @@ import com.recognition.software.jdeskew.ImageDeskew;
 import com.sun.jna.Pointer;
 
 /**
- * Represents an OCR engine which is able to analyse an image and return an AnalysisResult object.
+ * Represents an OCR engine which is able to analyse an image and return an
+ * AnalysisResult object.
  * 
  * @author Jon
  */
@@ -57,8 +58,8 @@ public class OCREngine {
 	}
 
 	/**
-	 * Enables the debug mode. It writes the preprocessed images to the same folder as the input image as
-	 * "{filename}_debug.png"
+	 * Enables the debug mode. It writes the preprocessed images to the same
+	 * folder as the input image as "{filename}_debug.png"
 	 */
 	public void enableDebugMode() {
 		this.debugEnabled = true;
@@ -107,7 +108,8 @@ public class OCREngine {
 	}
 
 	/**
-	 * Iterates over the tesseract result per word and puts them in a AnalysisResult object
+	 * Iterates over the tesseract result per word and puts them in a
+	 * AnalysisResult object
 	 * 
 	 * @param im
 	 * @param pi
@@ -134,25 +136,26 @@ public class OCREngine {
 				IntBuffer topB = IntBuffer.allocate(1);
 				IntBuffer rightB = IntBuffer.allocate(1);
 				IntBuffer bottomB = IntBuffer.allocate(1);
-				TessAPI1.TessPageIteratorBoundingBox(pi, TessPageIteratorLevel.RIL_WORD, leftB, topB, rightB,
-						bottomB);
+				TessAPI1.TessPageIteratorBoundingBox(pi, TessPageIteratorLevel.RIL_WORD, leftB, topB, rightB, bottomB);
 				int left = leftB.get();
 				int top = topB.get();
 				int right = rightB.get();
 				int bottom = bottomB.get();
 				Rectangle r = new Rectangle(left, top, right - left, bottom - top);
 				bBoxes.add(r);
+
+				TessAPI1.TessDeleteText(ptr);
 			}
 
 		} while (TessAPI1.TessPageIteratorNext(pi, TessAPI1.TessPageIteratorLevel.RIL_WORD) == TessAPI1.TRUE);
 
-		return new AnalysisResult(im, new ArrayList<String>(words), new ArrayList<Rectangle>(bBoxes),
-				new ArrayList<Float>(confidences));
+		return new AnalysisResult(im, new ArrayList<String>(words), new ArrayList<Rectangle>(bBoxes), new ArrayList<Float>(confidences));
 	}
 
 	/**
-	 * Uses the Tess4j library to deskew an image It works nicely most of the times. But implementing this
-	 * kills our testing framework. More work is needed to implement deskew, so currently not in use.
+	 * Uses the Tess4j library to deskew an image It works nicely most of the
+	 * times. But implementing this kills our testing framework. More work is
+	 * needed to implement deskew, so currently not in use.
 	 * 
 	 * @param bi
 	 * @return

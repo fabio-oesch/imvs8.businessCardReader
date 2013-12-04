@@ -173,10 +173,13 @@ public class Test {
 		BufferedWriter bwLog = new BufferedWriter(fw);
 		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;Average Errors per Picture;unique_attributes \n");
 
+		testXMLForName(engine, "jstrebel@tellnetworks.ch", bwLog);
+
 		// tests all the files in the folder
 		String[] folderList = folder.list();
 		for (int folders = 0; folders < folderList.length; folders++) {
 			testXMLForName(engine, folderList[folders], bwLog);
+
 		}
 
 		// bwLog.write("Average Percentage Errors per Mail: "
