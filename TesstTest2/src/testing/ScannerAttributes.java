@@ -24,7 +24,7 @@ public class ScannerAttributes {
 	private double offsetX; // offset of the picture of x-Axis
 	private double offsetY; // offset of the picture of y-Axis
 
-	private int pixelOffset = 15;
+	private int pixelOffset = 0;
 	// Array list of attributes which have all the tesseract Objects
 	private ArrayList<TesseractAttributes> tessAtts = new ArrayList<>();
 
@@ -99,6 +99,11 @@ public class ScannerAttributes {
 		this.scaleY = scaleY;
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
+
+		//adaptive pixel tolerance
+		double f = 1.0 - scaleX;
+		f = f < 0 ? 0 : f;
+		this.pixelOffset = (int) (f * 25) + 5;
 	}
 
 	// ----------------- Getters -------------------------
