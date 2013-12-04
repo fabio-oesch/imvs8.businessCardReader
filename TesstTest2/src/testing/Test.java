@@ -123,7 +123,7 @@ public class Test {
 				errorsPerCard += test.getErrors();
 				percentagePerMail += test.getPercentageErrors();
 				String logline = name + ";" + testFolderList[file].getName() + ";" + String.format("%.3f", test.getPrecision()) + ";" + String.format("%.3f", test.getRecall())
-						+ ";" + String.format("%.3f", test.f_Measure()) + ";" + String.format("%.3f", test.getPercentageErrors()) + "\n";
+						+ ";" + String.format("%.3f", test.f_Measure()) + ";" + String.format("%.3f", test.getPercentageErrors()) + ";" + test.uniqueStuff() + "\n";
 				bwLog.write(logline);
 				bw.write(logline);
 
