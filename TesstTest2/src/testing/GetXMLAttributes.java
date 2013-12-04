@@ -30,8 +30,8 @@ public final class GetXMLAttributes {
 	private int uniqueTesseractCount;
 
 	/**
-	 * This method gets an analysisResult object and returns an array list of
-	 * all attributes of the analyisResult object
+	 * This method gets an analysisResult object and returns an array list of all attributes of the
+	 * analyisResult object
 	 * 
 	 * @param analysisResult
 	 *            get Object analysisResult of tesseract scan
@@ -45,29 +45,29 @@ public final class GetXMLAttributes {
 			// create a rectange object with the bounding boxes
 			Rectangle boundingBox = analysisResult.getBoundingBox(index);
 			// create new objects
-			tesseractAttribute.add(new TesseractAttributes(analysisResult.getWord(index), boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height));
+			tesseractAttribute.add(new TesseractAttributes(analysisResult.getWord(index), boundingBox.x,
+					boundingBox.y, boundingBox.width, boundingBox.height));
 		}
 
 		return tesseractAttribute;
 	}
 
 	/**
-	 * reads the XML file from the scanner and creates a new scanner attribute.
-	 * After all the scanner attributes have been scanned we are trying to
-	 * calculate the scale factor and the offset of the tesseract picture to the
-	 * scanner picture.
+	 * reads the XML file from the scanner and creates a new scanner attribute. After all the scanner
+	 * attributes have been scanned we are trying to calculate the scale factor and the offset of the
+	 * tesseract picture to the scanner picture.
 	 * 
 	 * @param xmlInputFile
 	 *            A file with the location to the xml file
 	 * @param analysisResult
 	 *            Result of the tesseract output
-	 * @return return an ArrayList of ScannerAttributes. In this ArrayList the
-	 *         Tesseract Attributes are matched with bounding boxes. Every
-	 *         ScannerAttribute has multiple TesseractAttributes which fit to
-	 *         the bounding box
+	 * @return return an ArrayList of ScannerAttributes. In this ArrayList the Tesseract Attributes are
+	 *         matched with bounding boxes. Every ScannerAttribute has multiple TesseractAttributes which fit
+	 *         to the bounding box
 	 * @throws UnsupportedEncodingException
 	 */
-	public ArrayList<ScannerAttributes> readScannerXML(File xmlInputFile, AnalysisResult analysisResult) throws UnsupportedEncodingException {
+	public ArrayList<ScannerAttributes> readScannerXML(File xmlInputFile, AnalysisResult analysisResult)
+			throws UnsupportedEncodingException {
 		// get the tesseract HTML attributes
 		ArrayList<TesseractAttributes> tesseractAttribute = getAnalysisResult(analysisResult);
 
@@ -79,7 +79,8 @@ public final class GetXMLAttributes {
 		XMLInputFactory inputFactor = XMLInputFactory.newInstance();
 		try {
 			// Create a reader with the ANSI Encoding
-			XMLStreamReader reader = inputFactor.createXMLStreamReader(new InputStreamReader(new FileInputStream(xmlInputFile), "ISO-8859-1"));
+			XMLStreamReader reader = inputFactor.createXMLStreamReader(new InputStreamReader(
+					new FileInputStream(xmlInputFile), "ISO-8859-1"));
 			// Save text and fieldName in a String
 			String text = null;
 			String fieldName = null;
@@ -93,8 +94,9 @@ public final class GetXMLAttributes {
 					} else if (reader.getLocalName() == "ocrField") {
 						text = reader.getAttributeValue(0);
 					} else if (reader.getLocalName() == "boundingBox") {
-						ScannerAttributes scanAtt = new ScannerAttributes(text, fieldName, reader.getAttributeValue(0), reader.getAttributeValue(1), reader.getAttributeValue(2),
-								reader.getAttributeValue(3));
+						ScannerAttributes scanAtt = new ScannerAttributes(text, fieldName,
+								reader.getAttributeValue(0), reader.getAttributeValue(1),
+								reader.getAttributeValue(2), reader.getAttributeValue(3));
 						if (!scannerAttribute.contains(scanAtt)) {
 							scannerAttribute.add(scanAtt);
 						}
@@ -119,7 +121,8 @@ public final class GetXMLAttributes {
 		for (int i = 0; i < scannerAttribute.size(); i++) {
 			for (int j = 0; j < tesseractAttribute.size(); j++) {
 				if (scannerAttribute.get(i).addTesseractBox(tesseractAttribute.get(j))) {
-					String key = tesseractAttribute.get(j).getX() + " " + tesseractAttribute.get(j).getY() + " " + tesseractAttribute.get(j).getWidth() + " "
+					String key = tesseractAttribute.get(j).getX() + " " + tesseractAttribute.get(j).getY()
+							+ " " + tesseractAttribute.get(j).getWidth() + " "
 							+ tesseractAttribute.get(j).getHeight();
 					if (!boundingBox.containsKey(key)) {
 						boundingBox.put(key, true);
@@ -144,7 +147,8 @@ public final class GetXMLAttributes {
 	 * @param scannerAttributes
 	 *            all the scanner attributes of the picture
 	 */
-	public void getUniqueAttributes(ArrayList<TesseractAttributes> tesseractAttributes, ArrayList<ScannerAttributes> scannerAttributes) {
+	public void getUniqueAttributes(ArrayList<TesseractAttributes> tesseractAttributes,
+			ArrayList<ScannerAttributes> scannerAttributes) {
 
 		ArrayList<TesseractAttributes> uniqueTesseractAttributes = new ArrayList<>();
 		ArrayList<ScannerAttributes> uniqueScannerAttributes = new ArrayList<>();
@@ -158,7 +162,9 @@ public final class GetXMLAttributes {
 			boolean unique = true;
 			int foundAttribute = 0;
 			for (int j = 0; j < scannerAttributes.size(); j++) {
-				if (scannerAttributes.get(j).getAttributeText().contains(tesseractAttributes.get(i).getAttributeText()) && unique) {
+				if (tesseractAttributes.get(i).getAttributeText().length() > 2
+						&& scannerAttributes.get(j).getAttributeText()
+								.contains(tesseractAttributes.get(i).getAttributeText()) && unique) {
 					if (!exists) {
 						exists = true;
 						foundAttribute = j;
@@ -178,10 +184,32 @@ public final class GetXMLAttributes {
 			// check if the attribute starts with this text. Then we add it to
 			// both lists
 			if (exists && unique) {
-				if (scannerAttributes.get(foundAttribute).getAttributeText().startsWith(tesseractAttributes.get(i).getAttributeText())) {
+				if (scannerAttributes.get(foundAttribute).getAttributeText()
+						.startsWith(tesseractAttributes.get(i).getAttributeText())) {
 					uniqueScannerAttributes.add(scannerAttributes.get(foundAttribute));
 					uniqueTesseractAttributes.add(tesseractAttributes.get(i));
 				}
+			}
+		}
+
+		/*
+		 * Checks if in the unique list has doublicates. If this is the case they are removed
+		 */
+		for (int i = 0; i < uniqueTesseractAttributes.size(); i++) {
+			boolean doublicate = false;
+			for (int j = i + 1; j < uniqueTesseractAttributes.size(); j++) {
+				if (uniqueTesseractAttributes.get(i).getAttributeText()
+						.equals(uniqueTesseractAttributes.get(j).getAttributeText())) {
+					uniqueTesseractAttributes.remove(j);
+					uniqueScannerAttributes.remove(j);
+					j--;
+					doublicate = true;
+				}
+			}
+			if (doublicate) {
+				uniqueTesseractAttributes.remove(i);
+				uniqueScannerAttributes.remove(i);
+				i--;
 			}
 		}
 		// calculate offset and scale for the tesseract picture
@@ -191,18 +219,18 @@ public final class GetXMLAttributes {
 	}
 
 	/**
-	 * Calculates the offset and ratio of the picture which was taken from the
-	 * Mobile Camera to the picture which was scanned by the Scanner.
+	 * Calculates the offset and ratio of the picture which was taken from the Mobile Camera to the picture
+	 * which was scanned by the Scanner.
 	 * 
 	 * @param uniqueTesseractAttributes
 	 *            List of attributes which only exists in the business card once
 	 * @param uniqueScannerAttributes
 	 *            List of attributes which only exists in the business card once
 	 * @param scannerAttributes
-	 *            the original attributes which come from the xml file of the
-	 *            scanner
+	 *            the original attributes which come from the xml file of the scanner
 	 */
-	public void calculate(ArrayList<TesseractAttributes> uniqueTesseractAttributes, ArrayList<ScannerAttributes> uniqueScannerAttributes,
+	public void calculate(ArrayList<TesseractAttributes> uniqueTesseractAttributes,
+			ArrayList<ScannerAttributes> uniqueScannerAttributes,
 			ArrayList<ScannerAttributes> scannerAttributes) {
 		// offset by X and Y axis
 		double offsetX = 0;
@@ -216,12 +244,17 @@ public final class GetXMLAttributes {
 		// measured. Same for the tesseractAttributes
 		for (int i = 0; i < uniqueScannerAttributes.size(); i++) {
 			for (int j = i + 1; j < uniqueScannerAttributes.size(); j++) {
-				double distScannerX = uniqueScannerAttributes.get(i).getX() - uniqueScannerAttributes.get(j).getX();
-				double distScannerY = uniqueScannerAttributes.get(i).getY() - uniqueScannerAttributes.get(j).getY();
-				double distTesseractX = uniqueTesseractAttributes.get(i).getX() - uniqueTesseractAttributes.get(j).getX();
-				double distTesseractY = uniqueTesseractAttributes.get(i).getY() - uniqueTesseractAttributes.get(j).getY();
+				double distScannerX = uniqueScannerAttributes.get(i).getX()
+						- uniqueScannerAttributes.get(j).getX();
+				double distScannerY = uniqueScannerAttributes.get(i).getY()
+						- uniqueScannerAttributes.get(j).getY();
+				double distTesseractX = uniqueTesseractAttributes.get(i).getX()
+						- uniqueTesseractAttributes.get(j).getX();
+				double distTesseractY = uniqueTesseractAttributes.get(i).getY()
+						- uniqueTesseractAttributes.get(j).getY();
 				// Euclidian Distance
-				euclid += Math.sqrt(distScannerX * distScannerX + distScannerY * distScannerY) / Math.sqrt(distTesseractX * distTesseractX + distTesseractY * distTesseractY);
+				euclid += Math.sqrt(distScannerX * distScannerX + distScannerY * distScannerY)
+						/ Math.sqrt(distTesseractX * distTesseractX + distTesseractY * distTesseractY);
 				counter++;
 			}
 		}
@@ -229,8 +262,10 @@ public final class GetXMLAttributes {
 
 		// Calculate the offset for X and Y
 		for (int i = 0; i < uniqueTesseractAttributes.size(); i++) {
-			offsetX += Math.abs(uniqueTesseractAttributes.get(i).getX() * euclid - uniqueScannerAttributes.get(i).getX());
-			offsetY += Math.abs(uniqueTesseractAttributes.get(i).getY() * euclid - uniqueScannerAttributes.get(i).getY());
+			offsetX += Math.abs(uniqueTesseractAttributes.get(i).getX() * euclid
+					- uniqueScannerAttributes.get(i).getX());
+			offsetY += Math.abs(uniqueTesseractAttributes.get(i).getY() * euclid
+					- uniqueScannerAttributes.get(i).getY());
 		}
 		offsetX /= uniqueTesseractAttributes.size();
 		offsetY /= uniqueTesseractAttributes.size();
