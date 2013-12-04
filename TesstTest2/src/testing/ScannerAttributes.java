@@ -3,8 +3,8 @@ package testing;
 import java.util.ArrayList;
 
 /**
- * An attribute of the scanner file. This involves an arraylist of tesseract
- * Attributes which have roughly the same bounding boxes
+ * An attribute of the scanner file. This involves an arraylist of tesseract Attributes which have roughly the
+ * same bounding boxes
  * 
  * @author O Lry
  * 
@@ -29,9 +29,8 @@ public class ScannerAttributes {
 	private ArrayList<TesseractAttributes> tessAtts = new ArrayList<>();
 
 	/**
-	 * The text and type of the scanner attribute as well as the upper left x
-	 * and y values of the bounding box and the width and height of this
-	 * bounding box
+	 * The text and type of the scanner attribute as well as the upper left x and y values of the bounding box
+	 * and the width and height of this bounding box
 	 * 
 	 * @param attributeText
 	 *            text of the attribute
@@ -46,7 +45,8 @@ public class ScannerAttributes {
 	 * @param height
 	 *            height of the text
 	 */
-	public ScannerAttributes(String attributeText, String attributeType, String x, String y, String width, String height) {
+	public ScannerAttributes(String attributeText, String attributeType, String x, String y, String width,
+			String height) {
 		this.attributeText = attributeText;
 		this.attributeTyp = attributeType;
 		try {
@@ -61,8 +61,7 @@ public class ScannerAttributes {
 	}
 
 	/**
-	 * add a Tesseract Attribute to the Array List which have roughly the same
-	 * bounding boxes
+	 * add a Tesseract Attribute to the Array List which have roughly the same bounding boxes
 	 * 
 	 * @param tessBox
 	 *            a new TesseractAttributes Object
@@ -99,7 +98,7 @@ public class ScannerAttributes {
 		this.scaleY = scaleY;
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
-		pixelOffset = (int) (20.0 * (1.0 - scaleX)) + 3;
+		pixelOffset = 15;
 	}
 
 	// ----------------- Getters -------------------------
