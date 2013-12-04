@@ -173,8 +173,6 @@ public class Test {
 
 		if (generateDebugImages)
 			engine.enableDebugMode();
-		// test for a specific name
-		// testXMLForName(engine, "franco.dalmolin@collanos.com");
 
 		// logs for the entire folder
 		File logFile = new File(logs + "_logs.csv");
@@ -185,7 +183,7 @@ public class Test {
 		BufferedWriter bwLog = new BufferedWriter(fw);
 		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;Average Errors per Picture;unique_attributes \n");
 
-		testXMLForName(engine, "oliver.krone@swisscom.com", bwLog);
+		testXMLForName(engine, "president@isss.ch", bwLog);
 
 		System.out.println("trololololo");
 
