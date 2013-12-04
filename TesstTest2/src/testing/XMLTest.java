@@ -72,7 +72,6 @@ public class XMLTest {
 		for (int i = 0; i < xMLScanner.size(); i++) {
 			textMatch(i);
 		}
-		bw.write("# UniqueScannerAttributes: " + this.uniqueScannerCount + " UniqueTessAttributes: " + this.uniqueTessCount + "\n");
 		truePositive = xMLScanner.size() - error;
 		falseNegative = error;
 		countScannerAttributes = xMLScanner.size();
@@ -130,6 +129,10 @@ public class XMLTest {
 			return 0;
 		}
 		return 2 * (precision * recall / (precision + recall));
+	}
+
+	public int uniqueStuff() {
+		return this.uniqueScannerCount;
 	}
 
 }

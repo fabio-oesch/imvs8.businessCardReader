@@ -20,7 +20,7 @@ public class Test {
 	static String logs;
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
-	static boolean generateDebugImages = true;
+	static boolean generateDebugImages = false;
 
 	public static void main(String[] args) throws IOException {
 		boolean schwambi = true;
@@ -121,7 +121,7 @@ public class Test {
 				errorsPerCard += test.getErrors();
 				percentagePerMail += test.getPercentageErrors();
 				String logline = name + ";" + testFolderList[file].getName() + ";" + String.format("%.3f", test.getPrecision()) + ";" + String.format("%.3f", test.getRecall())
-						+ ";" + String.format("%.3f", test.f_Measure()) + ";" + String.format("%.3f", test.getPercentageErrors()) + "\n";
+						+ ";" + String.format("%.3f", test.f_Measure()) + ";" + String.format("%.3f", test.getPercentageErrors()) + ";" + test.uniqueStuff() + "\n";
 				bwLog.write(logline);
 				test.bw.write(logline);
 
@@ -169,7 +169,7 @@ public class Test {
 		}
 		FileWriter fw = new FileWriter(logFile.getAbsoluteFile());
 		BufferedWriter bwLog = new BufferedWriter(fw);
-		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;Average Errors per Picture \n");
+		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;Average Errors per Picture;unique_attributes \n");
 
 		// tests all the files in the folder
 		String[] folderList = folder.list();
