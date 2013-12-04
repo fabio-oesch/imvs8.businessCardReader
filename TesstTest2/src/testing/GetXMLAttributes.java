@@ -166,6 +166,13 @@ public final class GetXMLAttributes {
 					if (!exists) {
 						exists = true;
 						foundAttribute = j;
+						// Bugfix if multiple occurences of the tesseractAttribute in the scannerAttribute are
+						if (scannerAttributes.get(j).getAttributeText()
+								.indexOf(tesseractAttributes.get(i).getAttributeText()) != scannerAttributes
+								.get(j).getAttributeText()
+								.lastIndexOf(tesseractAttributes.get(i).getAttributeText())) {
+							unique = false;
+						}
 					} else {
 						unique = false;
 					}
