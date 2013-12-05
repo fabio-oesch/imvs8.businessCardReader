@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import ch.fhnw.imvs8.businesscardreader.imagefilters.AutoBinaryFilter;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.CloseFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
@@ -170,7 +169,7 @@ public class Test {
 		filters.appendFilter(new GrayScaleFilter());
 		// filters.appendFilter(new LightFilter());
 		filters.appendFilter(new AutoBinaryFilter());
-		filters.appendFilter(new CloseFilter());
+		//filters.appendFilter(new CloseFilter());
 
 		OCREngine engine = new OCREngine(filters);
 
@@ -186,7 +185,7 @@ public class Test {
 		BufferedWriter bwLog = new BufferedWriter(fw);
 		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;Average Errors per Picture;unique_attributes;Scale;X Offset;Y Offset \n");
 
-		//testXMLForName(engine, "president@isss.ch", bwLog);
+		testXMLForName(engine, "thomas.christen@ch.abb.com", bwLog);
 
 		// tests all the files in the folder
 		String[] folderList = folder.list();
