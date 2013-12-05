@@ -1,11 +1,13 @@
 package testing;
 
 import java.awt.Rectangle;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -64,10 +66,11 @@ public final class GetXMLAttributes {
 	 * @return return an ArrayList of ScannerAttributes. In this ArrayList the Tesseract Attributes are
 	 *         matched with bounding boxes. Every ScannerAttribute has multiple TesseractAttributes which fit
 	 *         to the bounding box
-	 * @throws UnsupportedEncodingException
+	 * @throws IOException
+	 * @throws NumberFormatException
 	 */
-	public ArrayList<ScannerAttributes> readScannerXML(File xmlInputFile, AnalysisResult analysisResult)
-			throws UnsupportedEncodingException {
+	public ArrayList<ScannerAttributes> readScannerXML(File xmlInputFile, File tesseractFileName,
+			AnalysisResult analysisResult) throws NumberFormatException, IOException {
 		// get the tesseract HTML attributes
 		ArrayList<TesseractAttributes> tesseractAttribute = getAnalysisResult(analysisResult);
 
@@ -113,12 +116,19 @@ public final class GetXMLAttributes {
 		}
 
 		// Calculate unique attributes and get the offset and scale
-		getUniqueAttributes(tesseractAttribute, scannerAttribute);
+		// getUniqueAttributes(tesseractAttribute, scannerAttribute);
+		BufferedReader reader = new BufferedReader(new FileReader(new File(
+				tesseractFileName.getAbsoluteFile() + "_scale.txt")));
+		double line1 = Double.parseDouble(reader.readLine());
+		double line2 = Double.parseDouble(reader.readLine());
+		double line3 = Double.parseDouble(reader.readLine());
+		reader.close();
 
 		// Hashmap checks if a scannerAttribute has already been tested.
 		HashMap<String, Boolean> boundingBox = new HashMap<>();
 		falsePositive = 0;
 		for (int i = 0; i < scannerAttribute.size(); i++) {
+			scannerAttribute.get(i).setTesseractCorrection(line1, line2, line3);
 			for (int j = 0; j < tesseractAttribute.size(); j++) {
 				if (scannerAttribute.get(i).addTesseractBox(tesseractAttribute.get(j))) {
 					String key = tesseractAttribute.get(j).getX() + " " + tesseractAttribute.get(j).getY()

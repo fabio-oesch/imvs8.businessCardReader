@@ -33,8 +33,7 @@ public class XMLTest {
 	private int uniqueScannerCount;
 
 	/**
-	 * XMLTest gets the attributes of the files through GetXMLAttributes and
-	 * matches the strings to each other
+	 * XMLTest gets the attributes of the files through GetXMLAttributes and matches the strings to each other
 	 * 
 	 * @param scannerFileName
 	 *            the location of the file where the scanner xml is
@@ -44,13 +43,14 @@ public class XMLTest {
 	 *            name of the test
 	 * @throws IOException
 	 */
-	public XMLTest(File scannerFileName, AnalysisResult analysisResult, BufferedWriter bw) throws IOException {
+	public XMLTest(File scannerFileName, File tesseractFileName, AnalysisResult analysisResult,
+			BufferedWriter bw) throws IOException {
 		this.bw = bw;
 
 		GetXMLAttributes xmlAttributes = new GetXMLAttributes();
 
 		// Get all the XML Attributes
-		xMLScanner = xmlAttributes.readScannerXML(scannerFileName, analysisResult);
+		xMLScanner = xmlAttributes.readScannerXML(scannerFileName, tesseractFileName, analysisResult);
 
 		this.uniqueScannerCount = xmlAttributes.getUniqueScannerCount();
 		this.uniqueTessCount = xmlAttributes.getUniqueTesseractCount();
@@ -63,8 +63,7 @@ public class XMLTest {
 	}
 
 	/**
-	 * goes through all the catogeries of the XMLScanner file and checks if they
-	 * are the same
+	 * goes through all the catogeries of the XMLScanner file and checks if they are the same
 	 * 
 	 * @throws IOException
 	 */
@@ -78,8 +77,8 @@ public class XMLTest {
 	}
 
 	/**
-	 * Checks if the Attributes at the location index of the Scanner file the
-	 * same attribute is as the one from the tesseract file
+	 * Checks if the Attributes at the location index of the Scanner file the same attribute is as the one
+	 * from the tesseract file
 	 * 
 	 * @param scannerCategories
 	 *            goes through the categories of the scanner file xml
@@ -90,16 +89,19 @@ public class XMLTest {
 		// builds a string with the elements which are in the data structure in
 		// the specific category
 		for (int index = 0; index < xMLScanner.get(scannerCategories).getTessAtts().size(); index++) {
-			tesseractString.append(xMLScanner.get(scannerCategories).getTessAtts().get(index).getAttributeText());
+			tesseractString.append(xMLScanner.get(scannerCategories).getTessAtts().get(index)
+					.getAttributeText());
 		}
 
 		// check if scanner attribute (- spaces) are not the same as the
 		// tesseract attributes
-		if (!tesseractString.toString().equals(xMLScanner.get(scannerCategories).getAttributeText().replace(" ", ""))) {
+		if (!tesseractString.toString().equals(
+				xMLScanner.get(scannerCategories).getAttributeText().replace(" ", ""))) {
 			error++;
 			// Print information about the mistake
 
-			bw.write("# Catogory: " + xMLScanner.get(scannerCategories).getAttributeTyp() + ", tesseract Text: " + tesseractString.toString() + ", scanner text: "
+			bw.write("# Catogory: " + xMLScanner.get(scannerCategories).getAttributeTyp()
+					+ ", tesseract Text: " + tesseractString.toString() + ", scanner text: "
 					+ xMLScanner.get(scannerCategories).getAttributeText().replace(" ", "") + "\n");
 
 		}
