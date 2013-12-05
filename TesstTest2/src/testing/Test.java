@@ -129,11 +129,16 @@ public class Test {
 				bwLog.write(logline);
 				bw.write(logline);
 
-				File fuckthat = new File(testFolderList[file].getAbsolutePath() + "_scale.txt");
-				FileWriter flolw = new FileWriter(fuckthat.getAbsoluteFile());
-				BufferedWriter blolw = new BufferedWriter(flolw);
-				blolw.write(test.getScannerAttribute().getScale() + "\n" + test.getScannerAttribute().getXOffset() + "\n" + test.getScannerAttribute().getYOffset());
-				blolw.close();
+				/*
+				 * File fuckthat = new
+				 * File(testFolderList[file].getAbsolutePath() + "_scale.txt");
+				 * FileWriter flolw = new
+				 * FileWriter(fuckthat.getAbsoluteFile()); BufferedWriter blolw
+				 * = new BufferedWriter(flolw);
+				 * blolw.write(test.getScannerAttribute().getScale() + "\n" +
+				 * test.getScannerAttribute().getXOffset() + "\n" +
+				 * test.getScannerAttribute().getYOffset()); blolw.close();
+				 */
 
 				// write really cool debug picture
 				if (generateDebugImages) {
