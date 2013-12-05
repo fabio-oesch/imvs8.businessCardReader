@@ -135,4 +135,8 @@ public class XMLTest {
 		return this.uniqueScannerCount;
 	}
 
+	public ScannerAttributes getScannerAttribute() {
+		return xMLScanner.get(0);
+	}
+
 }

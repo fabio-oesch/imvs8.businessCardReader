@@ -136,4 +136,16 @@ public class ScannerAttributes {
 	public int getHeight() {
 		return height;
 	}
+
+	public double getScale() {
+		return this.scaleX;
+	}
+
+	public double getXOffset() {
+		return this.offsetX;
+	}
+
+	public double getYOffset() {
+		return this.offsetY;
+	}
 }
