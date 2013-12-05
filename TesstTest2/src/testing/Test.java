@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import ch.fhnw.imvs8.businesscardreader.imagefilters.AutoBinaryFilter;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.CloseFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
@@ -24,7 +23,7 @@ public class Test {
 	static boolean generateDebugImages = false;
 
 	public static void main(String[] args) throws IOException {
-		boolean schwambi = true;
+		boolean schwambi = false;
 		if (schwambi) {
 			folder = new File("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\business-cards");
 			logs = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\Logs\\";
@@ -39,10 +38,9 @@ public class Test {
 	}
 
 	/**
-	 * creates a new file which writes the texts which it reads from the picture
-	 * into a new picture with the ending test.png creates a new file which
-	 * writes the texts which it reads from the picture into a new picture with
-	 * the ending test.png
+	 * creates a new file which writes the texts which it reads from the picture into a new picture with the
+	 * ending test.png creates a new file which writes the texts which it reads from the picture into a new
+	 * picture with the ending test.png
 	 * 
 	 * @throws IOException
 	 */
@@ -53,7 +51,8 @@ public class Test {
 
 		String[] folderList = folder.list();
 		for (int folders = 0; folders < folderList.length; folders++) {
-			File solutionFolder = new File(folder.getAbsolutePath() + "/" + folderList[folders] + "/testimages/");
+			File solutionFolder = new File(folder.getAbsolutePath() + "/" + folderList[folders]
+					+ "/testimages/");
 
 			AnalysisResult analysisResult = null;
 			PictureDisplayTest pictureDisplay = null;
@@ -64,11 +63,16 @@ public class Test {
 					analysisResult = engine.analyzeImage(solutionFolderList[file]);
 					pictureDisplay = new PictureDisplayTest(solutionFolderList[file]);
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
-						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
-								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
+						pictureDisplay.addText(new Color(
+								(int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0),
+								analysisResult.getBoundingBox(word).height, analysisResult
+										.getBoundingBox(word), analysisResult.getWord(word));
 					}
-					pictureDisplay.finish(solutionFolderList[file].getAbsolutePath().substring(0, solutionFolderList[file].getAbsolutePath().lastIndexOf('.')) + "test"
-							+ solutionFolderList[file].getAbsolutePath().substring(solutionFolderList[file].getAbsolutePath().lastIndexOf('.')));
+					pictureDisplay.finish(solutionFolderList[file].getAbsolutePath().substring(0,
+							solutionFolderList[file].getAbsolutePath().lastIndexOf('.'))
+							+ "test"
+							+ solutionFolderList[file].getAbsolutePath().substring(
+									solutionFolderList[file].getAbsolutePath().lastIndexOf('.')));
 				}
 			}
 
@@ -85,7 +89,8 @@ public class Test {
 	 * @throws IOException
 	 *             needs permission to write and create a new file
 	 */
-	private static void testXMLForName(OCREngine engine, String name, BufferedWriter bwLog) throws IOException {
+	private static void testXMLForName(OCREngine engine, String name, BufferedWriter bwLog)
+			throws IOException {
 		File solutionFolder = new File(folder.getAbsolutePath() + "/" + name + "/solution/");
 
 		File testFolder = new File(folder.getAbsolutePath() + "/" + name + "/testimages/");
@@ -112,8 +117,7 @@ public class Test {
 		// Compare with every file in folder
 		File[] testFolderList = testFolder.listFiles();
 		for (int file = 0; file < testFolderList.length; file++) {
-			if (!testFolderList[file].getAbsolutePath().contains("debug") && !testFolderList[file].getAbsolutePath().contains("_scale.txt")) {
-
+			if (!testFolderList[file].getAbsolutePath().contains("debug")) {
 				AnalysisResult analysisResult = engine.analyzeImage(testFolderList[file]);
 
 				if (file == 0) {
@@ -124,23 +128,23 @@ public class Test {
 
 				errorsPerCard += test.getErrors();
 				percentagePerMail += test.getPercentageErrors();
-				String logline = name + ";" + testFolderList[file].getName() + ";" + String.format("%.3f", test.getPrecision()) + ";" + String.format("%.3f", test.getRecall())
-						+ ";" + String.format("%.3f", test.f_Measure()) + ";" + String.format("%.3f", test.getPercentageErrors()) + ";" + test.uniqueStuff() + "\n";
+				String logline = name + ";" + testFolderList[file].getName() + ";"
+						+ String.format("%.3f", test.getPrecision()) + ";"
+						+ String.format("%.3f", test.getRecall()) + ";"
+						+ String.format("%.3f", test.f_Measure()) + ";"
+						+ String.format("%.3f", test.getPercentageErrors()) + ";" + test.uniqueStuff() + "\n";
 				bwLog.write(logline);
 				bw.write(logline);
 
-				File fuckthat = new File(testFolderList[file].getAbsolutePath() + "_scale.txt");
-				FileWriter flolw = new FileWriter(fuckthat.getAbsoluteFile());
-				BufferedWriter blolw = new BufferedWriter(flolw);
-				blolw.write(test.getScannerAttribute().getScale() + "\n" + test.getScannerAttribute().getXOffset() + "\n" + test.getScannerAttribute().getYOffset());
-				blolw.close();
-
 				// write really cool debug picture
 				if (generateDebugImages) {
-					PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(testFolderList[file].getAbsolutePath() + "_debug.png"));
+					PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(
+							testFolderList[file].getAbsolutePath() + "_debug.png"));
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
-						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
-								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
+						pictureDisplay.addText(new Color(
+								(int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0),
+								analysisResult.getBoundingBox(word).height, analysisResult
+										.getBoundingBox(word), analysisResult.getWord(word));
 
 					}
 					pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_tesseract.png");
@@ -165,8 +169,6 @@ public class Test {
 		filters.appendFilter(new GrayScaleFilter());
 		// filters.appendFilter(new LightFilter());
 		filters.appendFilter(new AutoBinaryFilter());
-		filters.appendFilter(new CloseFilter());
-
 		OCREngine engine = new OCREngine(filters);
 
 		if (generateDebugImages)
@@ -179,9 +181,11 @@ public class Test {
 		}
 		FileWriter fw = new FileWriter(logFile.getAbsoluteFile());
 		BufferedWriter bwLog = new BufferedWriter(fw);
-		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;Average Errors per Picture;unique_attributes;Scale;X Offset;Y Offset \n");
+		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;Average Errors per Picture;unique_attributes \n");
 
-		//testXMLForName(engine, "president@isss.ch", bwLog);
+		// testXMLForName(engine, "president@isss.ch", bwLog);
+
+		// System.out.println("trololololo");
 
 		// tests all the files in the folder
 		String[] folderList = folder.list();
