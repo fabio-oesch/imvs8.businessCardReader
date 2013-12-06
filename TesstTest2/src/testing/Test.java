@@ -21,7 +21,7 @@ public class Test {
 	static String logs;
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
-	static boolean generateDebugImages = false;
+	static boolean generateDebugImages = true;
 
 	public static void main(String[] args) throws IOException {
 		boolean schwambi = false;
@@ -197,15 +197,14 @@ public class Test {
 		BufferedWriter bwLog = new BufferedWriter(fw);
 		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;Average Errors per Picture;unique_attributes;Scale;X Offset;Y Offset \n");
 
-		testXMLForName(engine, "president@isss.ch", bwLog);
-		System.out.println("lululululul");
+		testXMLForName(engine, "alban.frei@zuehlke.com", bwLog);
 
 		// tests all the files in the folder
-		String[] folderList = folder.list();
-		for (int folders = 0; folders < folderList.length; folders++) {
-			testXMLForName(engine, folderList[folders], bwLog);
-
-		}
+		// String[] folderList = folder.list();
+		// for (int folders = 0; folders < folderList.length; folders++) {
+		// testXMLForName(engine, folderList[folders], bwLog);
+		//
+		// }
 
 		// bwLog.write("Average Percentage Errors per Mail: "
 		// + String.format("%.3f", errorsPerMail / folderList.length) + "\n");
