@@ -11,9 +11,11 @@ public class CloseFilter implements ImageFilter {
 
 	@Override
 	public ImagePlus filter(ImagePlus im) {
-		BinaryProcessor p = new BinaryProcessor(new ByteProcessor(im.getImage()));
-		p.dilate();
-		p.erode();
+		//BinaryProcessor p = new BinaryProcessor(new ByteProcessor(im.getImage()));
+		BinaryProcessor p = new BinaryProcessor(new ByteProcessor(im.getProcessor(), false));
+
+		p.dilate(15, 255);
+		//p.erode(15, 255);
 		return im;
 	}
 }

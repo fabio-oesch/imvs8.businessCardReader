@@ -68,8 +68,7 @@ public final class GetXMLAttributes {
 	 * @throws IOException
 	 * @throws NumberFormatException
 	 */
-	public ArrayList<ScannerAttributes> readScannerXML(File xmlInputFile, File tesseractFileName,
-			AnalysisResult analysisResult) throws NumberFormatException, IOException {
+	public ArrayList<ScannerAttributes> readScannerXML(File xmlInputFile, File tesseractFileName, AnalysisResult analysisResult) throws NumberFormatException, IOException {
 		// get the tesseract HTML attributes
 		ArrayList<TesseractAttributes> tesseractAttribute = getAnalysisResult(analysisResult);
 
@@ -82,8 +81,6 @@ public final class GetXMLAttributes {
 		try {
 			// Create a reader with the ANSI Encoding
 			XMLStreamReader reader = inputFactor.createXMLStreamReader(new InputStreamReader(new FileInputStream(xmlInputFile), "ISO-8859-1"));
-			XMLStreamReader reader = inputFactor.createXMLStreamReader(new InputStreamReader(
-					new FileInputStream(xmlInputFile), "ISO-8859-1"));
 			// Save text and fieldName in a String
 			String text = null;
 			String fieldName = null;
@@ -97,9 +94,8 @@ public final class GetXMLAttributes {
 					} else if (reader.getLocalName() == "ocrField") {
 						text = reader.getAttributeValue(0);
 					} else if (reader.getLocalName() == "boundingBox") {
-						ScannerAttributes scanAtt = new ScannerAttributes(text, fieldName,
-								reader.getAttributeValue(0), reader.getAttributeValue(1),
-								reader.getAttributeValue(2), reader.getAttributeValue(3));
+						ScannerAttributes scanAtt = new ScannerAttributes(text, fieldName, reader.getAttributeValue(0), reader.getAttributeValue(1), reader.getAttributeValue(2),
+								reader.getAttributeValue(3));
 						if (!scannerAttribute.contains(scanAtt)) {
 							scannerAttribute.add(scanAtt);
 						}
@@ -117,8 +113,7 @@ public final class GetXMLAttributes {
 
 		// Calculate unique attributes and get the offset and scale
 		// getUniqueAttributes(tesseractAttribute, scannerAttribute);
-		BufferedReader reader = new BufferedReader(new FileReader(new File(
-				tesseractFileName.getAbsoluteFile() + "_scale.txt")));
+		BufferedReader reader = new BufferedReader(new FileReader(new File(tesseractFileName.getAbsoluteFile() + "_scale.txt")));
 		double line1 = Double.parseDouble(reader.readLine());
 		double line2 = Double.parseDouble(reader.readLine());
 		double line3 = Double.parseDouble(reader.readLine());
