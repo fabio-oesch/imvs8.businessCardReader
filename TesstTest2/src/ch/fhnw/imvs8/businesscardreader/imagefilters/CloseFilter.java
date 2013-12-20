@@ -18,7 +18,7 @@ public class CloseFilter implements ImageFilter {
 		// p.filter(ImageProcessor.MIN);
 		// p.dilate(100, 0);
 		// p.erode();
-		return dilate(dilate(im));
+		return erode(dilate(im));
 	}
 
 	ImagePlus dilate(ImagePlus image) {
@@ -55,7 +55,7 @@ public class CloseFilter implements ImageFilter {
 		ImageProcessor p = manhattan(image.getProcessor(), width, height);
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
-				p.putPixel(i, j, ((p.getPixel(i, j) <= k) ? 255 : 0));
+				p.putPixel(i, j, p.getPixel(i, j) <= k ? 255 : 0);
 			}
 		}
 		return image;

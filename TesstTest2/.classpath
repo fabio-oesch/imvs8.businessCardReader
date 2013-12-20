@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/ij.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="C:/Users/Jon/Documents/GitHub/imvs8.businessCardReader/TesstTest2/lib/diffutils-1.2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

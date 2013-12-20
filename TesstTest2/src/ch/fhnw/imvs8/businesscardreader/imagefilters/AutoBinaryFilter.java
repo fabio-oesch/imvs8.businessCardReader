@@ -10,8 +10,9 @@ import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 
 /**
- * Converts an 8bit Grayscale image to binary image with a specific Auto-Threshold strategy. It uses the
- * Auto-Threshold strategy of the imageJ API
+ * Converts an 8bit Grayscale image to binary image with a specific
+ * Auto-Threshold strategy. It uses the Auto-Threshold strategy of the imageJ
+ * API
  * 
  * @author Jon
  * 
@@ -104,8 +105,7 @@ public class AutoBinaryFilter implements ImageFilter {
 		float[] sd = (float[]) ipVar.getPixels();
 
 		for (int i = 0; i < pixels.length; i++)
-			pixels[i] = ((ori[i]) > (mean[i] * (1.0 + p_value * Math.exp(-q_value * mean[i]) + k_value
-					* ((sd[i] / r_value) - 1.0)))) ? object : backg;
+			pixels[i] = ori[i] > mean[i] * (1.0 + p_value * Math.exp(-q_value * mean[i]) + k_value * (sd[i] / r_value - 1.0)) ? object : backg;
 		// imp.updateAndDraw();
 		return imp;
 	}
@@ -149,8 +149,7 @@ public class AutoBinaryFilter implements ImageFilter {
 		float[] var = (float[]) ipVar.getPixels();
 
 		for (int i = 0; i < pixels.length; i++)
-			pixels[i] = ((pixels[i] & 0xff) > (int) (mean[i] * (1.0 + k_value
-					* ((Math.sqrt(var[i]) / r_value) - 1.0)))) ? object : backg;
+			pixels[i] = (pixels[i] & 0xff) > (int) (mean[i] * (1.0 + k_value * (Math.sqrt(var[i]) / r_value - 1.0))) ? object : backg;
 		// imp.updateAndDraw();
 		return imp;
 	}
