@@ -6,7 +6,8 @@ import ij.process.ImageProcessor;
 /**
  * Filter which should remove a linear light gradient out of an 24 Bit RGB Image
  * 
- * it assumes that the corner pixels should have the same color and corrects the image accordingly.
+ * it assumes that the corner pixels should have the same color and corrects the
+ * image accordingly.
  * 
  * @author Jonas Schwammberger, Fabio Oesch
  */
@@ -51,9 +52,8 @@ public class LightFilter implements ImageFilter {
 
 		for (int j = 0; j < h; j++) {
 			for (int i = 0; i < w; i++) {
-				double value = p.getPixelValue(i, j) + intensities[0] * ((w - i) / w * (h - j) / h)
-						+ intensities[1] * (i / w * (h - j) / h) + intensities[2] * ((w - i) / w * j / h)
-						+ intensities[3] * (i / w * j / h);
+				double value = p.getPixelValue(i, j) + intensities[0] * ((w - i) / w * (h - j) / h) + intensities[1] * (i / w * (h - j) / h) + intensities[2]
+						* ((w - i) / w * j / h) + intensities[3] * (i / w * j / h);
 
 				p.putPixelValue(i, j, value);
 			}

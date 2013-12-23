@@ -193,14 +193,18 @@ public class Test {
 		testXMLForName(engine, "alban.frei@zuehlke.com", bwLog);
 
 		// tests all the files in the folder
+
 		String[] folderList = folder.list();
 		for (int folders = 0; folders < folderList.length; folders++) {
 			testXMLForName(engine, folderList[folders], bwLog);
-
 		}
 
 		// bwLog.write("Average Percentage Errors per Mail: "
 		// + String.format("%.3f", errorsPerMail / folderList.length) + "\n");
 		bwLog.close();
+	}
+
+	public void testAllConfigurations() {
+
 	}
 }
