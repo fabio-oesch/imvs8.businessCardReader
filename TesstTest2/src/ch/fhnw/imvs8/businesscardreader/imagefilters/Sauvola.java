@@ -5,11 +5,10 @@ import ij.plugin.filter.RankFilters;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 
-public class Sauvola extends Binarizer {
+public class Sauvola extends BinarizerAlgorithm {
 
 	@Override
 	public ImagePlus filter(ImagePlus im) {
-		long start = System.currentTimeMillis();
 		// Sauvola recommends K_VALUE = 0.5 and R_VALUE = 128.
 		// This is a modification of Niblack's thresholding method.
 		// Sauvola J. and Pietaksinen M. (2000) "Adaptive Document Image Binarization"
@@ -51,8 +50,6 @@ public class Sauvola extends Binarizer {
 			pixels[i] = (pixels[i] & 0xff) > (int) (mean[i] * (1.0 + k_value * (Math.sqrt(var[i]) / r_value - 1.0))) ? object : backg;
 		// imp.updateAndDraw();
 
-		long end = System.currentTimeMillis();
-		super.time += end - start;
 		return im;
 	}
 

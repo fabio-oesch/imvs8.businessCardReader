@@ -15,7 +15,7 @@ import ij.process.ImageProcessor;
  * @author Jon
  * 
  */
-public class AutoBinaryFilter extends Binarizer {
+public class AutoBinaryFilter extends BinarizerAlgorithm {
 	Method m;
 
 	/**

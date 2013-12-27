@@ -6,7 +6,7 @@ import ij.plugin.filter.RankFilters;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 
-public class Phansalkar extends Binarizer {
+public class Phansalkar extends BinarizerAlgorithm {
 
 	@Override
 	public ImagePlus filter(ImagePlus im) {
@@ -20,8 +20,6 @@ public class Phansalkar extends Binarizer {
 		//
 		// Implemented from Phansalkar's paper description by G. Landini
 		// This version uses a circular local window, instead of a rectagular one
-
-		long start = System.currentTimeMillis();
 
 		ImagePlus Meanimp, Varimp, Orimp;
 		ImageProcessor ip = im.getProcessor(), ipMean, ipVar, ipOri;
@@ -76,8 +74,6 @@ public class Phansalkar extends Binarizer {
 			pixels[i] = ori[i] > mean[i] * (1.0 + p_value * Math.exp(-q_value * mean[i]) + k_value * (sd[i] / r_value - 1.0)) ? object : backg;
 		// imp.updateAndDraw();
 
-		long end = System.currentTimeMillis();
-		super.time += end - start;
 		return im;
 	}
 

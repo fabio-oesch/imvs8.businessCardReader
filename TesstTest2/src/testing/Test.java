@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import ch.fhnw.imvs8.businesscardreader.imagefilters.AutoBinaryFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.CloseFilter;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.FilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
@@ -33,7 +34,14 @@ public class Test {
 			logs = "/School/Projekt/testdata/Logs/";
 		}
 
-		testXMLS();
+		// Add filters to the engine
+		GenericFilterBundle filters = new GenericFilterBundle();
+		filters.appendFilter(new GrayScaleFilter());
+		// filters.appendFilter(new LightFilter());
+		filters.appendFilter(new AutoBinaryFilter());
+		filters.appendFilter(new CloseFilter());
+
+		testXMLS("_logs.csv", filters);
 		// testImageDisplay();
 
 	}
@@ -167,22 +175,14 @@ public class Test {
 	 * @throws IOException
 	 *             needs permission to write into a file and create it
 	 */
-	public static void testXMLS() throws IOException {
-
-		// Add filters to the engine
-		GenericFilterBundle filters = new GenericFilterBundle();
-		filters.appendFilter(new GrayScaleFilter());
-		// filters.appendFilter(new LightFilter());
-		filters.appendFilter(new AutoBinaryFilter());
-		filters.appendFilter(new CloseFilter());
-
+	public static void testXMLS(String logName, FilterBundle filters) throws IOException {
 		OCREngine engine = new OCREngine(filters);
 
 		if (generateDebugImages)
 			engine.enableDebugMode();
 
 		// logs for the entire folder
-		File logFile = new File(logs + "_logs.csv");
+		File logFile = new File(logs + logName);
 		if (!logFile.exists()) {
 			logFile.createNewFile();
 		}

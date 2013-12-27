@@ -5,10 +5,15 @@ import ij.gui.NewImage;
 import ij.process.Blitter;
 import ij.process.ImageProcessor;
 
-public abstract class Binarizer implements ImageFilter {
-
-	@Deprecated
-	protected long time;
+/**
+ * Represents the abstract base class of all BinarizationAlgorithms. It contains
+ * methods used in all algorithms and implements the ImageFilter Inteface, so
+ * the OCREngine class can use it properly.
+ * 
+ * @author Jon
+ * 
+ */
+public abstract class BinarizerAlgorithm implements ImageFilter {
 
 	/**
 	 * Does exactly what the name implies. Small helper which is needed in
@@ -24,23 +29,5 @@ public abstract class Binarizer implements ImageFilter {
 		ImageProcessor imageProcessor = iPlus.getProcessor();
 		imageProcessor.copyBits(iProcessor, 0, 0, Blitter.COPY);
 		return iPlus;
-	}
-
-	/**
-	 * Only used for test purposes, should be removed
-	 * 
-	 * @return the time spent in
-	 */
-	@Deprecated
-	public long getUsedTime() {
-		return time;
-	}
-
-	/**
-	 * Only used for test purposes, should be removed
-	 */
-	@Deprecated
-	public void resetUsedTime() {
-		time = 0;
 	}
 }
