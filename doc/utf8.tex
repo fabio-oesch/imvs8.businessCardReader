@@ -1,5 +1,7 @@
 \documentclass[10pt]{article}
 
+\usepackage{hyperref}
+
 %Math
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -120,9 +122,8 @@
 %Unterschiedliche Farben.
 
 \subsection{Analyse der Handybilder}
-%Lichtverlauf
-%schärfe
-
+Ein Typisches Problem
+\includegraphics[scale= 0.05]{MZimmermann.jpg}
 
 
 \section{Testumgebung und Testdaten}
@@ -133,9 +134,9 @@ Das Rohe Cardscan-Bild wird zu den anderen Testbildern hinzugefügt, es ist für
 
 Für die Texterkennung haben wir eine zusätzliche Testumgebung erstellt. Mit dieser können wir genaue Aussagen über die Qualität der Texterkennung zu verschiedenen Schriftarten.
  
-F-Measure
+Als Metrik wurde F-Measure eingesetzt. 
 
-\subsection{Testumgebung}
+\subsection{Visitenkarten Testumgebung}
 \subsection{Vergleich Tesseract-Output mit Cardscan}
 
 \subsection{Tesseract Testumgebung}
@@ -143,19 +144,17 @@ Die zusätzliche Testumgebung ist vergleichsweise Trivial. Auf den Testbildern i
 http://code.google.com/p/google-diff-match-patch/
 
 Die Testbilder wurden mit der Hilfe von Microsoft Word erstellt. Der Text wurde mit ca 30 Pixel Höhe und 
-Wir haben möglichst weit verbreitete Schriftarten verwendet. 
-http://absolutegraphix.co.uk/bestworstfonts.asp?strID=Guest
-http://www.psprint.com/resources/powerful-business-card-fonts/
-Zusätzlich haben wir Schriftarten hinzugefügt, die speziell für Visitenkarten angepriesen werden. Folgende Schriftarten haben wir im Test berücksichtigt:
-\begin{enumerate}
+Wir haben versucht, möglichst weitverbreitete Schriftarten zu verwenden. Dazu haben wir von Webseiten die beliebtesten und meist gehassten Schriftarten genommen\footnote{Quelle: \url{absolutegraphix.co.uk/bestworstfonts.asp?strID=Guest}}.  
+Zusätzlich haben wir Schriftarten hinzugefügt, die speziell für Visitenkarten angepriesen werden\footnote{Quelle:\url{ www.psprint.com/resources/powerful-business-card-fonts/}}. Folgende Schriftarten haben wir im Test berücksichtigt:
+\begin{itemize}
 \item Agency FB
 \item Arial
 \item Baskerville Old Face
-\item Berlin sans
+\item Berlin Sans
 \item Calibri
 \item Century Gothic
 \item Elephant
-\item Eras Bold x
+\item Eras Bold
 \item Felix Titling
 \item Franklin Gothic
 \item Garamond
@@ -165,7 +164,7 @@ Zusätzlich haben wir Schriftarten hinzugefügt, die speziell für Visitenkarten
 \item Tahoma
 \item Times New Roman
 \item Verdana
-\end{enumerate}
+\end{itemize}
 
 \section{Statistiken??????}
 %titel esch schrott
@@ -182,12 +181,22 @@ Zusätzlich haben wir Schriftarten hinzugefügt, die speziell für Visitenkarten
 
 \subsection{Anforderungen an die Kamera}
 Für eine annehmbare Texterkennung müssen die Buchstaben eine Höhe von mindestens zehn Pixel haben. Das heisst, die Kamera muss eine genügend hohe Auflösung haben. Die Kamera des $Samsung Galaxy S2$ hat eine Auflösung von 8 Megapixel, das führt dazu dass die Buchstaben der Testbilder eine Höhe von 30 bis 60 Pixel haben. Diese Anforderung wird von einem Smartphone erfüllt, welches 2011 erschien. Durch die Abonementregelung von Swisscom, Orange und Sunrise wechseln die meisten Smartphone Benutzer alle zwei Jahre auf ein aktuelles Gerät. Somit ist heute kaum mehr ein Smartphone in Betrieb, welches diese Anforderung nicht erfüllt.
-https://code.google.com/p/tesseract-ocr/wiki/FAQ#Is_there_a_Minimum_Text_Size?_(It_won't_read_screen_text!)
 
-Der Phansalkar Algorithmus braucht scharfe Bilder,
-
+Damit der Phansalkar-Algorithmus eine gute Binarisierung durchführen kann, sollte das Bild harte Kanten haben. Die Kamera sollte also ein möglichst scharfes Bild schiessen.
+\includegraphics[scale= 0.05]{AMathur.jpg}
+\includegraphics[scale= 0.05]{AMathurPhansalkar.png}
+Wird aber die gleiche Visitenkarte unscharf fotographiert, so wirkt sich dies sofort auf die Binarisierung aus.
+\includegraphics[scale= 0.05]{BlurredAMathur.jpg}
+\includegraphics[scale= 0.05]{BlurredAMathurPhansalkar.png}
+Die Unschärfe führt auch zur "Verfranzelung" der Buchstaben. Wie im folgenden Bild zu sehen ist haben die Buchstaben Löcher und Unterbrüche, was die Texterkennung unzuverlässiger macht.
+\includegraphics[scale= 0.1]{BlurredAMathurPhansalkarZoom.png}
 
 \section{Anhang}
 
+\subsection{References}
+\begin{enumerate}
+\item \url{www.psprint.com/resources/powerful-business-card-fonts/} Aufgerufen am 20.12.2013
+\item \url{absolutegraphix.co.uk/bestworstfonts.asp?strID=Guest} Aufgerufen am 20.12.2013
+\end{enumerate}
 % Inhalt Ende 
 \end{document} 

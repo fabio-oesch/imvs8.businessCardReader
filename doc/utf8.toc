@@ -1,13 +1,18 @@
 \select@language {ngerman}
-\contentsline {section}{\numberline {1}Problemstellung}{1}
-\contentsline {subsection}{\numberline {1.1}Annahmen}{1}
-\contentsline {section}{\numberline {2}Analyse der Problemstellung}{1}
-\contentsline {section}{\numberline {3}Testumgebung und Testdaten}{1}
-\contentsline {subsection}{\numberline {3.1}Vergleich Tesseract-Output mit Cardscan}{1}
-\contentsline {subsection}{\numberline {3.2}OCR Test}{1}
-\contentsline {section}{\numberline {4}Statistiken??????}{1}
-\contentsline {subsection}{\numberline {4.1}Vergleich Pr\IeC {\"a}prozessverfahren}{1}
-\contentsline {subsection}{\numberline {4.2}Vergleich Tesseract????}{1}
-\contentsline {section}{\numberline {5}Konfigurationen??????}{1}
-\contentsline {section}{\numberline {6}Fazit}{1}
-\contentsline {subsection}{\numberline {6.1}Bildvergleich???}{1}
+\contentsline {section}{\numberline {1}Problemstellung}{1}{section.1}
+\contentsline {subsection}{\numberline {1.1}Annahmen}{1}{subsection.1.1}
+\contentsline {section}{\numberline {2}Analyse der Problemstellung}{1}{section.2}
+\contentsline {subsection}{\numberline {2.1}Analyse der Visitenkarten}{1}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Analyse der Handybilder}{1}{subsection.2.2}
+\contentsline {section}{\numberline {3}Testumgebung und Testdaten}{1}{section.3}
+\contentsline {subsection}{\numberline {3.1}Visitenkarten Testumgebung}{1}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Vergleich Tesseract-Output mit Cardscan}{1}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Tesseract Testumgebung}{1}{subsection.3.3}
+\contentsline {section}{\numberline {4}Statistiken??????}{2}{section.4}
+\contentsline {subsection}{\numberline {4.1}Vergleich Pr\IeC {\"a}prozessverfahren}{2}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Vergleich verschiedener Fonts}{2}{subsection.4.2}
+\contentsline {section}{\numberline {5}Konfigurationen??????}{2}{section.5}
+\contentsline {section}{\numberline {6}Fazit}{2}{section.6}
+\contentsline {subsection}{\numberline {6.1}Anforderungen an die Kamera}{2}{subsection.6.1}
+\contentsline {section}{\numberline {7}Anhang}{3}{section.7}
+\contentsline {subsection}{\numberline {7.1}References}{3}{subsection.7.1}
