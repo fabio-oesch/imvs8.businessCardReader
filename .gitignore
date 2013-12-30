@@ -1,4 +1,4 @@
-#################
+﻿#################
 ## Eclipse
 #################
 
@@ -31,3 +31,8 @@ local.properties
 
 # nume source code uf git
 /target/classes/*
+
+#latex
+.aux
+.log
+.toc
