@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2012.3.20)  30 DEC 2013 16:21
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2012.3.20)  30 DEC 2013 18:37
 entering extended mode
 **utf8.tex
 (C:\Users\Jon\Documents\GitHub\imvs8.businessCardReader\doc\utf8.tex
@@ -712,84 +712,88 @@ LaTeX Font Info:    Try loading font information for U+stmry on input line 98.
 <MZimmermann.jpg, id=103, 3276.24pt x 2457.18pt>
 File: MZimmermann.jpg Graphic file (type jpg)
  <use MZimmermann.jpg>
-Package pdftex.def Info: MZimmermann.jpg used on input line 126.
+Package pdftex.def Info: MZimmermann.jpg used on input line 125.
 (pdftex.def)             Requested size: 163.8216pt x 122.8662pt.
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 150.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 149.
 
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 150.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 149.
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.154 \item C
-             alibri [1 <C:/Users/Jon/Documents/GitHub/imvs8.businessCardReader/
-doc/MZimmermann.jpg>] <AMathur.jpg, id=118, 3276.24pt x 2457.18pt>
+l.152 \item B
+             erlin Sans [1 <C:/Users/Jon/Documents/GitHub/imvs8.businessCardRea
+der/doc/MZimmermann.jpg>] <AMathur.jpg, id=118, 3276.24pt x 2457.18pt>
 File: AMathur.jpg Graphic file (type jpg)
 
 <use AMathur.jpg>
-Package pdftex.def Info: AMathur.jpg used on input line 186.
-(pdftex.def)             Requested size: 163.8216pt x 122.8662pt.
+Package pdftex.def Info: AMathur.jpg used on input line 187.
+(pdftex.def)             Requested size: 196.56592pt x 147.42444pt.
  <AMathurPhansalkar.png, id=119, 3276.24pt x 2457.18pt>
 File: AMathurPhansalkar.png Graphic file (type png)
 
 <use AMathurPhansalkar.png>
-Package pdftex.def Info: AMathurPhansalkar.png used on input line 187.
-(pdftex.def)             Requested size: 163.8216pt x 122.8662pt.
- <BlurredAMathur.jpg, id=120, 3276.24pt x 1846.9pt>
-File: BlurredAMathur.jpg Graphic file (type jpg)
+Package pdftex.def Info: AMathurPhansalkar.png used on input line 188.
+(pdftex.def)             Requested size: 196.56592pt x 147.42444pt.
 
-<use BlurredAMathur.jpg>
-Package pdftex.def Info: BlurredAMathur.jpg used on input line 189.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<BlurredAMathur.jpg, id=120, 3276.24pt x 1846.9pt>
+File: BlurredAMathur.jpg Graphic file (type jpg)
+ <use BlurredAMathur.jpg>
+Package pdftex.def Info: BlurredAMathur.jpg used on input line 193.
 (pdftex.def)             Requested size: 163.8216pt x 92.3504pt.
 
 <BlurredAMathurPhansalkar.png, id=121, 3276.24pt x 1846.9pt>
 File: BlurredAMathurPhansalkar.png Graphic file (type png)
 
 <use BlurredAMathurPhansalkar.png>
-Package pdftex.def Info: BlurredAMathurPhansalkar.png used on input line 190.
+Package pdftex.def Info: BlurredAMathurPhansalkar.png used on input line 194.
 (pdftex.def)             Requested size: 163.8216pt x 92.3504pt.
 
-<BlurredAMathurPhansalkarZoom.png, id=122, 650.43pt x 368.1253pt>
+Overfull \hbox (79.52087pt too wide) in paragraph at lines 192--195
+\OT1/cmr/m/n/10 schar-fe Tex-te wer-den nur "ver-fran-zelt[]oder so-gar gar nic
+ht in das Bi-na-ri-sier-te Bild ein-be-zo-gen. []
+ []
+
+[2] <BlurredAMathurPhansalkarZoom.png, id=127, 650.43pt x 368.1253pt>
 File: BlurredAMathurPhansalkarZoom.png Graphic file (type png)
 
 <use BlurredAMathurPhansalkarZoom.png>
 Package pdftex.def Info: BlurredAMathurPhansalkarZoom.png used on input line 19
-2.
+6.
 (pdftex.def)             Requested size: 65.0468pt x 36.81468pt.
 
-Overfull \hbox (3.00882pt too wide) in paragraph at lines 185--193
-\OT1/cmr/m/n/10 dies so-fort auf die Bi-na-ri-sie-rung aus. [] []
- []
-
-[2 <C:/Users/Jon/Documents/GitHub/imvs8.businessCardReader/doc/AMathur.jpg>]
 
 Package caption Warning: Unused \captionsetup[lstlisting] on input line 52.
 See the caption package documentation for explanation.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 202.
-[3 <C:/Users/Jon/Documents/GitHub/imvs8.businessCardReader/doc/AMathurPhansalka
-r.png (PNG copy)> <C:/Users/Jon/Documents/GitHub/imvs8.businessCardReader/doc/B
-lurredAMathur.jpg> <C:/Users/Jon/Documents/GitHub/imvs8.businessCardReader/doc/
-BlurredAMathurPhansalkar.png (PNG copy)> <C:/Users/Jon/Documents/GitHub/imvs8.b
-usinessCardReader/doc/BlurredAMathurPhansalkarZoom.png>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 202.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 209.
+[3 <C:/Users/Jon/Documents/GitHub/imvs8.businessCardReader/doc/AMathur.jpg> <C:
+/Users/Jon/Documents/GitHub/imvs8.businessCardReader/doc/AMathurPhansalkar.png 
+(PNG copy)> <C:/Users/Jon/Documents/GitHub/imvs8.businessCardReader/doc/Blurred
+AMathur.jpg> <C:/Users/Jon/Documents/GitHub/imvs8.businessCardReader/doc/Blurre
+dAMathurPhansalkar.png (PNG copy)> <C:/Users/Jon/Documents/GitHub/imvs8.busines
+sCardReader/doc/BlurredAMathurPhansalkarZoom.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 209.
 
 (C:\Users\Jon\Documents\GitHub\imvs8.businessCardReader\doc\utf8.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 202.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 202.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 209.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 209.
 Package rerunfilecheck Info: File `utf8.out' has not changed.
-(rerunfilecheck)             Checksum: 2B68DD0B8514792530640F7C93E94DFB;1118.
+(rerunfilecheck)             Checksum: 362E643CA31A6139552941AA68F08489;1101.
  ) 
 Here is how much of TeX's memory you used:
- 10190 strings out of 494045
- 146743 string characters out of 3145975
- 247663 words of memory out of 3000000
- 13311 multiletter control sequences out of 15000+200000
+ 10192 strings out of 494045
+ 146772 string characters out of 3145975
+ 248660 words of memory out of 3000000
+ 13312 multiletter control sequences out of 15000+200000
  13522 words of font info for 55 fonts, out of 3000000 for 9000
  715 hyphenation exceptions out of 8191
  36i,11n,43p,671b,418s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -805,9 +809,9 @@ iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files
 iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiK
 TeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files (x86)/MiKTe
 X 2.9/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
-Output written on utf8.pdf (5 pages, 7511590 bytes).
+Output written on utf8.pdf (5 pages, 7512033 bytes).
 PDF statistics:
- 182 PDF objects out of 1000 (max. 8388607)
- 27 named destinations out of 1000 (max. 500000)
+ 183 PDF objects out of 1000 (max. 8388607)
+ 28 named destinations out of 1000 (max. 500000)
  167 words of extra memory for PDF output out of 10000 (max. 10000000)
 

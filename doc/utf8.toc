@@ -14,5 +14,5 @@
 \contentsline {section}{\numberline {5}Konfigurationen??????}{2}{section.5}
 \contentsline {section}{\numberline {6}Fazit}{2}{section.6}
 \contentsline {subsection}{\numberline {6.1}Anforderungen an die Kamera}{2}{subsection.6.1}
-\contentsline {section}{\numberline {7}Anhang}{3}{section.7}
-\contentsline {subsection}{\numberline {7.1}References}{3}{subsection.7.1}
+\contentsline {section}{\numberline {7}Quellen}{3}{section.7}
+\contentsline {section}{\numberline {8}Anhang}{3}{section.8}
