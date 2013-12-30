@@ -130,13 +130,42 @@
 
 Die Grundidee ist, die Visitenkarten mit dem Cardscanner einzulesen und dessen OCR Output als Solldaten zu verwenden. 
 Das Rohe Cardscan-Bild wird zu den anderen Testbildern hinzugefügt, es ist für unsere Anwendung der Optimalfall. Das Bild ist scharf, hat keinen Lichtverlauf und keinen Hintergrund.
+
+Für die Texterkennung haben wir eine zusätzliche Testumgebung erstellt. Mit dieser können wir genaue Aussagen über die Qualität der Texterkennung zu verschiedenen Schriftarten.
+ 
+F-Measure
+
+\subsection{Testumgebung}
 \subsection{Vergleich Tesseract-Output mit Cardscan}
 
-\subsection{OCR Test}
-Um 
-http://absolutegraphix.co.uk/bestworstfonts.asp?strID=Guest
+\subsection{Tesseract Testumgebung}
+Die zusätzliche Testumgebung ist vergleichsweise Trivial. Auf den Testbildern ist immer der selbe Text zu sehen. Tesseract verarbeitet die Bilder und der erkannte Text wird per String-Diff mit dem Originaltext verglichen.
 http://code.google.com/p/google-diff-match-patch/
 
+Die Testbilder wurden mit der Hilfe von Microsoft Word erstellt. Der Text wurde mit ca 30 Pixel Höhe und 
+Wir haben möglichst weit verbreitete Schriftarten verwendet. 
+http://absolutegraphix.co.uk/bestworstfonts.asp?strID=Guest
+http://www.psprint.com/resources/powerful-business-card-fonts/
+Zusätzlich haben wir Schriftarten hinzugefügt, die speziell für Visitenkarten angepriesen werden. Folgende Schriftarten haben wir im Test berücksichtigt:
+\begin{enumerate}
+\item Agency FB
+\item Arial
+\item Baskerville Old Face
+\item Berlin sans
+\item Calibri
+\item Century Gothic
+\item Elephant
+\item Eras Bold x
+\item Felix Titling
+\item Franklin Gothic
+\item Garamond
+\item Gill Sans
+\item Impact
+\item Rockwell
+\item Tahoma
+\item Times New Roman
+\item Verdana
+\end{enumerate}
 
 \section{Statistiken??????}
 %titel esch schrott
