@@ -275,10 +275,12 @@ public class Test {
 				String logFile = logFiles.get(i);
 				testXMLS(logFile, bundle);
 
-				FileWriter w = new FileWriter(logs + logFile + "_stats.txt");
-				w.write("TimeUsed: " + bundle.getUsedTimeMilis() + "\n");
-				w.write("PicturesProcessed: " + bundle.getFilteredPictureCount());
-				w.close();
+				if (bundle != null) {
+					FileWriter w = new FileWriter(logs + logFile + "_stats.txt");
+					w.write("TimeUsed: " + bundle.getUsedTimeMilis() + "\n");
+					w.write("PicturesProcessed: " + bundle.getFilteredPictureCount());
+					w.close();
+				}
 				System.out.println("DID SOMETHING!");
 				//put out
 			} catch (Exception e) {
