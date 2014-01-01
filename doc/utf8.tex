@@ -112,6 +112,8 @@
 
 \section{Problemstellung}
 
+%fokus auf die texterkennung
+
 \subsection{Annahmen}
 Der Benutzer kooperiert, er wird nicht versuchen 
 
@@ -130,22 +132,25 @@ Ein Typisches Problem
 %Müend mer luut Gruntz ha. 
 
 Die Grundidee ist, die Visitenkarten mit dem Cardscanner einzulesen und dessen OCR Output als Solldaten zu verwenden. 
-Das Rohe Cardscan-Bild wird zu den anderen Testbildern hinzugefügt, es ist für unsere Anwendung der Optimalfall. Das Bild ist scharf, hat keinen Lichtverlauf und keinen Hintergrund.
 
-Für die Texterkennung haben wir eine zusätzliche Testumgebung erstellt. Mit dieser können wir genaue Aussagen über die Qualität der Texterkennung zu verschiedenen Schriftarten.
+Für die Texterkennung haben wir eine zusätzliche Testumgebung erstellt. So können wir genaue Aussagen über die Qualität der Texterkennung machen und es vereinfacht das Isolieren eines Erkennungsproblems. Diese Umgebung ist unter \ref{tessTestUmgebung} beschrieben.
  
 Als Metrik wurde F-Measure eingesetzt. 
 
 \subsection{Visitenkarten Testumgebung}
-\subsection{Vergleich Tesseract-Output mit Cardscan}
+%Ordnerstruktur
 
-\subsection{Tesseract Testumgebung}
-Die zusätzliche Testumgebung ist vergleichsweise Trivial. Auf den Testbildern ist immer der selbe Text zu sehen. Tesseract verarbeitet die Bilder und der erkannte Text wird per String-Diff\ mit dem Originaltext verglichen.
-\footnote{\url{http://code.google.com/p/google-diff-match-patch/}}
+\subsubsection{Vergleich Tesseract-Output mit Cardscan}
 
-Die Testbilder wurden mit der Hilfe von Microsoft Word erstellt. Der Text wurde mit ca 30 Pixel Höhe und 
-Wir haben versucht, möglichst weitverbreitete Schriftarten zu verwenden. Dazu haben wir von Webseiten die beliebtesten und meist gehassten Schriftarten genommen\footnote{Quelle: \url{absolutegraphix.co.uk/bestworstfonts.asp?strID=Guest}}.  
-Zusätzlich haben wir Schriftarten hinzugefügt, die speziell für Visitenkarten angepriesen werden\footnote{Quelle:\url{ www.psprint.com/resources/powerful-business-card-fonts/}}. Folgende Schriftarten haben wir im Test berücksichtigt:
+\subsubsection{Scale und Offset}
+%unser cooles gebastel
+
+\subsection{Tesseract Testumgebung}\label{tessTestUmgebung}
+Die zusätzliche Testumgebung ist vergleichsweise Trivial. Auf den Testbildern ist immer der selbe Text zu sehen. Tesseract verarbeitet die Bilder und der erkannte Text wird per String-Diff\footnote{\url{http://code.google.com/p/google-diff-match-patch/}} mit dem Originaltext verglichen.
+
+Der Text hat eine Höhe von ca 30 Pixel, somit hat es in etwa die selbe Auflösung, wie ein klein geschriebener Text auf unseren Visitenkarten-Testbilder.
+Wir haben versucht, möglichst weitverbreitete Schriftarten zu verwenden. Dazu haben wir von Webseiten die beliebtesten und meist gehassten Schriftarten genommen\footnote{Quelle: \url{absolutegraphix.co.uk/bestworstfonts.asp?strID=Guest}}. Extrem ausgefallene wie $Bush Script$ Schriftarten wurden nicht miteinbezogen.
+Zusätzlich haben wir Schriftarten hinzugefügt, die speziell für Visitenkarten empfohlen werden\footnote{Quelle:\url{ www.psprint.com/resources/powerful-business-card-fonts/}}. Folgende Schriftarten haben wir im Test berücksichtigt:
 \begin{itemize}
 \item Agency FB
 \item Arial
@@ -165,13 +170,17 @@ Zusätzlich haben wir Schriftarten hinzugefügt, die speziell für Visitenkarten
 \item Verdana
 \end{itemize}
 
-\section{Statistiken??????}
+Die Ausgabe eines Tests sind zwei CSV Dateien. Eine enthält die Precision, Recall, F-Measure, eine Liste der fehlenden Textstellen und eine Liste der Textstellen, welche nicht im Original vorkommen.
+Die zweite Datei beinhaltet in wievielen Prozent aller Bilder ein Buchstabe fallsch erkannt wurde. Buchstaben, welche nie fallsch erkannt werden nicht aufgeführt.
+
+\section{Optimierungen}
 %titel esch schrott
 
-\subsection{Vergleich Präprozessverfahren}
+\subsection{Optimierung Texterkennung}
+
+\subsection{Optimierung Präprozessierung}
 %STATISTIKEN
 
-\subsection{Vergleich verschiedener Fonts}
 
 \section{Konfigurationen??????}
 %weder en schrott titel
@@ -179,9 +188,9 @@ Zusätzlich haben wir Schriftarten hinzugefügt, die speziell für Visitenkarten
 \section{Fazit}
 
 \subsection{Anforderungen an die Kamera}
-Für eine annehmbare Texterkennung müssen die Buchstaben eine Höhe von mindestens zehn Pixel haben. Das heisst, die Kamera muss eine genügend hohe Auflösung haben. Die Kamera des $Samsung Galaxy S2$ hat eine Auflösung von 8 Megapixel, das führt dazu dass die Buchstaben der Testbilder eine Höhe von 30 bis 60 Pixel haben. Diese Anforderung wird von einem Smartphone erfüllt, welches 2011 erschien. Durch die Abonementregelung von Swisscom, Orange und Sunrise wechseln die meisten Smartphone Benutzer alle zwei Jahre auf ein aktuelles Gerät. Somit ist heute kaum mehr ein Smartphone in Betrieb, welches diese Anforderung nicht erfüllt.
+Für eine annehmbare Texterkennung müssen die Buchstaben eine Höhe von mindestens zehn Pixel haben. Das heisst, die Kamera muss eine genügend hohe Auflösung haben. Die Kamera des $Samsung Galaxy S2$ hat eine Auflösung von 8 Megapixel, das führt dazu dass die Buchstaben der Testbilder eine Höhe von 30 bis 60 Pixel haben. Diese Anforderung wird von einem Smartphone erfüllt, welches 2011 erschien. Die Smartphones, welche heute verkauft werden haben mindestens die selbe Auflösung wie das $Galaxy S2$. Durch die Abonementregelung von Swisscom, Orange und Sunrise wechseln die meisten Smartphone Benutzer alle zwei Jahre auf ein aktuelles Gerät. Somit ist heute kaum mehr ein Smartphone im Betrieb, welches diese Anforderung nicht erfüllt.
 
-Damit der Phansalkar-Algorithmus eine gute Binarisierung durchführen kann, sollte das Bild harte Kanten haben. Die Kamera sollte also ein möglichst scharfes Bild schiessen.
+Damit der Phansalkar-Algorithmus eine gute Binarisierung durchführen kann, sollte das Bild harte Kanten haben. Wenn die Kamera ein scharfes Bild schiesst, kann der Algorithmus eine gute Binarisierung durchführen.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[scale= 0.06]{AMathur.jpg}
