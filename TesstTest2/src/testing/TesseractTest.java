@@ -18,6 +18,7 @@ import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 public class TesseractTest {
 
 	static String testdataFolder;
+	static String logFileName = "deu_charactercode";
 
 	public static void main(String args[]) throws IOException {
 		testdataFolder = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\tesseract-testdata\\";
@@ -26,7 +27,7 @@ public class TesseractTest {
 		File testImagesFolder = new File(testdataFolder + "testimages");
 		File solutionFile = new File(testdataFolder + "solutionText.txt");
 
-		FileWriter fileStream = new FileWriter(testdataFolder + "log.csv");
+		FileWriter fileStream = new FileWriter(testdataFolder + logFileName + ".csv");
 
 		HashMap<Character, Integer> statistics = new HashMap<>();
 		BufferedWriter out = new BufferedWriter(fileStream);
@@ -37,8 +38,9 @@ public class TesseractTest {
 		diff_match_patch diffEngine = new diff_match_patch();
 
 		out.append("Filename;precision;recall;f-measure;inserted String;deleted String\n");
+		File[] content = testImagesFolder.listFiles();
 		//test
-		for (File f : testImagesFolder.listFiles()) {
+		for (File f : content) {
 			int inserted = 0;
 			int deleted = 0;
 			int correct = 0;
@@ -87,22 +89,27 @@ public class TesseractTest {
 		}
 
 		out.close();
-		writeStatisticsFile(testdataFolder + "log_statistics.csv", statistics);
+
+		writeStatisticsFile(testdataFolder + logFileName + "_statistics.csv", statistics, countCharacters(solution), content.length);
 
 	}
 
-	private static void writeStatisticsFile(String file, HashMap<Character, Integer> statistics) {
+	private static void writeStatisticsFile(String file, HashMap<Character, Integer> statistics, HashMap<Character, Integer> counts, int pictureCount) {
 		Iterator<Character> it = statistics.keySet().iterator();
 		FileWriter w = null;
 		try {
 			w = new FileWriter(file);
+			w.write("character; wrong in % of texts");
 			while (it.hasNext()) {
 				Character c = it.next();
 				Integer i = statistics.get(c);
-				w.write(c + ";" + i + "\n");
+				Integer count = counts.get(c);
+				w.write(c + ";" + String.format("%.3f", i / (double) count / pictureCount) + "\n");
 			}
-		} catch (Exception e) {
 
+			w.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			try {
 				w.close();
@@ -120,5 +127,17 @@ public class TesseractTest {
 		}
 		answer.deleteCharAt(answer.length() - 1); //delete last space
 		return answer.toString();
+	}
+
+	private static HashMap<Character, Integer> countCharacters(String solution) {
+		HashMap<Character, Integer> counts = new HashMap<>();
+		for (char c : solution.toCharArray()) {
+			if (!counts.containsKey(c))
+				counts.put(c, 1);
+			Integer i = counts.get(c);
+			counts.remove(c);
+			counts.put(c, i + 1);
+		}
+		return counts;
 	}
 }
