@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import testing.diff_match_patch.Diff;
@@ -15,19 +17,20 @@ import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
 public class TesseractTest {
 
-	static File testImagesFolder;
-	static File testFile;
-	static File logFile;
+	static String testdataFolder;
 
 	public static void main(String args[]) throws IOException {
+		testdataFolder = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\tesseract-testdata\\";
+
 		String solution = null;
-		testImagesFolder = new File("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\tesseract-testdata\\testimages");
-		testFile = new File("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\tesseract-testdata\\solutionText.txt");
+		File testImagesFolder = new File(testdataFolder + "testimages");
+		File solutionFile = new File(testdataFolder + "solutionText.txt");
 
-		FileWriter fileStream = new FileWriter("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\tesseract-testdata\\log.csv");
+		FileWriter fileStream = new FileWriter(testdataFolder + "log.csv");
 
+		HashMap<Character, Integer> statistics = new HashMap<>();
 		BufferedWriter out = new BufferedWriter(fileStream);
-		BufferedReader r = new BufferedReader(new FileReader(testFile));
+		BufferedReader r = new BufferedReader(new FileReader(solutionFile));
 		solution = r.readLine();
 		System.out.println(solution);
 		OCREngine engine = new OCREngine();
@@ -52,6 +55,14 @@ public class TesseractTest {
 					deletedStr.append(d.text);
 					deletedStr.append(" | ");
 
+					for (char c : d.text.toCharArray()) {
+						if (!statistics.containsKey(c))
+							statistics.put(c, 1);
+
+						Integer count = statistics.get(c);
+						statistics.remove(c);
+						statistics.put(c, count + 1);
+					}
 				} else if (d.operation == Operation.INSERT) {
 					//inserted = false positive
 					inserted += d.text.length();
@@ -76,6 +87,28 @@ public class TesseractTest {
 		}
 
 		out.close();
+		writeStatisticsFile(testdataFolder + "log_statistics.csv", statistics);
+
+	}
+
+	private static void writeStatisticsFile(String file, HashMap<Character, Integer> statistics) {
+		Iterator<Character> it = statistics.keySet().iterator();
+		FileWriter w = null;
+		try {
+			w = new FileWriter(file);
+			while (it.hasNext()) {
+				Character c = it.next();
+				Integer i = statistics.get(c);
+				w.write(c + ";" + i + "\n");
+			}
+		} catch (Exception e) {
+
+		} finally {
+			try {
+				w.close();
+			} catch (Exception e) {
+			}
+		}
 	}
 
 	private static String buildResultString(AnalysisResult res) {

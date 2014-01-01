@@ -42,7 +42,7 @@ public class Test {
 		// Add filters to the engine
 		GenericFilterBundle filters = new GenericFilterBundle();
 		filters.appendFilter(new GrayScaleFilter());
-		// filters.appendFilter(new LightFilter());
+		//filters.appendFilter(new LightFilter());
 		//filters.appendFilter(new AutoBinaryFilter());
 		filters.appendFilter(new Phansalkar());
 		//filters.appendFilter(new CloseFilter());
