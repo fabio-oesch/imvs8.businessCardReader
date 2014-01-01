@@ -33,6 +33,8 @@ local.properties
 /target/classes/*
 
 #latex
-.aux
-.log
-.toc
+*.aux
+*.log
+*.toc
+*.out
+*.synctex.gz

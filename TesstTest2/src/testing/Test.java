@@ -47,10 +47,10 @@ public class Test {
 		filters.appendFilter(new Phansalkar());
 		//filters.appendFilter(new CloseFilter());
 
-		testXMLS("_logs.csv", filters);
+		//testXMLS("_logs.csv", filters);
 		// testImageDisplay(filters);
 
-		//testAllConfigurations();
+		testAllConfigurations();
 	}
 
 	/**
@@ -279,9 +279,11 @@ public class Test {
 				w.write("TimeUsed: " + bundle.getUsedTimeMilis() + "\n");
 				w.write("PicturesProcessed: " + bundle.getFilteredPictureCount());
 				w.close();
+				System.out.println("DID SOMETHING!");
 				//put out
 			} catch (Exception e) {
 				/* ignore */
+				e.printStackTrace();
 			}
 		}
 	}

@@ -119,6 +119,7 @@ Der Benutzer kooperiert, er wird nicht versuchen
 
 \subsection{Analyse der Visitenkarten}
 %Unterschiedliche Farben.
+%unterschiedliche fonts
 
 \subsection{Analyse der Handybilder}
 Ein Typisches Problem
@@ -139,8 +140,8 @@ Als Metrik wurde F-Measure eingesetzt.
 \subsection{Vergleich Tesseract-Output mit Cardscan}
 
 \subsection{Tesseract Testumgebung}
-Die zusätzliche Testumgebung ist vergleichsweise Trivial. Auf den Testbildern ist immer der selbe Text zu sehen. Tesseract verarbeitet die Bilder und der erkannte Text wird per String-Diff mit dem Originaltext verglichen.
-http://code.google.com/p/google-diff-match-patch/
+Die zusätzliche Testumgebung ist vergleichsweise Trivial. Auf den Testbildern ist immer der selbe Text zu sehen. Tesseract verarbeitet die Bilder und der erkannte Text wird per String-Diff\ mit dem Originaltext verglichen.
+\footnote{\url{http://code.google.com/p/google-diff-match-patch/}}
 
 Die Testbilder wurden mit der Hilfe von Microsoft Word erstellt. Der Text wurde mit ca 30 Pixel Höhe und 
 Wir haben versucht, möglichst weitverbreitete Schriftarten zu verwenden. Dazu haben wir von Webseiten die beliebtesten und meist gehassten Schriftarten genommen\footnote{Quelle: \url{absolutegraphix.co.uk/bestworstfonts.asp?strID=Guest}}.  
@@ -189,26 +190,33 @@ Damit der Phansalkar-Algorithmus eine gute Binarisierung durchführen kann, soll
 \end{figure}
 
 Wird aber die gleiche Visitenkarte unscharf fotographiert, so wird die Binarisierung massiv schlechter.
+
 \begin{figure}[h!]
 	\centering
-	\includegraphics[scale= 0.05]{BlurredAMathur.jpg}
-	\includegraphics[scale= 0.05]{BlurredAMathurPhansalkar.png}
-	\Caption{ Die gleiche Visitenkarte unscharf fotographiert. Teile de Texts sind nicht mehr im Bild enthalten.
+	\includegraphics[scale= 0.06]{BlurredAMathur.jpg}
+	\includegraphics[scale= 0.06]{BlurredAMathurPhansalkar.png}
+	\caption{ Die gleiche Visitenkarte unscharf fotographiert. Teile de Texts sind nicht mehr im Bild enthalten.}
 \end{figure}
 Auch wenn der Text nicht gänzlich fehlt so werden die Buchstaben nur Bruchhaft binarisiert, was zu einer sehr schlechten Texterkennung führt.
 \begin{figure}[h!]
 	\centering
-	\includegraphics[scale= 0.1]{BlurredAMathurPhansalkarZoom.png}
-	\Caption{Ausschnitt des unscharfen Bildes zusammen mit dem von Tesseract erkannten Text.
+	\includegraphics[scale= 0.3]{BlurredAMathurPhansalkarZoom.png}
+	\caption{Ausschnitt des unscharfen Bildes zusammen mit dem von Tesseract erkannten Text.
 	Der erkannte Text steht über den Boundingboxen geschrieben.}
 \end{figure}
 
 	
 
 \section{Quellen}
+
 \begin{enumerate}
 \item \url{www.psprint.com/resources/powerful-business-card-fonts/} Aufgerufen am 20.12.2013
 \item \url{absolutegraphix.co.uk/bestworstfonts.asp?strID=Guest} Aufgerufen am 20.12.2013
+\end{enumerate}
+
+\subsection{Tools und Applikationen}
+\begin{enumerate}
+\item \url{http://code.google.com/p/google-diff-match-patch/}
 \end{enumerate}
 
 \section{Anhang}
