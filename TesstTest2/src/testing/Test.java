@@ -1,5 +1,7 @@
 package testing;
 
+import ij.process.AutoThresholder.Method;
+
 import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -213,20 +215,22 @@ public class Test {
 		bundles.add(b);
 		logFiles.add(subF + "GrayScaleOnly");
 
-		//test autothresholdbinarizer
-		b = new GenericFilterBundle();
-		b.appendFilter(new GrayScaleFilter());
-		b.appendFilter(new AutoBinaryFilter());
-		bundles.add(b);
-		logFiles.add(subF + "autothresholdbinarizer");
+		//test all autothreshold strategies
+		Method[] all = Method.values();
+		for (int i = 0; i < all.length; i++) {
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new AutoBinaryFilter(all[i]));
+			bundles.add(b);
+			logFiles.add(subF + "AutoThreshold" + all[i].toString());
 
-		//test autothresholdbinarizer with lightfilter
-		b = new GenericFilterBundle();
-		b.appendFilter(new GrayScaleFilter());
-		b.appendFilter(new LightFilter());
-		b.appendFilter(new AutoBinaryFilter());
-		bundles.add(b);
-		logFiles.add(subF + "AutothresholdBinarizerWithLightfilter");
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new LightFilter());
+			b.appendFilter(new AutoBinaryFilter(all[i]));
+			bundles.add(b);
+			logFiles.add(subF + "AutoThreshol" + all[i].toString() + "WithLightFilter");
+		}
 
 		//test AdaptiveBinarizerSauvola
 		b = new GenericFilterBundle();

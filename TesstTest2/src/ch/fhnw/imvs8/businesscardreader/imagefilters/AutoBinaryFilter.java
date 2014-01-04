@@ -22,7 +22,11 @@ public class AutoBinaryFilter extends BinarizerAlgorithm {
 	 * uses the MaxEntropy strategy
 	 */
 	public AutoBinaryFilter() {
-		m = Method.MaxEntropy;
+		this(Method.MaxEntropy);
+	}
+
+	public AutoBinaryFilter(Method m) {
+		this.m = m;
 	}
 
 	@Override
