@@ -27,13 +27,13 @@ public class AutoBinaryFilter extends BinarizerAlgorithm {
 
 	@Override
 	public ImagePlus filter(ImagePlus im) {
-		// ImageProcessor p = im.getProcessor();
-		//
-		// p.setAutoThreshold(Method.MaxEntropy, false);
-		// p.autoThreshold();
-		//
-		// return im;
-		return Phansalkar(im);
+		ImageProcessor p = im.getProcessor();
+
+		p.setAutoThreshold(Method.MaxEntropy, false);
+		p.autoThreshold();
+
+		return im;
+		//return Phansalkar(im);
 	}
 
 	@Override

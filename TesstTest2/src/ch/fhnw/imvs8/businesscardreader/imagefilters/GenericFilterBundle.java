@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This is the most generic filter bundle. It contains a list of filters and
- * applies them sequentially
+ * This is the generic filter bundle. It contains a list of filters and applies
+ * them sequentially
  * 
  * @author Jon
  */

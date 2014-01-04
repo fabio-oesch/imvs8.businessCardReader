@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import testing.diff_match_patch.Diff;
@@ -15,27 +17,30 @@ import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
 public class TesseractTest {
 
-	static File testImagesFolder;
-	static File testFile;
-	static File logFile;
+	static String testdataFolder;
+	static String logFileName = "deu_charactercode";
 
 	public static void main(String args[]) throws IOException {
+		testdataFolder = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\tesseract-testdata\\";
+
 		String solution = null;
-		testImagesFolder = new File("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\tesseract-testdata\\testimages");
-		testFile = new File("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\tesseract-testdata\\solutionText.txt");
+		File testImagesFolder = new File(testdataFolder + "testimages");
+		File solutionFile = new File(testdataFolder + "solutionText.txt");
 
-		FileWriter fileStream = new FileWriter("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\tesseract-testdata\\log.csv");
+		FileWriter fileStream = new FileWriter(testdataFolder + logFileName + ".csv");
 
+		HashMap<Character, Integer> statistics = new HashMap<>();
 		BufferedWriter out = new BufferedWriter(fileStream);
-		BufferedReader r = new BufferedReader(new FileReader(testFile));
+		BufferedReader r = new BufferedReader(new FileReader(solutionFile));
 		solution = r.readLine();
 		System.out.println(solution);
 		OCREngine engine = new OCREngine();
 		diff_match_patch diffEngine = new diff_match_patch();
 
 		out.append("Filename;precision;recall;f-measure;inserted String;deleted String\n");
+		File[] content = testImagesFolder.listFiles();
 		//test
-		for (File f : testImagesFolder.listFiles()) {
+		for (File f : content) {
 			int inserted = 0;
 			int deleted = 0;
 			int correct = 0;
@@ -52,6 +57,14 @@ public class TesseractTest {
 					deletedStr.append(d.text);
 					deletedStr.append(" | ");
 
+					for (char c : d.text.toCharArray()) {
+						if (!statistics.containsKey(c))
+							statistics.put(c, 1);
+
+						Integer count = statistics.get(c);
+						statistics.remove(c);
+						statistics.put(c, count + 1);
+					}
 				} else if (d.operation == Operation.INSERT) {
 					//inserted = false positive
 					inserted += d.text.length();
@@ -76,6 +89,33 @@ public class TesseractTest {
 		}
 
 		out.close();
+
+		writeStatisticsFile(testdataFolder + logFileName + "_statistics.csv", statistics, countCharacters(solution), content.length);
+
+	}
+
+	private static void writeStatisticsFile(String file, HashMap<Character, Integer> statistics, HashMap<Character, Integer> counts, int pictureCount) {
+		Iterator<Character> it = statistics.keySet().iterator();
+		FileWriter w = null;
+		try {
+			w = new FileWriter(file);
+			w.write("character; wrong in % of texts");
+			while (it.hasNext()) {
+				Character c = it.next();
+				Integer i = statistics.get(c);
+				Integer count = counts.get(c);
+				w.write(c + ";" + String.format("%.3f", i / (double) count / pictureCount) + "\n");
+			}
+
+			w.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				w.close();
+			} catch (Exception e) {
+			}
+		}
 	}
 
 	private static String buildResultString(AnalysisResult res) {
@@ -87,5 +127,17 @@ public class TesseractTest {
 		}
 		answer.deleteCharAt(answer.length() - 1); //delete last space
 		return answer.toString();
+	}
+
+	private static HashMap<Character, Integer> countCharacters(String solution) {
+		HashMap<Character, Integer> counts = new HashMap<>();
+		for (char c : solution.toCharArray()) {
+			if (!counts.containsKey(c))
+				counts.put(c, 1);
+			Integer i = counts.get(c);
+			counts.remove(c);
+			counts.put(c, i + 1);
+		}
+		return counts;
 	}
 }

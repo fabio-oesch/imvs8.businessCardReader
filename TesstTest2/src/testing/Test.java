@@ -5,12 +5,17 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import ch.fhnw.imvs8.businesscardreader.imagefilters.AutoBinaryFilter;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.CloseFilter;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.Bernsen;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.FilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.LightFilter;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.Otsu;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.Phansalkar;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.Sauvola;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
@@ -37,13 +42,15 @@ public class Test {
 		// Add filters to the engine
 		GenericFilterBundle filters = new GenericFilterBundle();
 		filters.appendFilter(new GrayScaleFilter());
-		// filters.appendFilter(new LightFilter());
-		filters.appendFilter(new AutoBinaryFilter());
-		filters.appendFilter(new CloseFilter());
+		//filters.appendFilter(new LightFilter());
+		//filters.appendFilter(new AutoBinaryFilter());
+		filters.appendFilter(new Phansalkar());
+		//filters.appendFilter(new CloseFilter());
 
-		testXMLS("_logs.csv", filters);
-		// testImageDisplay();
+		//testXMLS("_logs.csv", filters);
+		// testImageDisplay(filters);
 
+		testAllConfigurations();
 	}
 
 	/**
@@ -54,9 +61,7 @@ public class Test {
 	 * 
 	 * @throws IOException
 	 */
-	public static void testImageDisplay() throws IOException {
-		GenericFilterBundle filters = new GenericFilterBundle();
-		filters.appendFilter(new GrayScaleFilter());
+	public static void testImageDisplay(GenericFilterBundle filters) throws IOException {
 		OCREngine engine = new OCREngine(filters);
 
 		String[] folderList = folder.list();
@@ -204,7 +209,84 @@ public class Test {
 		bwLog.close();
 	}
 
-	public void testAllConfigurations() {
+	public static final void testAllConfigurations() {
+		String subF = "AllConfigurations\\";
+		ArrayList<GenericFilterBundle> bundles = new ArrayList<>();
+		ArrayList<String> logFiles = new ArrayList<>();
 
+		GenericFilterBundle b;
+
+		//testnothing
+		bundles.add(null);
+		logFiles.add(subF + "NoPreprocessing");
+
+		//test grayscale
+		b = new GenericFilterBundle();
+		b.appendFilter(new GrayScaleFilter());
+		bundles.add(b);
+		logFiles.add(subF + "GrayScaleOnly");
+
+		//test autothresholdbinarizer
+		b = new GenericFilterBundle();
+		b.appendFilter(new GrayScaleFilter());
+		b.appendFilter(new AutoBinaryFilter());
+		bundles.add(b);
+		logFiles.add(subF + "autothresholdbinarizer");
+
+		//test autothresholdbinarizer with lightfilter
+		b = new GenericFilterBundle();
+		b.appendFilter(new GrayScaleFilter());
+		b.appendFilter(new LightFilter());
+		b.appendFilter(new AutoBinaryFilter());
+		bundles.add(b);
+		logFiles.add(subF + "AutothresholdBinarizerWithLightfilter");
+
+		//test AdaptiveBinarizerSauvola
+		b = new GenericFilterBundle();
+		b.appendFilter(new GrayScaleFilter());
+		b.appendFilter(new Sauvola());
+		bundles.add(b);
+		logFiles.add(subF + "AdaptiveBinarizerSauvola");
+
+		//test AdaptiveBinarizerOtsu
+		b = new GenericFilterBundle();
+		b.appendFilter(new GrayScaleFilter());
+		b.appendFilter(new Otsu());
+		bundles.add(b);
+		logFiles.add(subF + "AdaptiveBinarizerOtsu");
+
+		//test AdaptiveBinarizerBernsen
+		b = new GenericFilterBundle();
+		b.appendFilter(new GrayScaleFilter());
+		b.appendFilter(new Bernsen());
+		bundles.add(b);
+		logFiles.add(subF + "AdaptiveBinarizerBernsen");
+
+		//test AdaptiveBinarizerPhansalkar
+		b = new GenericFilterBundle();
+		b.appendFilter(new GrayScaleFilter());
+		b.appendFilter(new Phansalkar());
+		bundles.add(b);
+		logFiles.add(subF + "AdaptiveBinarizerPhansalkar");
+
+		for (int i = 0; i < bundles.size(); i++) {
+			try {
+				GenericFilterBundle bundle = bundles.get(i);
+				String logFile = logFiles.get(i);
+				testXMLS(logFile, bundle);
+
+				if (bundle != null) {
+					FileWriter w = new FileWriter(logs + logFile + "_stats.txt");
+					w.write("TimeUsed: " + bundle.getUsedTimeMilis() + "\n");
+					w.write("PicturesProcessed: " + bundle.getFilteredPictureCount());
+					w.close();
+				}
+				System.out.println("DID SOMETHING!");
+				//put out
+			} catch (Exception e) {
+				/* ignore */
+				e.printStackTrace();
+			}
+		}
 	}
 }
