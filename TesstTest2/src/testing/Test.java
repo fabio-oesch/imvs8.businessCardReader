@@ -43,8 +43,8 @@ public class Test {
 		GenericFilterBundle filters = new GenericFilterBundle();
 		filters.appendFilter(new GrayScaleFilter());
 		//filters.appendFilter(new LightFilter());
-		filters.appendFilter(new AutoBinaryFilter());
-		//filters.appendFilter(new Phansalkar());
+		//filters.appendFilter(new AutoBinaryFilter());
+		filters.appendFilter(new Phansalkar());
 		//filters.appendFilter(new CloseFilter());
 
 		testXMLS("_logs.csv", filters);
@@ -149,6 +149,8 @@ public class Test {
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
 						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.55), 0, 0), analysisResult.getBoundingBox(word).height,
 								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
+						//String bla = analysisResult.getWord(word);
+						//System.out.println(bla);
 					}
 					pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_tesseract.png");
 				}
