@@ -185,7 +185,7 @@ public class Test {
 		BufferedWriter bwLog = new BufferedWriter(fw);
 		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;Average Errors per Picture;unique_attributes;Scale;X Offset;Y Offset \n");
 
-		testXMLForName(engine, "matthias.zimmermann@bsiag.com", bwLog);
+		//testXMLForName(engine, "matthias.zimmermann@bsiag.com", bwLog);
 
 		// tests all the files in the folder
 		String[] folderList = folder.list();
