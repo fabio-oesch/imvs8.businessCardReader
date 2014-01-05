@@ -1,5 +1,7 @@
 package testing;
 
+import ij.process.AutoThresholder.Method;
+
 import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -27,7 +29,7 @@ public class Test {
 	static String logs;
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
-	static boolean generateDebugImages = false;
+	static boolean generateDebugImages = true;
 
 	public static void main(String[] args) throws IOException {
 		boolean schwambi = true;
@@ -47,10 +49,10 @@ public class Test {
 		filters.appendFilter(new Phansalkar());
 		//filters.appendFilter(new CloseFilter());
 
-		//testXMLS("_logs.csv", filters);
-		// testImageDisplay(filters);
+		testXMLS("_logs.csv", filters);
+		//testImageDisplay(filters);
 
-		testAllConfigurations();
+		//testAllConfigurations();
 	}
 
 	/**
@@ -72,12 +74,13 @@ public class Test {
 			PictureDisplayTest pictureDisplay = null;
 			File[] solutionFolderList = solutionFolder.listFiles();
 			for (int file = 0; solutionFolderList != null && file < solutionFolderList.length; file++) {
-				if (!solutionFolderList[file].getAbsolutePath().contains("debug")) {
 
+				if (!solutionFolderList[file].getAbsolutePath().contains("debug") || !solutionFolderList[file].getAbsolutePath().endsWith(".txt")) {
+					System.out.println(solutionFolderList[file]);
 					analysisResult = engine.analyzeImage(solutionFolderList[file]);
 					pictureDisplay = new PictureDisplayTest(solutionFolderList[file]);
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
-						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
+						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.55), 0, 0), analysisResult.getBoundingBox(word).height,
 								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
 					}
 					pictureDisplay.finish(solutionFolderList[file].getAbsolutePath().substring(0, solutionFolderList[file].getAbsolutePath().lastIndexOf('.')) + "test"
@@ -126,7 +129,7 @@ public class Test {
 		File[] testFolderList = testFolder.listFiles();
 		for (int file = 0; file < testFolderList.length; file++) {
 			if (!testFolderList[file].getAbsolutePath().contains("debug") && !testFolderList[file].getAbsolutePath().contains("_scale.txt")) {
-
+				System.out.println(testFolderList[file].getAbsolutePath());
 				AnalysisResult analysisResult = engine.analyzeImage(testFolderList[file]);
 
 				if (file == 0) {
@@ -142,28 +145,14 @@ public class Test {
 				bwLog.write(logline);
 				bw.write(logline);
 
-				/*
-				 * File fuckthat = new
-				 * File(testFolderList[file].getAbsolutePath() + "_scale.txt");
-				 * FileWriter flolw = new
-				 * FileWriter(fuckthat.getAbsoluteFile()); BufferedWriter blolw
-				 * = new BufferedWriter(flolw);
-				 * blolw.write(test.getScannerAttribute().getScale() + "\n" +
-				 * test.getScannerAttribute().getXOffset() + "\n" +
-				 * test.getScannerAttribute().getYOffset()); blolw.close();
-				 */
-				/*
-				 * test.getScannerAttribute().getXOffset() + "\n" +
-				 * test.getScannerAttribute().getYOffset()); blolw.close();
-				 */
-
 				// write really cool debug picture
 				if (generateDebugImages) {
 					PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(testFolderList[file].getAbsolutePath() + "_debug.png"));
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
-						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.5), 0, 0), analysisResult.getBoundingBox(word).height,
+						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.55), 0, 0), analysisResult.getBoundingBox(word).height,
 								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
-
+						//String bla = analysisResult.getWord(word);
+						//System.out.println(bla);
 					}
 					pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_tesseract.png");
 				}
@@ -226,20 +215,22 @@ public class Test {
 		bundles.add(b);
 		logFiles.add(subF + "GrayScaleOnly");
 
-		//test autothresholdbinarizer
-		b = new GenericFilterBundle();
-		b.appendFilter(new GrayScaleFilter());
-		b.appendFilter(new AutoBinaryFilter());
-		bundles.add(b);
-		logFiles.add(subF + "autothresholdbinarizer");
+		//test all autothreshold strategies
+		Method[] all = Method.values();
+		for (int i = 0; i < all.length; i++) {
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new AutoBinaryFilter(all[i]));
+			bundles.add(b);
+			logFiles.add(subF + "AutoThreshold" + all[i].toString());
 
-		//test autothresholdbinarizer with lightfilter
-		b = new GenericFilterBundle();
-		b.appendFilter(new GrayScaleFilter());
-		b.appendFilter(new LightFilter());
-		b.appendFilter(new AutoBinaryFilter());
-		bundles.add(b);
-		logFiles.add(subF + "AutothresholdBinarizerWithLightfilter");
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new LightFilter());
+			b.appendFilter(new AutoBinaryFilter(all[i]));
+			bundles.add(b);
+			logFiles.add(subF + "AutoThreshol" + all[i].toString() + "WithLightFilter");
+		}
 
 		//test AdaptiveBinarizerSauvola
 		b = new GenericFilterBundle();
@@ -281,7 +272,6 @@ public class Test {
 					w.write("PicturesProcessed: " + bundle.getFilteredPictureCount());
 					w.close();
 				}
-				System.out.println("DID SOMETHING!");
 				//put out
 			} catch (Exception e) {
 				/* ignore */
