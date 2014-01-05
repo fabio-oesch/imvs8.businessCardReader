@@ -49,7 +49,8 @@ public class OCREngine {
 
 		// configuration
 		TessAPI1.TessBaseAPIInit3(api, "tessdata", "deu");
-		TessAPI1.TessBaseAPISetPageSegMode(api, TessAPI1.TessPageSegMode.PSM_AUTO);
+		TessAPI1.TessBaseAPISetPageSegMode(api,
+				TessAPI1.TessPageSegMode.PSM_AUTO);
 	}
 
 	/**
@@ -76,9 +77,13 @@ public class OCREngine {
 
 			// image = this.deskew(image);
 			if (this.debugEnabled)
-				ImageIO.write(image, "png", new File(im.getAbsoluteFile() + "_debug.png"));
+				ImageIO.write(image, "png", new File(im.getAbsoluteFile()
+						+ "_debug.png"));
 
-			ByteBuffer buf = ImageIOHelper.convertImageData(image); // require jai-imageio lib to read TIFF
+			ByteBuffer buf = ImageIOHelper.convertImageData(image); // require
+																	// jai-imageio
+																	// lib to
+																	// read TIFF
 
 			// maybe not needed, but still here from the copied
 			int bpp = image.getColorModel().getPixelSize(); // bit per pixel
@@ -86,11 +91,13 @@ public class OCREngine {
 			int bytespl = (int) Math.ceil(image.getWidth() * bpp / 8.0);
 
 			// analyze
-			TessAPI1.TessBaseAPISetImage(this.api, buf, image.getWidth(), image.getHeight(), bytespp, bytespl);
+			TessAPI1.TessBaseAPISetImage(this.api, buf, image.getWidth(),
+					image.getHeight(), bytespp, bytespl);
 			TessAPI1.TessBaseAPIRecognize(this.api, null);
 
 			TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(this.api);
-			TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
+			TessPageIterator pi = TessAPI1
+					.TessResultIteratorGetPageIterator(ri);
 
 			res = this.runThroughResult(im, pi, ri);
 
@@ -111,40 +118,49 @@ public class OCREngine {
 	 * @param ri
 	 * @return
 	 */
-	private AnalysisResult runThroughResult(File im, TessAPI1.TessPageIterator pi, TessResultIterator ri) {
+	private AnalysisResult runThroughResult(File im,
+			TessAPI1.TessPageIterator pi, TessResultIterator ri) {
 		TessAPI1.TessPageIteratorBegin(pi);
 		LinkedList<Float> confidences = new LinkedList<>();
 		LinkedList<Rectangle> bBoxes = new LinkedList<>();
 		LinkedList<String> words = new LinkedList<>();
 
 		do {
-			Pointer ptr = TessAPI1.TessResultIteratorGetUTF8Text(ri, TessPageIteratorLevel.RIL_WORD);
+			Pointer ptr = TessAPI1.TessResultIteratorGetUTF8Text(ri,
+					TessPageIteratorLevel.RIL_WORD);
 
 			// tesseract can return a null string, so if it did that, don't add
 			// it
 			if (ptr != null) {
 				words.add(ptr.getString(0));
-				float conf = TessAPI1.TessResultIteratorConfidence(ri, TessPageIteratorLevel.RIL_WORD);
+				float conf = TessAPI1.TessResultIteratorConfidence(ri,
+						TessPageIteratorLevel.RIL_WORD);
 				confidences.add(conf);
 
 				IntBuffer leftB = IntBuffer.allocate(1);
 				IntBuffer topB = IntBuffer.allocate(1);
 				IntBuffer rightB = IntBuffer.allocate(1);
 				IntBuffer bottomB = IntBuffer.allocate(1);
-				TessAPI1.TessPageIteratorBoundingBox(pi, TessPageIteratorLevel.RIL_WORD, leftB, topB, rightB, bottomB);
+				TessAPI1.TessPageIteratorBoundingBox(pi,
+						TessPageIteratorLevel.RIL_WORD, leftB, topB, rightB,
+						bottomB);
 				int left = leftB.get();
 				int top = topB.get();
 				int right = rightB.get();
 				int bottom = bottomB.get();
-				Rectangle r = new Rectangle(left, top, right - left, bottom - top);
+				Rectangle r = new Rectangle(left, top, right - left, bottom
+						- top);
 				bBoxes.add(r);
 
 				TessAPI1.TessDeleteText(ptr);
 			}
 
-		} while (TessAPI1.TessPageIteratorNext(pi, TessAPI1.TessPageIteratorLevel.RIL_WORD) == TessAPI1.TRUE);
+		} while (TessAPI1.TessPageIteratorNext(pi,
+				TessAPI1.TessPageIteratorLevel.RIL_WORD) == TessAPI1.TRUE);
 
-		return new AnalysisResult(im, new ArrayList<String>(words), new ArrayList<Rectangle>(bBoxes), new ArrayList<Float>(confidences));
+		return new AnalysisResult(im, new ArrayList<String>(words),
+				new ArrayList<Rectangle>(bBoxes), new ArrayList<Float>(
+						confidences));
 	}
 
 	/**
@@ -158,7 +174,8 @@ public class OCREngine {
 	private BufferedImage deskew(BufferedImage bi) {
 		ImageDeskew id = new ImageDeskew(bi);
 		double imageSkewAngle = id.getSkewAngle(); // determine skew angle if
-		if (imageSkewAngle > MINIMUM_DESKEW_THRESHOLD || imageSkewAngle < -MINIMUM_DESKEW_THRESHOLD) {
+		if (imageSkewAngle > MINIMUM_DESKEW_THRESHOLD
+				|| imageSkewAngle < -MINIMUM_DESKEW_THRESHOLD) {
 			return ImageHelper.rotateImage(bi, -imageSkewAngle); // deskew image
 		}
 
