@@ -4,6 +4,7 @@ import ij.ImagePlus;
 import ij.plugin.ContrastEnhancer;
 
 /**
+ * why you no enhance?
  * 
  * @author olry
  * 
