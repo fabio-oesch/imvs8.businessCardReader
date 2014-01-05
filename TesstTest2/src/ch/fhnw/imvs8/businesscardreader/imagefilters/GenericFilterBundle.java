@@ -34,16 +34,21 @@ public class GenericFilterBundle implements FilterBundle {
 	@Override
 	public BufferedImage applyFilters(BufferedImage im) {
 		this.pictureCount++;
-		ImagePlus plus = new ImagePlus("filtered_image", im);
-		long start = System.currentTimeMillis();
+		if (filters.size() > 0) {
 
-		for (ImageFilter f : filters)
-			plus = f.filter(plus);
+			ImagePlus plus = new ImagePlus("filtered_image", im);
+			long start = System.currentTimeMillis();
 
-		long end = System.currentTimeMillis();
-		this.time += end - start;
+			for (ImageFilter f : filters)
+				plus = f.filter(plus);
 
-		return plus.getBufferedImage();
+			long end = System.currentTimeMillis();
+			this.time += end - start;
+
+			return plus.getBufferedImage();
+		} else {
+			return im;
+		}
 	}
 
 	/**

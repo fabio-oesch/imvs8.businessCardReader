@@ -29,7 +29,7 @@ public class Test {
 	static String logs;
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
-	static boolean generateDebugImages = true;
+	static boolean generateDebugImages = false;
 
 	public static void main(String[] args) throws IOException {
 		boolean schwambi = true;
@@ -42,14 +42,14 @@ public class Test {
 		}
 
 		// Add filters to the engine
-		GenericFilterBundle filters = new GenericFilterBundle();
-		filters.appendFilter(new GrayScaleFilter());
+		//GenericFilterBundle filters = new GenericFilterBundle();
+		//filters.appendFilter(new GrayScaleFilter());
 		//filters.appendFilter(new LightFilter());
 		//filters.appendFilter(new AutoBinaryFilter());
-		filters.appendFilter(new Phansalkar());
+		//filters.appendFilter(new Phansalkar());
 		//filters.appendFilter(new CloseFilter());
 
-		testXMLS("_logs.csv", filters);
+		testXMLS("_logs.csv", null);
 		//testImageDisplay(filters);
 
 		//testAllConfigurations();
@@ -184,17 +184,12 @@ public class Test {
 		BufferedWriter bwLog = new BufferedWriter(fw);
 		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;Average Errors per Picture;unique_attributes;Scale;X Offset;Y Offset \n");
 
-		testXMLForName(engine, "alban.frei@zuehlke.com", bwLog);
-
 		// tests all the files in the folder
-
 		String[] folderList = folder.list();
 		for (int folders = 0; folders < folderList.length; folders++) {
 			testXMLForName(engine, folderList[folders], bwLog);
 		}
 
-		// bwLog.write("Average Percentage Errors per Mail: "
-		// + String.format("%.3f", errorsPerMail / folderList.length) + "\n");
 		bwLog.close();
 	}
 
