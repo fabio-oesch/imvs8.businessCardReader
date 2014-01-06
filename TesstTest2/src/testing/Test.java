@@ -53,10 +53,10 @@ public class Test {
 		//filters.appendFilter(new Phansalkar());
 		//filters.appendFilter(new CloseFilter());
 
-		testXMLS("_logs.csv", filters);
+		//testXMLS("_logs.csv", filters);
 		//testImageDisplay(filters);
 
-		//testAllConfigurations();
+		testAllConfigurations();
 	}
 
 	/**
@@ -218,7 +218,7 @@ public class Test {
 		addAutoThreshold(bundles, logFiles, subF);
 
 		//test all adaptive
-		addAdaptiveThreshold(bundles, logFiles, subF);
+		//addAdaptiveThreshold(bundles, logFiles, subF);
 
 		for (int i = 0; i < bundles.size(); i++) {
 			try {
@@ -262,7 +262,7 @@ public class Test {
 			logFiles.add(subF + "Adaptive" + adaptiveAlgos[i].toString());
 		}
 
-		//test with morphology
+		//test with closeFilter
 		for (int i = 0; i < adaptiveAlgos.length; i++) {
 			b = new GenericFilterBundle();
 			b.appendFilter(new GrayScaleFilter());
