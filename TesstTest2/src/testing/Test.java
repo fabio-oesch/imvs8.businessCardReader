@@ -11,6 +11,9 @@ import java.util.ArrayList;
 
 import ch.fhnw.imvs8.businesscardreader.imagefilters.AutoBinaryFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Bernsen;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.BinarizerAlgorithm;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.CloseFilter;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.EnhanceContrast;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.FilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
@@ -29,7 +32,7 @@ public class Test {
 	static String logs;
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
-	static boolean generateDebugImages = true;
+	static boolean generateDebugImages = false;
 
 	public static void main(String[] args) throws IOException {
 		boolean schwambi = true;
@@ -200,6 +203,7 @@ public class Test {
 		String subF = "AllConfigurations\\";
 		ArrayList<GenericFilterBundle> bundles = new ArrayList<>();
 		ArrayList<String> logFiles = new ArrayList<>();
+		BinarizerAlgorithm[] adaptiveAlgos = { new Bernsen(), new Sauvola(), new Otsu(), new Phansalkar() };
 
 		GenericFilterBundle b;
 
@@ -227,36 +231,71 @@ public class Test {
 			b.appendFilter(new LightFilter());
 			b.appendFilter(new AutoBinaryFilter(all[i]));
 			bundles.add(b);
-			logFiles.add(subF + "AutoThreshol" + all[i].toString() + "WithLightFilter");
+			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "LightCorrected");
+
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new EnhanceContrast());
+			b.appendFilter(new AutoBinaryFilter(all[i]));
+			bundles.add(b);
+			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "EnhancedContrast");
+
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new CloseFilter());
+			b.appendFilter(new AutoBinaryFilter(all[i]));
+			bundles.add(b);
+			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "CloseFilter");
 		}
 
-		//test AdaptiveBinarizerSauvola
-		b = new GenericFilterBundle();
-		b.appendFilter(new GrayScaleFilter());
-		b.appendFilter(new Sauvola());
-		bundles.add(b);
-		logFiles.add(subF + "AdaptiveBinarizerSauvola");
+		//test pure adaptive algos
+		for (int i = 0; i < adaptiveAlgos.length; i++) {
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(adaptiveAlgos[i]);
+			bundles.add(b);
+			logFiles.add(subF + "Adaptive" + adaptiveAlgos[i].toString());
+		}
 
-		//test AdaptiveBinarizerOtsu
-		b = new GenericFilterBundle();
-		b.appendFilter(new GrayScaleFilter());
-		b.appendFilter(new Otsu());
-		bundles.add(b);
-		logFiles.add(subF + "AdaptiveBinarizerOtsu");
+		//test with morphology
+		for (int i = 0; i < adaptiveAlgos.length; i++) {
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new CloseFilter());
+			b.appendFilter(adaptiveAlgos[i]);
+			bundles.add(b);
+			logFiles.add(subF + "Adaptive" + adaptiveAlgos[i].toString());
+		}
 
-		//test AdaptiveBinarizerBernsen
-		b = new GenericFilterBundle();
-		b.appendFilter(new GrayScaleFilter());
-		b.appendFilter(new Bernsen());
-		bundles.add(b);
-		logFiles.add(subF + "AdaptiveBinarizerBernsen");
+		//test with morphology
+		for (int i = 0; i < adaptiveAlgos.length; i++) {
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new CloseFilter());
+			b.appendFilter(adaptiveAlgos[i]);
+			bundles.add(b);
+			logFiles.add(subF + "Adaptive" + adaptiveAlgos[i].toString() + "CloseFilter");
+		}
 
-		//test AdaptiveBinarizerPhansalkar
-		b = new GenericFilterBundle();
-		b.appendFilter(new GrayScaleFilter());
-		b.appendFilter(new Phansalkar());
-		bundles.add(b);
-		logFiles.add(subF + "AdaptiveBinarizerPhansalkar");
+		//test with contrast
+		for (int i = 0; i < adaptiveAlgos.length; i++) {
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new EnhanceContrast());
+			b.appendFilter(adaptiveAlgos[i]);
+			bundles.add(b);
+			logFiles.add(subF + "Adaptive" + adaptiveAlgos[i].toString() + "EnhancedContrast");
+		}
+
+		//test with Light
+		for (int i = 0; i < adaptiveAlgos.length; i++) {
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new EnhanceContrast());
+			b.appendFilter(adaptiveAlgos[i]);
+			bundles.add(b);
+			logFiles.add(subF + "Adaptive" + adaptiveAlgos[i].toString() + "LightCorrected");
+		}
 
 		for (int i = 0; i < bundles.size(); i++) {
 			try {

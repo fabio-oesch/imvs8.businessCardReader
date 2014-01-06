@@ -47,13 +47,18 @@ public class Bernsen extends BinarizerAlgorithm {
 			mid_gray = ((min[i] & 0xff) + (max[i] & 0xff)) / 2;
 			temp = pixels[i] & 0x0000ff;
 			if (local_contrast < contrast_threshold)
-				pixels[i] = (mid_gray >= 128) ? object : backg; // Low contrast
+				pixels[i] = mid_gray >= 128 ? object : backg; // Low contrast
 																// region
 			else
-				pixels[i] = (temp >= mid_gray) ? object : backg;
+				pixels[i] = temp >= mid_gray ? object : backg;
 		}
 		// imp.updateAndDraw();
 		return imp;
+	}
+
+	@Override
+	public String toString() {
+		return "Bernsen";
 	}
 
 }
