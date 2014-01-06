@@ -203,51 +203,46 @@ public class Test {
 		String subF = "AllConfigurations\\";
 		ArrayList<GenericFilterBundle> bundles = new ArrayList<>();
 		ArrayList<String> logFiles = new ArrayList<>();
-		BinarizerAlgorithm[] adaptiveAlgos = { new Bernsen(), new Sauvola(), new Otsu(), new Phansalkar() };
-
-		GenericFilterBundle b;
 
 		//testnothing
 		bundles.add(null);
 		logFiles.add(subF + "NoPreprocessing");
 
 		//test grayscale
-		b = new GenericFilterBundle();
+		GenericFilterBundle b = new GenericFilterBundle();
 		b.appendFilter(new GrayScaleFilter());
 		bundles.add(b);
 		logFiles.add(subF + "GrayScaleOnly");
 
 		//test all autothreshold strategies
-		Method[] all = Method.values();
-		for (int i = 0; i < all.length; i++) {
-			b = new GenericFilterBundle();
-			b.appendFilter(new GrayScaleFilter());
-			b.appendFilter(new AutoBinaryFilter(all[i]));
-			bundles.add(b);
-			logFiles.add(subF + "AutoThreshold" + all[i].toString());
+		addAutoThreshold(bundles, logFiles, subF);
 
-			b = new GenericFilterBundle();
-			b.appendFilter(new GrayScaleFilter());
-			b.appendFilter(new LightFilter());
-			b.appendFilter(new AutoBinaryFilter(all[i]));
-			bundles.add(b);
-			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "LightCorrected");
+		//test all adaptive
+		addAdaptiveThreshold(bundles, logFiles, subF);
 
-			b = new GenericFilterBundle();
-			b.appendFilter(new GrayScaleFilter());
-			b.appendFilter(new EnhanceContrast());
-			b.appendFilter(new AutoBinaryFilter(all[i]));
-			bundles.add(b);
-			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "EnhancedContrast");
+		for (int i = 0; i < bundles.size(); i++) {
+			try {
+				GenericFilterBundle bundle = bundles.get(i);
+				String logFile = logFiles.get(i);
+				testXMLS(logFile, bundle);
 
-			b = new GenericFilterBundle();
-			b.appendFilter(new GrayScaleFilter());
-			b.appendFilter(new CloseFilter());
-			b.appendFilter(new AutoBinaryFilter(all[i]));
-			bundles.add(b);
-			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "CloseFilter");
+				if (bundle != null) {
+					FileWriter w = new FileWriter(logs + logFile + "_stats.txt");
+					w.write("TimeUsed: " + bundle.getUsedTimeMilis() + "\n");
+					w.write("PicturesProcessed: " + bundle.getFilteredPictureCount());
+					w.close();
+				}
+				//put out
+			} catch (Exception e) {
+				/* ignore */
+				e.printStackTrace();
+			}
 		}
+	}
 
+	private static void addAdaptiveThreshold(ArrayList<GenericFilterBundle> bundles, ArrayList<String> logFiles, String subF) {
+		BinarizerAlgorithm[] adaptiveAlgos = { new Bernsen(), new Sauvola(), new Otsu(), new Phansalkar() };
+		GenericFilterBundle b;
 		//test pure adaptive algos
 		for (int i = 0; i < adaptiveAlgos.length; i++) {
 			b = new GenericFilterBundle();
@@ -296,24 +291,38 @@ public class Test {
 			bundles.add(b);
 			logFiles.add(subF + "Adaptive" + adaptiveAlgos[i].toString() + "LightCorrected");
 		}
+	}
 
-		for (int i = 0; i < bundles.size(); i++) {
-			try {
-				GenericFilterBundle bundle = bundles.get(i);
-				String logFile = logFiles.get(i);
-				testXMLS(logFile, bundle);
+	private static void addAutoThreshold(ArrayList<GenericFilterBundle> bundles, ArrayList<String> logFiles, String subF) {
+		GenericFilterBundle b;
+		Method[] all = Method.values();
+		for (int i = 0; i < all.length; i++) {
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new AutoBinaryFilter(all[i]));
+			bundles.add(b);
+			logFiles.add(subF + "AutoThreshold" + all[i].toString());
 
-				if (bundle != null) {
-					FileWriter w = new FileWriter(logs + logFile + "_stats.txt");
-					w.write("TimeUsed: " + bundle.getUsedTimeMilis() + "\n");
-					w.write("PicturesProcessed: " + bundle.getFilteredPictureCount());
-					w.close();
-				}
-				//put out
-			} catch (Exception e) {
-				/* ignore */
-				e.printStackTrace();
-			}
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new LightFilter());
+			b.appendFilter(new AutoBinaryFilter(all[i]));
+			bundles.add(b);
+			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "LightCorrected");
+
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new EnhanceContrast());
+			b.appendFilter(new AutoBinaryFilter(all[i]));
+			bundles.add(b);
+			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "EnhancedContrast");
+
+			b = new GenericFilterBundle();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new CloseFilter());
+			b.appendFilter(new AutoBinaryFilter(all[i]));
+			bundles.add(b);
+			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "CloseFilter");
 		}
 	}
 }
