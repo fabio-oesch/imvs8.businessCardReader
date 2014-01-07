@@ -32,7 +32,7 @@ public class Test {
 	static String logs;
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
-	static boolean generateDebugImages = false;
+	static boolean generateDebugImages = true;
 
 	public static void main(String[] args) throws IOException {
 		boolean schwambi = true;
@@ -53,10 +53,10 @@ public class Test {
 		//filters.appendFilter(new Phansalkar());
 		//filters.appendFilter(new CloseFilter());
 
-		//testXMLS("_logs.csv", filters);
+		testXMLS("_logs.csv", filters);
 		//testImageDisplay(filters);
 
-		testAllConfigurations();
+		//testAllConfigurations();
 	}
 
 	/**
@@ -188,7 +188,7 @@ public class Test {
 		BufferedWriter bwLog = new BufferedWriter(fw);
 		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;Average Errors per Picture;unique_attributes;Scale;X Offset;Y Offset \n");
 
-		//testXMLForName(engine, "matthias.zimmermann@bsiag.com", bwLog);
+		testXMLForName(engine, "matthias.zimmermann@bsiag.com", bwLog);
 
 		// tests all the files in the folder
 		String[] folderList = folder.list();
