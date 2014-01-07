@@ -35,22 +35,22 @@ public class Test {
 	static boolean generateDebugImages = true;
 
 	public static void main(String[] args) throws IOException {
-		boolean schwambi = true;
+		boolean schwambi = false;
 		if (schwambi) {
 			folder = new File("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\business-cards");
 			logs = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\Logs\\";
 		} else {
-			folder = new File("/School/Projekt/testdata/business-cards");
-			logs = "/School/Projekt/testdata/Logs/";
+			folder = new File("/Documents/School/Project/testdata/business-cards");
+			logs = "/Documents/School/Project/testdata/Logs/";
 		}
 
 		// Add filters to the engine
 		GenericFilterBundle filters = new GenericFilterBundle();
 		filters.appendFilter(new GrayScaleFilter());
-		filters.appendFilter(new LightFilter());
+		//filters.appendFilter(new LightFilter());
 		//filters.appendFilter(new AutoBinaryFilter());
 		//filters.appendFilter(new EnhanceContrast());
-		//filters.appendFilter(new Phansalkar());
+		filters.appendFilter(new Phansalkar());
 		//filters.appendFilter(new CloseFilter());
 
 		testXMLS("_logs.csv", filters);
@@ -215,7 +215,7 @@ public class Test {
 		logFiles.add(subF + "GrayScaleOnly");
 
 		//test all autothreshold strategies
-		addAutoThreshold(bundles, logFiles, subF);
+		//addAutoThreshold(bundles, logFiles, subF);
 
 		//test all adaptive
 		//addAdaptiveThreshold(bundles, logFiles, subF);
