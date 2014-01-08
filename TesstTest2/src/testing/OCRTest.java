@@ -15,7 +15,7 @@ import testing.diff_match_patch.Operation;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
-public class TesseractTest {
+public class OCRTest {
 
 	static String testdataFolder;
 	static String logFileName = "deu_charactercode";
