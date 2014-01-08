@@ -15,10 +15,10 @@ import java.util.List;
  * @author Jon
  * 
  */
-public class RGBFilterBundle implements Preprocessor {
+public class RGBProcessor implements Preprocessor {
 	private List<ImageFilter> channelFilters;
 
-	public RGBFilterBundle() {
+	public RGBProcessor() {
 		channelFilters = new ArrayList<>(2);
 		// filters.add(new LightFilter());
 		channelFilters.add(new AutoBinaryFilter());
