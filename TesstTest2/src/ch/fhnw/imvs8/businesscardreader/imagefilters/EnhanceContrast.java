@@ -9,7 +9,7 @@ import ij.process.ImageProcessor;
  * @author olry
  * 
  */
-public class EnhanceContrast extends BinarizerAlgorithm {
+public class EnhanceContrast implements ImageFilter {
 	int saturation = 30;
 	private final double percentage = 1.50;
 

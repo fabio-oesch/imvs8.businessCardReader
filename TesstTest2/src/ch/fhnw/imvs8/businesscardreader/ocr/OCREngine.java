@@ -19,10 +19,7 @@ import net.sourceforge.tess4j.TessAPI1.TessPageIteratorLevel;
 import net.sourceforge.tess4j.TessAPI1.TessResultIterator;
 import net.sourceforge.vietocr.ImageHelper;
 import net.sourceforge.vietocr.ImageIOHelper;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.AutoBinaryFilter;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.FilterBundle;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.Preprocessor;
 
 import com.recognition.software.jdeskew.ImageDeskew;
 import com.sun.jna.Pointer;
@@ -36,14 +33,14 @@ import com.sun.jna.Pointer;
 public class OCREngine {
 	private static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
 	private net.sourceforge.tess4j.TessAPI1.TessBaseAPI api;
-	private FilterBundle bundle;
+	private Preprocessor bundle;
 	private boolean debugEnabled = false;
 
 	public OCREngine() {
 		this(null);
 	}
 
-	public OCREngine(FilterBundle bundle) {
+	public OCREngine(Preprocessor bundle) {
 		this.bundle = bundle;
 		api = TessAPI1.TessBaseAPICreate();
 
@@ -74,7 +71,7 @@ public class OCREngine {
 			if (bundle != null)
 				image = this.bundle.applyFilters(image);
 
-			image = this.deskew(image);
+			//image = this.deskew(image);
 			if (this.debugEnabled)
 				ImageIO.write(image, "png", new File(im.getAbsoluteFile() + "_debug.png"));
 
@@ -166,20 +163,5 @@ public class OCREngine {
 		}
 
 		return bi;
-	}
-
-	public static void main(String[] args) throws Exception {
-		// AnalysisResult res = new AnalysisResult(new File("htconex.jpg"));
-		// res.readMetaInfo();
-
-		//String file = "C:/School/Projekt/testdata/business-cards/aku@bestence.com/testimages/IMAG0234.jpg";
-		String file = "C:/Users/Jon/FHNW/IP5/testdata/business-cards/aku@bestence.com/testimages/IMAG0234.jpg";
-		GenericFilterBundle bundle = new GenericFilterBundle();
-		bundle.appendFilter(new GrayScaleFilter());
-		// bundle.appendFilter(new LightFilter());
-		bundle.appendFilter(new AutoBinaryFilter());
-		BufferedImage image = ImageIO.read(new FileInputStream(file));
-		image = bundle.applyFilters(image);
-		ImageIO.write(image, "png", new File(file + "_debug.png"));
 	}
 }

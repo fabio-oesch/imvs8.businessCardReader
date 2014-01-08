@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
  * @author Jon
  * 
  */
-public interface FilterBundle {
+public interface Preprocessor {
 
 	/**
 	 * @param im

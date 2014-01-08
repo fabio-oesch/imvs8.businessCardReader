@@ -7,17 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This is the generic filter bundle. It contains a list of filters and applies
- * them sequentially
+ * This is the generic filter processor. It contains a list of filters and
+ * applies them sequentially
  * 
  * @author Jon
  */
-public class GenericFilterBundle implements FilterBundle {
+public class GenericFilterProcessor implements Preprocessor {
 	List<ImageFilter> filters;
 	private long time;
 	private int pictureCount;
 
-	public GenericFilterBundle() {
+	public GenericFilterProcessor() {
 		this(new ArrayList<ImageFilter>(10));
 	}
 
@@ -25,7 +25,7 @@ public class GenericFilterBundle implements FilterBundle {
 	 * @param filters
 	 *            to use
 	 */
-	public GenericFilterBundle(List<ImageFilter> filters) {
+	public GenericFilterProcessor(List<ImageFilter> filters) {
 		this.filters = filters;
 		this.time = 0;
 		this.pictureCount = 0;

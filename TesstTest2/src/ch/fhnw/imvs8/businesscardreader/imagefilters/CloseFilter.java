@@ -10,18 +10,11 @@ public class CloseFilter implements ImageFilter {
 
 	@Override
 	public ImagePlus filter(ImagePlus im) {
-		// ByteProcessor p = new ByteProcessor(im.getImage());
-		// int[] filter = { 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0 };
-		// int[] filter = { 0, 1, 0, 1, 1, 1, 0, 1, 0 };
-		// p.applyTable(filter);
-		// p.filter(ImageProcessor.MAX);
-		// p.filter(ImageProcessor.MIN);
-		// p.dilate(100, 0);
-		// p.erode();
-		return erode(dilate(im));
+
+		return dilate(erode(im));
 	}
 
-	ImagePlus dilate(ImagePlus image) {
+	private ImagePlus dilate(ImagePlus image) {
 		int width = image.getWidth();
 		int height = image.getHeight();
 		ImageProcessor p = image.getProcessor();
@@ -49,7 +42,7 @@ public class CloseFilter implements ImageFilter {
 		return image;
 	}
 
-	ImagePlus dilateK(ImagePlus image, int k) {
+	private ImagePlus dilateK(ImagePlus image, int k) {
 		int width = image.getWidth();
 		int height = image.getHeight();
 		ImageProcessor p = manhattan(image.getProcessor(), width, height);
@@ -62,7 +55,7 @@ public class CloseFilter implements ImageFilter {
 	}
 
 	// O(n^2) solution to find the Manhattan distance to "on" pixels in a two dimension array
-	ImageProcessor manhattan(ImageProcessor p, int width, int height) {
+	private ImageProcessor manhattan(ImageProcessor p, int width, int height) {
 		// traverse from top left to bottom right
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
@@ -98,7 +91,7 @@ public class CloseFilter implements ImageFilter {
 		return p;
 	}
 
-	ImagePlus erode(ImagePlus image) {
+	private ImagePlus erode(ImagePlus image) {
 		int width = image.getWidth();
 		int height = image.getHeight();
 		ImageProcessor p = image.getProcessor();

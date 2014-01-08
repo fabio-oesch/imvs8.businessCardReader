@@ -14,8 +14,8 @@ import ch.fhnw.imvs8.businesscardreader.imagefilters.Bernsen;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.BinarizerAlgorithm;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.CloseFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.EnhanceContrast;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.FilterBundle;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.Preprocessor;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterProcessor;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.LightFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Otsu;
@@ -25,17 +25,16 @@ import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
 public class Test {
-
 	// path to place where business cards are
 	static File folder;
 	// path to place where logs are stored
 	static String logs;
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
-	static boolean generateDebugImages = true;
+	static boolean generateDebugImages = false;
 
 	public static void main(String[] args) throws IOException {
-		boolean schwambi = false;
+		boolean schwambi = true;
 		if (schwambi) {
 			folder = new File("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\business-cards");
 			logs = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\Logs\\";
@@ -45,7 +44,7 @@ public class Test {
 		}
 
 		// Add filters to the engine
-		GenericFilterBundle filters = new GenericFilterBundle();
+		GenericFilterProcessor filters = new GenericFilterProcessor();
 		filters.appendFilter(new GrayScaleFilter());
 		//filters.appendFilter(new LightFilter());
 		//filters.appendFilter(new AutoBinaryFilter());
@@ -67,7 +66,7 @@ public class Test {
 	 * 
 	 * @throws IOException
 	 */
-	public static void testImageDisplay(GenericFilterBundle filters) throws IOException {
+	public static void testImageDisplay(GenericFilterProcessor filters) throws IOException {
 		OCREngine engine = new OCREngine(filters);
 
 		String[] folderList = folder.list();
@@ -173,7 +172,7 @@ public class Test {
 	 * @throws IOException
 	 *             needs permission to write into a file and create it
 	 */
-	public static void testXMLS(String logName, FilterBundle filters) throws IOException {
+	public static void testXMLS(String logName, Preprocessor filters) throws IOException {
 		OCREngine engine = new OCREngine(filters);
 
 		if (generateDebugImages)
@@ -201,7 +200,7 @@ public class Test {
 
 	public static final void testAllConfigurations() {
 		String subF = "AllConfigurations\\";
-		ArrayList<GenericFilterBundle> bundles = new ArrayList<>();
+		ArrayList<GenericFilterProcessor> bundles = new ArrayList<>();
 		ArrayList<String> logFiles = new ArrayList<>();
 
 		//testnothing
@@ -209,7 +208,7 @@ public class Test {
 		logFiles.add(subF + "NoPreprocessing");
 
 		//test grayscale
-		GenericFilterBundle b = new GenericFilterBundle();
+		GenericFilterProcessor b = new GenericFilterProcessor();
 		b.appendFilter(new GrayScaleFilter());
 		bundles.add(b);
 		logFiles.add(subF + "GrayScaleOnly");
@@ -222,7 +221,7 @@ public class Test {
 
 		for (int i = 0; i < bundles.size(); i++) {
 			try {
-				GenericFilterBundle bundle = bundles.get(i);
+				GenericFilterProcessor bundle = bundles.get(i);
 				String logFile = logFiles.get(i);
 				testXMLS(logFile, bundle);
 
@@ -240,12 +239,12 @@ public class Test {
 		}
 	}
 
-	private static void addAdaptiveThreshold(ArrayList<GenericFilterBundle> bundles, ArrayList<String> logFiles, String subF) {
+	private static void addAdaptiveThreshold(ArrayList<GenericFilterProcessor> bundles, ArrayList<String> logFiles, String subF) {
 		BinarizerAlgorithm[] adaptiveAlgos = { new Bernsen(), new Sauvola(), new Otsu(), new Phansalkar() };
-		GenericFilterBundle b;
+		GenericFilterProcessor b;
 		//test pure adaptive algos
 		for (int i = 0; i < adaptiveAlgos.length; i++) {
-			b = new GenericFilterBundle();
+			b = new GenericFilterProcessor();
 			b.appendFilter(new GrayScaleFilter());
 			b.appendFilter(adaptiveAlgos[i]);
 			bundles.add(b);
@@ -254,7 +253,7 @@ public class Test {
 
 		//test with morphology
 		for (int i = 0; i < adaptiveAlgos.length; i++) {
-			b = new GenericFilterBundle();
+			b = new GenericFilterProcessor();
 			b.appendFilter(new GrayScaleFilter());
 			b.appendFilter(new CloseFilter());
 			b.appendFilter(adaptiveAlgos[i]);
@@ -264,7 +263,7 @@ public class Test {
 
 		//test with closeFilter
 		for (int i = 0; i < adaptiveAlgos.length; i++) {
-			b = new GenericFilterBundle();
+			b = new GenericFilterProcessor();
 			b.appendFilter(new GrayScaleFilter());
 			b.appendFilter(new CloseFilter());
 			b.appendFilter(adaptiveAlgos[i]);
@@ -274,7 +273,7 @@ public class Test {
 
 		//test with contrast
 		for (int i = 0; i < adaptiveAlgos.length; i++) {
-			b = new GenericFilterBundle();
+			b = new GenericFilterProcessor();
 			b.appendFilter(new GrayScaleFilter());
 			b.appendFilter(new EnhanceContrast());
 			b.appendFilter(adaptiveAlgos[i]);
@@ -284,7 +283,7 @@ public class Test {
 
 		//test with Light
 		for (int i = 0; i < adaptiveAlgos.length; i++) {
-			b = new GenericFilterBundle();
+			b = new GenericFilterProcessor();
 			b.appendFilter(new GrayScaleFilter());
 			b.appendFilter(new EnhanceContrast());
 			b.appendFilter(adaptiveAlgos[i]);
@@ -293,31 +292,31 @@ public class Test {
 		}
 	}
 
-	private static void addAutoThreshold(ArrayList<GenericFilterBundle> bundles, ArrayList<String> logFiles, String subF) {
-		GenericFilterBundle b;
+	private static void addAutoThreshold(ArrayList<GenericFilterProcessor> bundles, ArrayList<String> logFiles, String subF) {
+		GenericFilterProcessor b;
 		Method[] all = Method.values();
 		for (int i = 0; i < all.length; i++) {
-			b = new GenericFilterBundle();
+			b = new GenericFilterProcessor();
 			b.appendFilter(new GrayScaleFilter());
 			b.appendFilter(new AutoBinaryFilter(all[i]));
 			bundles.add(b);
 			logFiles.add(subF + "AutoThreshold" + all[i].toString());
 
-			b = new GenericFilterBundle();
+			b = new GenericFilterProcessor();
 			b.appendFilter(new GrayScaleFilter());
 			b.appendFilter(new LightFilter());
 			b.appendFilter(new AutoBinaryFilter(all[i]));
 			bundles.add(b);
 			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "LightCorrected");
 
-			b = new GenericFilterBundle();
+			b = new GenericFilterProcessor();
 			b.appendFilter(new GrayScaleFilter());
 			b.appendFilter(new EnhanceContrast());
 			b.appendFilter(new AutoBinaryFilter(all[i]));
 			bundles.add(b);
 			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "EnhancedContrast");
 
-			b = new GenericFilterBundle();
+			b = new GenericFilterProcessor();
 			b.appendFilter(new GrayScaleFilter());
 			b.appendFilter(new CloseFilter());
 			b.appendFilter(new AutoBinaryFilter(all[i]));

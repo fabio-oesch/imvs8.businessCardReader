@@ -15,7 +15,7 @@ import java.util.List;
  * @author Jon
  * 
  */
-public class RGBFilterBundle implements FilterBundle {
+public class RGBFilterBundle implements Preprocessor {
 	private List<ImageFilter> channelFilters;
 
 	public RGBFilterBundle() {
