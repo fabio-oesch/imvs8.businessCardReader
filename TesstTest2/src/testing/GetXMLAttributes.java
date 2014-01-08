@@ -30,6 +30,7 @@ public final class GetXMLAttributes {
 	private int falsePositive;
 	private int uniqueScannerCount;
 	private int uniqueTesseractCount;
+	private int boundingboxTruePositive;
 
 	/**
 	 * This method gets an analysisResult object and returns an array list of
@@ -155,6 +156,9 @@ public final class GetXMLAttributes {
 				}
 			}
 		}
+		
+		// get truepositives for the bounding boxes
+		boundingboxTruePositive = falsePositive;
 		// get all bounding boxes which are not a scanner attribute
 		falsePositive = tesseractAttribute.size() - falsePositive;
 
@@ -338,5 +342,9 @@ public final class GetXMLAttributes {
 
 	public int getUniqueTesseractCount() {
 		return this.uniqueTesseractCount;
+	}
+
+	public int getBoundingboxTruePositive() {
+		return this.boundingboxTruePositive;
 	}
 }

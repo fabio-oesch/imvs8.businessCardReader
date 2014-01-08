@@ -17,7 +17,7 @@ public class XMLTest {
 
 	// the XML data structure which has the xml attributes of the tesseract file
 	// and attributes of the scanner file
-	private ArrayList<ScannerAttributes> xMLScanner;
+	private final ArrayList<ScannerAttributes> xMLScanner;
 	// count of errors
 	private double error = 0;
 	// count of xmlScannerAttributes
@@ -27,13 +27,19 @@ public class XMLTest {
 
 	// f measure
 	private double truePositive;
-	private double falsePositive;
+	private final double falsePositive;
 	private double falseNegative;
-	private int uniqueTessCount;
-	private int uniqueScannerCount;
+	private final int uniqueTessCount;
+	private final int uniqueScannerCount;
+
+	// f measure boundingbox
+	private final double boundingboxTruePositive;
+	private final double boundingboxFalsePositive;
+	private double boundingboxFalseNegative;
 
 	/**
-	 * XMLTest gets the attributes of the files through GetXMLAttributes and matches the strings to each other
+	 * XMLTest gets the attributes of the files through GetXMLAttributes and
+	 * matches the strings to each other
 	 * 
 	 * @param scannerFileName
 	 *            the location of the file where the scanner xml is
@@ -43,8 +49,8 @@ public class XMLTest {
 	 *            name of the test
 	 * @throws IOException
 	 */
-	public XMLTest(File scannerFileName, File tesseractFileName, AnalysisResult analysisResult,
-			BufferedWriter bw) throws IOException {
+	public XMLTest(File scannerFileName, File tesseractFileName, AnalysisResult analysisResult, BufferedWriter bw)
+			throws IOException {
 		this.bw = bw;
 
 		GetXMLAttributes xmlAttributes = new GetXMLAttributes();
@@ -56,6 +62,10 @@ public class XMLTest {
 		this.uniqueTessCount = xmlAttributes.getUniqueTesseractCount();
 		falsePositive = xmlAttributes.getFalsePositive();
 
+		// get truepositive
+		boundingboxTruePositive = xmlAttributes.getBoundingboxTruePositive();
+		boundingboxFalsePositive = falsePositive;
+
 		// Test if the XML Attributes are the same
 		if (xMLScanner != null) {
 			testTextMatch();
@@ -63,7 +73,8 @@ public class XMLTest {
 	}
 
 	/**
-	 * goes through all the catogeries of the XMLScanner file and checks if they are the same
+	 * goes through all the catogeries of the XMLScanner file and checks if they
+	 * are the same
 	 * 
 	 * @throws IOException
 	 */
@@ -77,8 +88,8 @@ public class XMLTest {
 	}
 
 	/**
-	 * Checks if the Attributes at the location index of the Scanner file the same attribute is as the one
-	 * from the tesseract file
+	 * Checks if the Attributes at the location index of the Scanner file the
+	 * same attribute is as the one from the tesseract file
 	 * 
 	 * @param scannerCategories
 	 *            goes through the categories of the scanner file xml
@@ -89,19 +100,24 @@ public class XMLTest {
 		// builds a string with the elements which are in the data structure in
 		// the specific category
 		for (int index = 0; index < xMLScanner.get(scannerCategories).getTessAtts().size(); index++) {
-			tesseractString.append(xMLScanner.get(scannerCategories).getTessAtts().get(index)
-					.getAttributeText());
+			tesseractString.append(xMLScanner.get(scannerCategories).getTessAtts().get(index).getAttributeText());
+		}
+
+		int temp = xMLScanner.get(scannerCategories).getAttributeText().split(" ").length
+				- xMLScanner.get(scannerCategories).getTessAtts().size();
+
+		if (temp > 0) {
+			boundingboxFalseNegative += temp;
 		}
 
 		// check if scanner attribute (- spaces) are not the same as the
 		// tesseract attributes
-		if (!tesseractString.toString().equals(
-				xMLScanner.get(scannerCategories).getAttributeText().replace(" ", ""))) {
+		if (!tesseractString.toString().equals(xMLScanner.get(scannerCategories).getAttributeText().replace(" ", ""))) {
 			error++;
 			// Print information about the mistake
 
-			bw.write("# Catogory: " + xMLScanner.get(scannerCategories).getAttributeTyp()
-					+ ", tesseract Text: " + tesseractString.toString() + ", scanner text: "
+			bw.write("# Catogory: " + xMLScanner.get(scannerCategories).getAttributeTyp() + ", tesseract Text: "
+					+ tesseractString.toString() + ", scanner text: "
 					+ xMLScanner.get(scannerCategories).getAttributeText().replace(" ", "") + "\n");
 
 		}
@@ -127,6 +143,23 @@ public class XMLTest {
 	public double f_Measure() {
 		double precision = getPrecision();
 		double recall = getRecall();
+		if (precision == 0 && recall == 0) {
+			return 0;
+		}
+		return 2 * (precision * recall / (precision + recall));
+	}
+
+	public double boundingboxGetPrecision() {
+		return boundingboxTruePositive / (boundingboxTruePositive + boundingboxFalsePositive);
+	}
+
+	public double boundingboxGetRecall() {
+		return boundingboxTruePositive / (boundingboxTruePositive + boundingboxFalseNegative);
+	}
+
+	public double boundingboxF_Measure() {
+		double precision = boundingboxGetPrecision();
+		double recall = boundingboxGetRecall();
 		if (precision == 0 && recall == 0) {
 			return 0;
 		}
