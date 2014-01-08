@@ -19,6 +19,6 @@ public interface Preprocessor {
 	 *            image to filter
 	 * @return filtered image. Does not have to be the same object.
 	 */
-	public abstract BufferedImage applyFilters(BufferedImage im);
+	public abstract BufferedImage process(BufferedImage im);
 
 }

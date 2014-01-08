@@ -26,7 +26,7 @@ public class RGBFilterBundle implements Preprocessor {
 	}
 
 	@Override
-	public BufferedImage applyFilters(BufferedImage im) {
+	public BufferedImage process(BufferedImage im) {
 		ImagePlus plus = new ImagePlus("filtered_image", im);
 
 		//filter image

@@ -69,7 +69,7 @@ public class OCREngine {
 		try {
 			BufferedImage image = ImageIO.read(new FileInputStream(im)); // loadimage
 			if (bundle != null)
-				image = this.bundle.applyFilters(image);
+				image = this.bundle.process(image);
 
 			//image = this.deskew(image);
 			if (this.debugEnabled)

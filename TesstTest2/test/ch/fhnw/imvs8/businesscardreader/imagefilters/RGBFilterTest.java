@@ -26,7 +26,7 @@ public class RGBFilterTest {
 					colorImg)));
 
 			RGBFilterBundle bundle = new RGBFilterBundle();
-			BufferedImage out = bundle.applyFilters(image);
+			BufferedImage out = bundle.process(image);
 			if (ImageIO.write(out, "png", new File("RGBFilterTest.png"))) {
 
 			} else

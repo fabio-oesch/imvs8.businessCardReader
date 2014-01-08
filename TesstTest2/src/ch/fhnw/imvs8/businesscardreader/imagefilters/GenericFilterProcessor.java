@@ -32,7 +32,7 @@ public class GenericFilterProcessor implements Preprocessor {
 	}
 
 	@Override
-	public BufferedImage applyFilters(BufferedImage im) {
+	public BufferedImage process(BufferedImage im) {
 		this.pictureCount++;
 		if (filters.size() > 0) {
 
