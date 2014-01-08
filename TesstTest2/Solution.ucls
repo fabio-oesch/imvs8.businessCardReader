@@ -58,29 +58,29 @@
     project="BusinessCardReader" 
     file="/BusinessCardReader/src/ch/fhnw/imvs8/businesscardreader/imagefilters/BinarizerAlgorithm.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="96" y="729"/>    
+    <position height="-1" width="-1" x="102" y="725"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <realization id="7">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="3"/>  
-  </realization>  
-  <realization id="8">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="5"/>  
-  </realization>  
-  <association id="9">    
+  <association id="7">    
     <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="10" name="filters"/>      
-      <multiplicity id="11" minimum="0" maximum="2147483647"/>    
+      <attribute id="8" name="filters"/>      
+      <multiplicity id="9" minimum="0" maximum="2147483647"/>    
     </end>    
     <end type="TARGET" refId="5" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
+  <realization id="10">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="3"/>  
+  </realization>  
+  <realization id="11">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="5"/>  
+  </realization>  
   <association id="12">    
     <end type="SOURCE" refId="2" navigable="false">      
       <attribute id="13" name="bundle"/>      
