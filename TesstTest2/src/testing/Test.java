@@ -155,7 +155,10 @@ public class Test {
 						+ ";" + String.format("%.3f", test.f_Measure()) + ";"
 						+ String.format("%.3f", test.boundingboxGetPrecision()) + ";"
 						+ String.format("%.3f", test.boundingboxGetRecall()) + ";"
-						+ String.format("%.3f", test.boundingboxF_Measure()) + ";" + "\n";
+						+ String.format("%.3f", test.boundingboxF_Measure()) + ";"
+						+ String.format("%.3f", test.characterGetPrecision()) + ";"
+						+ String.format("%.3f", test.characterGetRecall()) + ";"
+						+ String.format("%.3f", test.characterF_Measure()) + ";" + "\n";
 				bwLog.write(logline);
 				bw.write(logline);
 
@@ -198,7 +201,7 @@ public class Test {
 		}
 		FileWriter fw = new FileWriter(logFile.getAbsoluteFile());
 		BufferedWriter bwLog = new BufferedWriter(fw);
-		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;BoundingBox Precision;BoundingBox Recall;BoundingBox F_Measure \n");
+		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;BoundingBox Precision;BoundingBox Recall;BoundingBox F_Measure; Character Precision; Character Recall; Character F_Measure \n");
 
 		// testXMLForName(engine, "a.mathur@axes-systems.com", bwLog);
 

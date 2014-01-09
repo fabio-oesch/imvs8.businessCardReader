@@ -4,7 +4,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
+import testing.diff_match_patch.Diff;
+import testing.diff_match_patch.Operation;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
 /**
@@ -24,18 +27,25 @@ public class XMLTest {
 	private double countScannerAttributes = 0;
 	// to write into log file
 	BufferedWriter bw;
+	// makes diff of 2 strings
+	diff_match_patch diffEngine = new diff_match_patch();
 
 	// f measure
 	private double truePositive;
-	private final double falsePositive;
+	private double falsePositive;
 	private double falseNegative;
-	private final int uniqueTessCount;
-	private final int uniqueScannerCount;
+	private int uniqueTessCount;
+	private int uniqueScannerCount;
 
 	// f measure boundingbox
-	private final double boundingboxTruePositive;
-	private final double boundingboxFalsePositive;
+	private double boundingboxTruePositive;
+	private double boundingboxFalsePositive;
 	private double boundingboxFalseNegative;
+
+	// f measure character
+	private double characterTruePositive;
+	private double characterFalsePositive;
+	private double characterFalseNegative;
 
 	/**
 	 * XMLTest gets the attributes of the files through GetXMLAttributes and
@@ -122,6 +132,20 @@ public class XMLTest {
 
 		}
 
+		List<Diff> differences = diffEngine.diff_main(
+				xMLScanner.get(scannerCategories).getAttributeText().replace(" ", ""), tesseractString.toString());
+		for (Diff d : differences) {
+			if (d.operation == Operation.DELETE) {
+				// deleted = false negative
+				characterFalseNegative += d.text.length();
+			} else if (d.operation == Operation.INSERT) {
+				// inserted = false positive
+				characterFalsePositive += d.text.length();
+			} else {
+				characterTruePositive += d.text.length();
+			}
+		}
+
 	}
 
 	public double getPercentageErrors() {
@@ -160,6 +184,23 @@ public class XMLTest {
 	public double boundingboxF_Measure() {
 		double precision = boundingboxGetPrecision();
 		double recall = boundingboxGetRecall();
+		if (precision == 0 && recall == 0) {
+			return 0;
+		}
+		return 2 * (precision * recall / (precision + recall));
+	}
+
+	public double characterGetPrecision() {
+		return characterTruePositive / (characterTruePositive + characterFalsePositive);
+	}
+
+	public double characterGetRecall() {
+		return characterTruePositive / (characterTruePositive + characterFalseNegative);
+	}
+
+	public double characterF_Measure() {
+		double precision = characterGetPrecision();
+		double recall = characterGetRecall();
 		if (precision == 0 && recall == 0) {
 			return 0;
 		}
