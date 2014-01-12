@@ -34,7 +34,7 @@ public class Test {
 	static boolean generateDebugImages = false;
 
 	public static void main(String[] args) throws IOException {
-		boolean schwambi = false;
+		boolean schwambi = true;
 		if (schwambi) {
 			folder = new File("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\business-cards");
 			logs = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\Logs\\";
@@ -52,10 +52,9 @@ public class Test {
 		filters.appendFilter(new Phansalkar());
 		// filters.appendFilter(new CloseFilter());
 
-		testXMLS("_logs.csv", filters);
-		// testImageDisplay(filters);
+		//testXMLS("_logs.csv", filters);
 
-		// testAllConfigurations();
+		testAllConfigurations();
 	}
 
 	/**
@@ -78,21 +77,16 @@ public class Test {
 			File[] solutionFolderList = solutionFolder.listFiles();
 			for (int file = 0; solutionFolderList != null && file < solutionFolderList.length; file++) {
 
-				if (!solutionFolderList[file].getAbsolutePath().contains("debug")
-						|| !solutionFolderList[file].getAbsolutePath().endsWith(".txt")) {
+				if (!solutionFolderList[file].getAbsolutePath().contains("debug") || !solutionFolderList[file].getAbsolutePath().endsWith(".txt")) {
 					System.out.println(solutionFolderList[file]);
 					analysisResult = engine.analyzeImage(solutionFolderList[file]);
 					pictureDisplay = new PictureDisplayTest(solutionFolderList[file]);
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
-						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.55), 0,
-								0), analysisResult.getBoundingBox(word).height, analysisResult.getBoundingBox(word),
-								analysisResult.getWord(word));
+						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.55), 0, 0), analysisResult.getBoundingBox(word).height,
+								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
 					}
-					pictureDisplay.finish(solutionFolderList[file].getAbsolutePath().substring(0,
-							solutionFolderList[file].getAbsolutePath().lastIndexOf('.'))
-							+ "test"
-							+ solutionFolderList[file].getAbsolutePath().substring(
-									solutionFolderList[file].getAbsolutePath().lastIndexOf('.')));
+					pictureDisplay.finish(solutionFolderList[file].getAbsolutePath().substring(0, solutionFolderList[file].getAbsolutePath().lastIndexOf('.')) + "test"
+							+ solutionFolderList[file].getAbsolutePath().substring(solutionFolderList[file].getAbsolutePath().lastIndexOf('.')));
 				}
 			}
 
@@ -136,8 +130,7 @@ public class Test {
 		// Compare with every file in folder
 		File[] testFolderList = testFolder.listFiles();
 		for (int file = 0; file < testFolderList.length; file++) {
-			if (!testFolderList[file].getAbsolutePath().contains("debug")
-					&& !testFolderList[file].getAbsolutePath().contains("_scale.txt")) {
+			if (!testFolderList[file].getAbsolutePath().contains("debug") && !testFolderList[file].getAbsolutePath().contains("_scale.txt")) {
 				System.out.println(testFolderList[file].getAbsolutePath());
 				AnalysisResult analysisResult = engine.analyzeImage(testFolderList[file]);
 
@@ -145,31 +138,24 @@ public class Test {
 					bw.write("# of pictures: " + testFolderList.length + "\n");
 				}
 
-				XMLTest test = new XMLTest(scannerFile, testFolderList[file],
-						engine.analyzeImage(testFolderList[file]), bw);
+				XMLTest test = new XMLTest(scannerFile, testFolderList[file], engine.analyzeImage(testFolderList[file]), bw);
 
 				errorsPerCard += test.getErrors();
 				percentagePerMail += test.getPercentageErrors();
-				String logline = name + ";" + testFolderList[file].getName() + ";"
-						+ String.format("%.3f", test.getPrecision()) + ";" + String.format("%.3f", test.getRecall())
-						+ ";" + String.format("%.3f", test.f_Measure()) + ";"
-						+ String.format("%.3f", test.boundingboxGetPrecision()) + ";"
-						+ String.format("%.3f", test.boundingboxGetRecall()) + ";"
-						+ String.format("%.3f", test.boundingboxF_Measure()) + ";"
-						+ String.format("%.3f", test.characterGetPrecision()) + ";"
-						+ String.format("%.3f", test.characterGetRecall()) + ";"
+				String logline = name + ";" + testFolderList[file].getName() + ";" + String.format("%.3f", test.getPrecision()) + ";" + String.format("%.3f", test.getRecall())
+						+ ";" + String.format("%.3f", test.f_Measure()) + ";" + String.format("%.3f", test.boundingboxGetPrecision()) + ";"
+						+ String.format("%.3f", test.boundingboxGetRecall()) + ";" + String.format("%.3f", test.boundingboxF_Measure()) + ";"
+						+ String.format("%.3f", test.characterGetPrecision()) + ";" + String.format("%.3f", test.characterGetRecall()) + ";"
 						+ String.format("%.3f", test.characterF_Measure()) + ";" + "\n";
 				bwLog.write(logline);
 				bw.write(logline);
 
 				// write really cool debug picture
 				if (generateDebugImages) {
-					PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(
-							testFolderList[file].getAbsolutePath() + "_debug.png"));
+					PictureDisplayTest pictureDisplay = new PictureDisplayTest(new File(testFolderList[file].getAbsolutePath() + "_debug.png"));
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
-						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.55), 0,
-								0), analysisResult.getBoundingBox(word).height, analysisResult.getBoundingBox(word),
-								analysisResult.getWord(word));
+						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.55), 0, 0), analysisResult.getBoundingBox(word).height,
+								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
 						// String bla = analysisResult.getWord(word);
 						// System.out.println(bla);
 					}
@@ -230,7 +216,7 @@ public class Test {
 		logFiles.add(subF + "GrayScaleOnly");
 
 		// test all autothreshold strategies
-		// addAutoThreshold(bundles, logFiles, subF);
+		addAutoThreshold(bundles, logFiles, subF);
 
 		// test all adaptive
 		// addAdaptiveThreshold(bundles, logFiles, subF);
@@ -255,8 +241,7 @@ public class Test {
 		}
 	}
 
-	private static void addAdaptiveThreshold(ArrayList<GenericFilterProcessor> bundles, ArrayList<String> logFiles,
-			String subF) {
+	private static void addAdaptiveThreshold(ArrayList<GenericFilterProcessor> bundles, ArrayList<String> logFiles, String subF) {
 		BinarizerAlgorithm[] adaptiveAlgos = { new Bernsen(), new Sauvola(), new Otsu(), new Phansalkar() };
 		GenericFilterProcessor b;
 		// test pure adaptive algos
@@ -309,8 +294,7 @@ public class Test {
 		}
 	}
 
-	private static void addAutoThreshold(ArrayList<GenericFilterProcessor> bundles, ArrayList<String> logFiles,
-			String subF) {
+	private static void addAutoThreshold(ArrayList<GenericFilterProcessor> bundles, ArrayList<String> logFiles, String subF) {
 		GenericFilterProcessor b;
 		Method[] all = Method.values();
 		for (int i = 0; i < all.length; i++) {
@@ -318,28 +302,28 @@ public class Test {
 			b.appendFilter(new GrayScaleFilter());
 			b.appendFilter(new AutoBinaryFilter(all[i]));
 			bundles.add(b);
-			logFiles.add(subF + "AutoThreshold" + all[i].toString());
+			logFiles.add(subF + "AutoThreshold" + all[i].toString() + ".csv");
 
 			b = new GenericFilterProcessor();
 			b.appendFilter(new GrayScaleFilter());
 			b.appendFilter(new LightFilter());
 			b.appendFilter(new AutoBinaryFilter(all[i]));
 			bundles.add(b);
-			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "LightCorrected");
+			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "LightCorrected.csv");
 
 			b = new GenericFilterProcessor();
 			b.appendFilter(new GrayScaleFilter());
 			b.appendFilter(new EnhanceContrast());
 			b.appendFilter(new AutoBinaryFilter(all[i]));
 			bundles.add(b);
-			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "EnhancedContrast");
+			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "EnhancedContrast.csv");
 
 			b = new GenericFilterProcessor();
 			b.appendFilter(new GrayScaleFilter());
-			b.appendFilter(new CloseFilter());
 			b.appendFilter(new AutoBinaryFilter(all[i]));
+			b.appendFilter(new CloseFilter());
 			bundles.add(b);
-			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "CloseFilter");
+			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "CloseFilter.csv");
 		}
 	}
 }

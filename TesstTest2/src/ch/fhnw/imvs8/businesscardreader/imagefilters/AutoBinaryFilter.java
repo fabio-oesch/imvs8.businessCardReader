@@ -1,6 +1,7 @@
 package ch.fhnw.imvs8.businesscardreader.imagefilters;
 
 import ij.ImagePlus;
+import ij.process.AutoThresholder;
 import ij.process.AutoThresholder.Method;
 import ij.process.ImageProcessor;
 
@@ -30,8 +31,9 @@ public class AutoBinaryFilter implements ImageFilter {
 	public ImagePlus filter(ImagePlus im) {
 		ImageProcessor p = im.getProcessor();
 
-		p.setAutoThreshold(m, false);
-		p.autoThreshold();
+		AutoThresholder thresholder = new AutoThresholder();
+		int threshold = thresholder.getThreshold(m, p.getHistogram());
+		p.threshold(threshold);
 
 		return im;
 	}
