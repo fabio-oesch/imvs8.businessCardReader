@@ -3,14 +3,11 @@ imvs8.businessCardReader
 
 A project which will be able to read text from business cards.
 
-Table of Contents:
--------------------
-  1. Project Setup
-  
   
 
 
 1. Project Setup
+-------------------
    Download the Project folder to your machine. 
    
    Create a new Environment Variable: "TESSDATA_PREFIX", and put the Path to the project directory. 
