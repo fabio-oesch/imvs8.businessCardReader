@@ -46,51 +46,16 @@ public class Test {
 		// Add filters to the engine
 		GenericFilterProcessor filters = new GenericFilterProcessor();
 		filters.appendFilter(new GrayScaleFilter());
-		// filters.appendFilter(new LightFilter());
+		filters.appendFilter(new LightFilter());
 		// filters.appendFilter(new AutoBinaryFilter());
 		// filters.appendFilter(new EnhanceContrast());
-		filters.appendFilter(new Phansalkar());
-		// filters.appendFilter(new CloseFilter());
+		//filters.appendFilter(new Phansalkar());
+		filters.appendFilter(new Bernsen());
+		filters.appendFilter(new CloseFilter());
 
-		//testXMLS("_logs.csv", filters);
+		testXMLS("_logs.csv", filters);
 
-		testAllConfigurations();
-	}
-
-	/**
-	 * creates a new file which writes the texts which it reads from the picture
-	 * into a new picture with the ending test.png creates a new file which
-	 * writes the texts which it reads from the picture into a new picture with
-	 * the ending test.png
-	 * 
-	 * @throws IOException
-	 */
-	public static void testImageDisplay(GenericFilterProcessor filters) throws IOException {
-		OCREngine engine = new OCREngine(filters);
-
-		String[] folderList = folder.list();
-		for (int folders = 0; folders < folderList.length; folders++) {
-			File solutionFolder = new File(folder.getAbsolutePath() + "/" + folderList[folders] + "/testimages/");
-
-			AnalysisResult analysisResult = null;
-			PictureDisplayTest pictureDisplay = null;
-			File[] solutionFolderList = solutionFolder.listFiles();
-			for (int file = 0; solutionFolderList != null && file < solutionFolderList.length; file++) {
-
-				if (!solutionFolderList[file].getAbsolutePath().contains("debug") || !solutionFolderList[file].getAbsolutePath().endsWith(".txt")) {
-					System.out.println(solutionFolderList[file]);
-					analysisResult = engine.analyzeImage(solutionFolderList[file]);
-					pictureDisplay = new PictureDisplayTest(solutionFolderList[file]);
-					for (int word = 0; word < analysisResult.getResultSize(); word++) {
-						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.55), 0, 0), analysisResult.getBoundingBox(word).height,
-								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
-					}
-					pictureDisplay.finish(solutionFolderList[file].getAbsolutePath().substring(0, solutionFolderList[file].getAbsolutePath().lastIndexOf('.')) + "test"
-							+ solutionFolderList[file].getAbsolutePath().substring(solutionFolderList[file].getAbsolutePath().lastIndexOf('.')));
-				}
-			}
-
-		}
+		//testAllConfigurations();
 	}
 
 	/**
@@ -298,6 +263,7 @@ public class Test {
 		GenericFilterProcessor b;
 		Method[] all = Method.values();
 		for (int i = 0; i < all.length; i++) {
+			System.out.println(all[i]);
 			b = new GenericFilterProcessor();
 			b.appendFilter(new GrayScaleFilter());
 			b.appendFilter(new AutoBinaryFilter(all[i]));
