@@ -71,7 +71,7 @@ public class OCREngine {
 			if (processor != null)
 				image = this.processor.process(image);
 
-			//image = this.deskew(image);
+			image = this.deskew(image);
 			if (this.debugEnabled)
 				ImageIO.write(image, "png", new File(im.getAbsoluteFile() + "_debug.png"));
 

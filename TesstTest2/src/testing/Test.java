@@ -31,7 +31,7 @@ public class Test {
 	static String logs;
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
-	static boolean generateDebugImages = false;
+	static boolean generateDebugImages = true;
 
 	public static void main(String[] args) throws IOException {
 		boolean schwambi = true;
@@ -47,11 +47,11 @@ public class Test {
 		GenericFilterProcessor filters = new GenericFilterProcessor();
 		filters.appendFilter(new GrayScaleFilter());
 		filters.appendFilter(new LightFilter());
-		// filters.appendFilter(new AutoBinaryFilter());
-		// filters.appendFilter(new EnhanceContrast());
+		filters.appendFilter(new AutoBinaryFilter());
+		//filters.appendFilter(new EnhanceContrast());
 		//filters.appendFilter(new Phansalkar());
-		filters.appendFilter(new Bernsen());
-		filters.appendFilter(new CloseFilter());
+		//filters.appendFilter(new Bernsen());
+		//filters.appendFilter(new CloseFilter());
 
 		testXMLS("_logs.csv", filters);
 
@@ -154,7 +154,7 @@ public class Test {
 		BufferedWriter bwLog = new BufferedWriter(fw);
 		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;BoundingBox Precision;BoundingBox Recall;BoundingBox F_Measure; Character Precision; Character Recall; Character F_Measure \n");
 
-		// testXMLForName(engine, "a.mathur@axes-systems.com", bwLog);
+		testXMLForName(engine, "matthias.zimmermann@bsiag.com", bwLog);
 
 		// tests all the files in the folder
 		String[] folderList = folder.list();
