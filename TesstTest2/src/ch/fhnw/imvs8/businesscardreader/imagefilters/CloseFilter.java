@@ -1,13 +1,7 @@
 package ch.fhnw.imvs8.businesscardreader.imagefilters;
 
 import ij.ImagePlus;
-import ij.io.FileSaver;
 import ij.process.ImageProcessor;
-
-import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-
-import javax.imageio.ImageIO;
 
 public class CloseFilter implements ImageFilter {
 	private int fgPixel; //foreground pixel value
@@ -52,16 +46,5 @@ public class CloseFilter implements ImageFilter {
 				}
 			}
 		}
-	}
-
-	public static void main(String[] args) throws Exception {
-		BufferedImage image = ImageIO.read(new FileInputStream("close.png"));
-		ImagePlus p = new ImagePlus("", image);
-		GrayScaleFilter gray = new GrayScaleFilter();
-		CloseFilter close = new CloseFilter();
-		p = gray.filter(p);
-		p = close.filter(p);
-		FileSaver saver = new FileSaver(p);
-		saver.saveAsBmp("closeOut.bmp");
 	}
 }
