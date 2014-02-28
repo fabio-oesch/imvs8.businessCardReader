@@ -51,7 +51,7 @@ public class Test {
 		//filters.appendFilter(new EnhanceContrast());
 		filters.appendFilter(new Phansalkar());
 		//filters.appendFilter(new Bernsen());
-		//filters.appendFilter(new CloseFilter());
+		filters.appendFilter(new CloseFilter());
 
 		testXMLS("_logs.csv", filters);
 

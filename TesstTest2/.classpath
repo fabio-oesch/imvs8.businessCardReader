@@ -11,11 +11,7 @@
 	<classpathentry kind="lib" path="lib/ij.jar"/>
 	<classpathentry kind="lib" path="lib/cardme-0.3.6.05.jar"/>
 	<classpathentry kind="lib" path="lib/cardme-javadoc-0.3.6.05.jar"/>
-	<classpathentry kind="lib" path="lib/CRPP_0.58.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="BusinessCardReader"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="lib/CRFPP_0.58.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/diffutils-1.2.1.jar"/>
