@@ -123,7 +123,8 @@ public class OCREngine {
 			// tesseract can return a null string, so if it did that, don't add
 			// it
 			if (ptr != null) {
-				words.add(ptr.getString(0));
+				String word = ptr.getString(0);
+				words.add(word);
 				float conf = TessAPI1.TessResultIteratorConfidence(ri, TessPageIteratorLevel.RIL_WORD);
 				confidences.add(conf);
 
