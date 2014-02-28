@@ -10,13 +10,17 @@ import java.io.FileInputStream;
 import javax.imageio.ImageIO;
 
 public class LaplaceSharpenFilter implements ImageFilter {
-	private float[][] laplace = { { 0, 0, 1, 0, 0 }, { 0, 1, 2, 1, 0 }, { 1, 2, -16, 2, 1 }, { 0, 1, 2, 1, 0 }, { 0, 0, 1, 0, 0 } }; //laplace filter matrix
-	private int size = 5;
+	private final float[][] laplace = { { 0, 0, 1, 0, 0 }, { 0, 1, 2, 1, 0 }, { 1, 2, -16, 2, 1 }, { 0, 1, 2, 1, 0 }, { 0, 0, 1, 0, 0 } }; //laplace filter matrix
+	private final int size = 5;
 
-	private double weight = 1.0;
+	private final double weight;
 
 	public LaplaceSharpenFilter() {
+		this(0.5);
+	}
 
+	public LaplaceSharpenFilter(double weight) {
+		this.weight = weight;
 	}
 
 	private ImagePlus convolve(ImagePlus original) {
@@ -36,7 +40,7 @@ public class LaplaceSharpenFilter implements ImageFilter {
 						int x = i + g;
 						int y = j + k;
 						if (x >= 0 && x < original.getWidth() && y >= 0 && y < original.getHeight()) {
-							sum += ipo.getPixelValue(x, y) * laplace[k + half][g + half];
+							sum += ipo.getPixelValue(x, y) * laplace[g + half][k + half];
 						}
 					}
 				}
