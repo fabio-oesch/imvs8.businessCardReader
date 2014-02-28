@@ -38,7 +38,7 @@ public class AnalysisResult {
 		this.words = words;
 		this.boundingBoxes = bBoxes;
 		this.confidences = conf;
-		this.cleanResults();
+		//this.cleanResults();
 	}
 
 	private void cleanResults() {
