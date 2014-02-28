@@ -37,7 +37,7 @@ public class OCRTest {
 		OCREngine engine = new OCREngine();
 		diff_match_patch diffEngine = new diff_match_patch();
 
-		out.append("Filename;precision;recall;f-measure;inserted String;deleted String\n");
+		out.append("Filename;precision;recall;f-measure;inserted String;deleted String \n");
 		File[] content = testImagesFolder.listFiles();
 		//test
 		for (File f : content) {

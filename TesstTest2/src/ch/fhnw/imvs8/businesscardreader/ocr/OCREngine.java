@@ -33,15 +33,15 @@ import com.sun.jna.Pointer;
 public class OCREngine {
 	private static final double MINIMUM_DESKEW_THRESHOLD = 0.05d;
 	private net.sourceforge.tess4j.TessAPI1.TessBaseAPI api;
-	private Preprocessor bundle;
+	private Preprocessor processor;
 	private boolean debugEnabled = false;
 
 	public OCREngine() {
 		this(null);
 	}
 
-	public OCREngine(Preprocessor bundle) {
-		this.bundle = bundle;
+	public OCREngine(Preprocessor p) {
+		this.processor = p;
 		api = TessAPI1.TessBaseAPICreate();
 
 		// configuration
@@ -68,8 +68,8 @@ public class OCREngine {
 		AnalysisResult res = null;
 		try {
 			BufferedImage image = ImageIO.read(new FileInputStream(im)); // loadimage
-			if (bundle != null)
-				image = this.bundle.process(image);
+			if (processor != null)
+				image = this.processor.process(image);
 
 			//image = this.deskew(image);
 			if (this.debugEnabled)
@@ -164,4 +164,5 @@ public class OCREngine {
 
 		return bi;
 	}
+
 }

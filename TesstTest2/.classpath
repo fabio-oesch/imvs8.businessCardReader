@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="lib/ghost4j-0.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/jai_imageio.jar"/>
 	<classpathentry kind="lib" path="lib/jna.jar" sourcepath="C:/Users/Jon/.m2/repository/net/java/dev/jna/jna/3.5.1/jna-3.5.1-sources.jar"/>
