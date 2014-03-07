@@ -30,6 +30,7 @@ public final class GetXMLAttributes {
 	private int falsePositive;
 	private int uniqueScannerCount;
 	private int uniqueTesseractCount;
+	private int boundingboxTruePositive;
 
 	/**
 	 * This method gets an analysisResult object and returns an array list of
@@ -39,14 +40,17 @@ public final class GetXMLAttributes {
 	 *            get Object analysisResult of tesseract scan
 	 * @return an arraylist of tesseractAttributes
 	 */
-	private static ArrayList<TesseractAttributes> getAnalysisResult(AnalysisResult analysisResult) {
+	private static ArrayList<TesseractAttributes> getAnalysisResult(
+			AnalysisResult analysisResult) {
 		// creates new array list which will hold all the tesseract attributes
 		ArrayList<TesseractAttributes> tesseractAttribute = new ArrayList<>();
 		for (int index = 0; index < analysisResult.getResultSize(); index++) {
 			// create a rectange object with the bounding boxes
 			Rectangle boundingBox = analysisResult.getBoundingBox(index);
 			// create new objects
-			tesseractAttribute.add(new TesseractAttributes(analysisResult.getWord(index), boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height));
+			tesseractAttribute.add(new TesseractAttributes(analysisResult
+					.getWord(index), boundingBox.x, boundingBox.y,
+					boundingBox.width, boundingBox.height));
 		}
 
 		return tesseractAttribute;
@@ -68,19 +72,26 @@ public final class GetXMLAttributes {
 	 * @throws IOException
 	 * @throws NumberFormatException
 	 */
-	public ArrayList<ScannerAttributes> readScannerXML(File xmlInputFile, File tesseractFileName, AnalysisResult analysisResult) throws NumberFormatException, IOException {
+	public ArrayList<ScannerAttributes> readScannerXML(File xmlInputFile,
+			File tesseractFileName, AnalysisResult analysisResult)
+			throws NumberFormatException, IOException {
 		// get the tesseract HTML attributes
 		ArrayList<TesseractAttributes> tesseractAttribute = getAnalysisResult(analysisResult);
 
 		// create new array list which where the scanner attributes will be
 		// saved in
 		ArrayList<ScannerAttributes> scannerAttribute = new ArrayList<>();
+		
+		// temp ArrayList which holds name of ocrfield Strings to check if already used
+		ArrayList<String> ocrfieldStrings = new ArrayList<>();
 
 		// Create a XMLInputFactory which will read the xml-taggs
 		XMLInputFactory inputFactor = XMLInputFactory.newInstance();
 		try {
 			// Create a reader with the ANSI Encoding
-			XMLStreamReader reader = inputFactor.createXMLStreamReader(new InputStreamReader(new FileInputStream(xmlInputFile), "ISO-8859-1"));
+			XMLStreamReader reader = inputFactor
+					.createXMLStreamReader(new InputStreamReader(
+							new FileInputStream(xmlInputFile), "ISO-8859-1"));
 			// Save text and fieldName in a String
 			String text = null;
 			String fieldName = null;
@@ -94,9 +105,13 @@ public final class GetXMLAttributes {
 					} else if (reader.getLocalName() == "ocrField") {
 						text = reader.getAttributeValue(0);
 					} else if (reader.getLocalName() == "boundingBox") {
-						ScannerAttributes scanAtt = new ScannerAttributes(text, fieldName, reader.getAttributeValue(0), reader.getAttributeValue(1), reader.getAttributeValue(2),
+						ScannerAttributes scanAtt = new ScannerAttributes(text,
+								fieldName, reader.getAttributeValue(0),
+								reader.getAttributeValue(1),
+								reader.getAttributeValue(2),
 								reader.getAttributeValue(3));
-						if (!scannerAttribute.contains(scanAtt)) {
+						if (!ocrfieldStrings.contains(scanAtt.getAttributeText())) {
+							ocrfieldStrings.add(scanAtt.getAttributeText());
 							scannerAttribute.add(scanAtt);
 						}
 					}
@@ -113,7 +128,8 @@ public final class GetXMLAttributes {
 
 		// Calculate unique attributes and get the offset and scale
 		// getUniqueAttributes(tesseractAttribute, scannerAttribute);
-		BufferedReader reader = new BufferedReader(new FileReader(new File(tesseractFileName.getAbsoluteFile() + "_scale.txt")));
+		BufferedReader reader = new BufferedReader(new FileReader(new File(
+				tesseractFileName.getAbsoluteFile() + "_scale.txt")));
 		double line1 = Double.parseDouble(reader.readLine());
 		double line2 = Double.parseDouble(reader.readLine());
 		double line3 = Double.parseDouble(reader.readLine());
@@ -125,8 +141,11 @@ public final class GetXMLAttributes {
 		for (int i = 0; i < scannerAttribute.size(); i++) {
 			scannerAttribute.get(i).setTesseractCorrection(line1, line2, line3);
 			for (int j = 0; j < tesseractAttribute.size(); j++) {
-				if (scannerAttribute.get(i).addTesseractBox(tesseractAttribute.get(j))) {
-					String key = tesseractAttribute.get(j).getX() + " " + tesseractAttribute.get(j).getY() + " " + tesseractAttribute.get(j).getWidth() + " "
+				if (scannerAttribute.get(i).addTesseractBox(
+						tesseractAttribute.get(j))) {
+					String key = tesseractAttribute.get(j).getX() + " "
+							+ tesseractAttribute.get(j).getY() + " "
+							+ tesseractAttribute.get(j).getWidth() + " "
 							+ tesseractAttribute.get(j).getHeight();
 					if (!boundingBox.containsKey(key)) {
 						boundingBox.put(key, true);
@@ -137,6 +156,9 @@ public final class GetXMLAttributes {
 				}
 			}
 		}
+		
+		// get truepositives for the bounding boxes
+		boundingboxTruePositive = falsePositive;
 		// get all bounding boxes which are not a scanner attribute
 		falsePositive = tesseractAttribute.size() - falsePositive;
 
@@ -151,7 +173,9 @@ public final class GetXMLAttributes {
 	 * @param scannerAttributes
 	 *            all the scanner attributes of the picture
 	 */
-	public void getUniqueAttributes(ArrayList<TesseractAttributes> tesseractAttributes, ArrayList<ScannerAttributes> scannerAttributes) {
+	public void getUniqueAttributes(
+			ArrayList<TesseractAttributes> tesseractAttributes,
+			ArrayList<ScannerAttributes> scannerAttributes) {
 
 		ArrayList<TesseractAttributes> uniqueTesseractAttributes = new ArrayList<>();
 		ArrayList<ScannerAttributes> uniqueScannerAttributes = new ArrayList<>();
@@ -166,13 +190,28 @@ public final class GetXMLAttributes {
 			int foundAttribute = 0;
 			for (int j = 0; j < scannerAttributes.size(); j++) {
 				if (tesseractAttributes.get(i).getAttributeText().length() > 2
-						&& scannerAttributes.get(j).getAttributeText().contains(tesseractAttributes.get(i).getAttributeText()) && unique) {
+						&& scannerAttributes
+								.get(j)
+								.getAttributeText()
+								.contains(
+										tesseractAttributes.get(i)
+												.getAttributeText()) && unique) {
 					if (!exists) {
 						exists = true;
 						foundAttribute = j;
-						// Bugfix if multiple occurences of the tesseractAttribute in the scannerAttribute are
-						if (scannerAttributes.get(j).getAttributeText().indexOf(tesseractAttributes.get(i).getAttributeText()) != scannerAttributes.get(j).getAttributeText()
-								.lastIndexOf(tesseractAttributes.get(i).getAttributeText())) {
+						// Bugfix if multiple occurences of the
+						// tesseractAttribute in the scannerAttribute are
+						if (scannerAttributes
+								.get(j)
+								.getAttributeText()
+								.indexOf(
+										tesseractAttributes.get(i)
+												.getAttributeText()) != scannerAttributes
+								.get(j)
+								.getAttributeText()
+								.lastIndexOf(
+										tesseractAttributes.get(i)
+												.getAttributeText())) {
 							unique = false;
 						}
 					} else {
@@ -184,8 +223,13 @@ public final class GetXMLAttributes {
 			// check if the attribute starts with this text. Then we add it to
 			// both lists
 			if (exists && unique) {
-				if (scannerAttributes.get(foundAttribute).getAttributeText().startsWith(tesseractAttributes.get(i).getAttributeText())) {
-					uniqueScannerAttributes.add(scannerAttributes.get(foundAttribute));
+				if (scannerAttributes
+						.get(foundAttribute)
+						.getAttributeText()
+						.startsWith(
+								tesseractAttributes.get(i).getAttributeText())) {
+					uniqueScannerAttributes.add(scannerAttributes
+							.get(foundAttribute));
 					uniqueTesseractAttributes.add(tesseractAttributes.get(i));
 				}
 			}
@@ -198,7 +242,11 @@ public final class GetXMLAttributes {
 		for (int i = 0; i < uniqueTesseractAttributes.size(); i++) {
 			boolean doublicate = false;
 			for (int j = i + 1; j < uniqueTesseractAttributes.size(); j++) {
-				if (uniqueTesseractAttributes.get(i).getAttributeText().equals(uniqueTesseractAttributes.get(j).getAttributeText())) {
+				if (uniqueTesseractAttributes
+						.get(i)
+						.getAttributeText()
+						.equals(uniqueTesseractAttributes.get(j)
+								.getAttributeText())) {
 					uniqueTesseractAttributes.remove(j);
 					uniqueScannerAttributes.remove(j);
 					j--;
@@ -214,7 +262,8 @@ public final class GetXMLAttributes {
 		// calculate offset and scale for the tesseract picture
 		this.uniqueScannerCount = uniqueScannerAttributes.size();
 		this.uniqueTesseractCount = uniqueTesseractAttributes.size();
-		calculate(uniqueTesseractAttributes, uniqueScannerAttributes, scannerAttributes);
+		calculate(uniqueTesseractAttributes, uniqueScannerAttributes,
+				scannerAttributes);
 	}
 
 	/**
@@ -229,7 +278,9 @@ public final class GetXMLAttributes {
 	 *            the original attributes which come from the xml file of the
 	 *            scanner
 	 */
-	public void calculate(ArrayList<TesseractAttributes> uniqueTesseractAttributes, ArrayList<ScannerAttributes> uniqueScannerAttributes,
+	public void calculate(
+			ArrayList<TesseractAttributes> uniqueTesseractAttributes,
+			ArrayList<ScannerAttributes> uniqueScannerAttributes,
 			ArrayList<ScannerAttributes> scannerAttributes) {
 		// offset by X and Y axis
 		double offsetX = 0;
@@ -243,12 +294,19 @@ public final class GetXMLAttributes {
 		// measured. Same for the tesseractAttributes
 		for (int i = 0; i < uniqueScannerAttributes.size(); i++) {
 			for (int j = i + 1; j < uniqueScannerAttributes.size(); j++) {
-				double distScannerX = uniqueScannerAttributes.get(i).getX() - uniqueScannerAttributes.get(j).getX();
-				double distScannerY = uniqueScannerAttributes.get(i).getY() - uniqueScannerAttributes.get(j).getY();
-				double distTesseractX = uniqueTesseractAttributes.get(i).getX() - uniqueTesseractAttributes.get(j).getX();
-				double distTesseractY = uniqueTesseractAttributes.get(i).getY() - uniqueTesseractAttributes.get(j).getY();
+				double distScannerX = uniqueScannerAttributes.get(i).getX()
+						- uniqueScannerAttributes.get(j).getX();
+				double distScannerY = uniqueScannerAttributes.get(i).getY()
+						- uniqueScannerAttributes.get(j).getY();
+				double distTesseractX = uniqueTesseractAttributes.get(i).getX()
+						- uniqueTesseractAttributes.get(j).getX();
+				double distTesseractY = uniqueTesseractAttributes.get(i).getY()
+						- uniqueTesseractAttributes.get(j).getY();
 				// Euclidian Distance
-				euclid += Math.sqrt(distScannerX * distScannerX + distScannerY * distScannerY) / Math.sqrt(distTesseractX * distTesseractX + distTesseractY * distTesseractY);
+				euclid += Math.sqrt(distScannerX * distScannerX + distScannerY
+						* distScannerY)
+						/ Math.sqrt(distTesseractX * distTesseractX
+								+ distTesseractY * distTesseractY);
 				counter++;
 			}
 		}
@@ -256,8 +314,10 @@ public final class GetXMLAttributes {
 
 		// Calculate the offset for X and Y
 		for (int i = 0; i < uniqueTesseractAttributes.size(); i++) {
-			offsetX += Math.abs(uniqueTesseractAttributes.get(i).getX() * euclid - uniqueScannerAttributes.get(i).getX());
-			offsetY += Math.abs(uniqueTesseractAttributes.get(i).getY() * euclid - uniqueScannerAttributes.get(i).getY());
+			offsetX += Math.abs(uniqueTesseractAttributes.get(i).getX()
+					* euclid - uniqueScannerAttributes.get(i).getX());
+			offsetY += Math.abs(uniqueTesseractAttributes.get(i).getY()
+					* euclid - uniqueScannerAttributes.get(i).getY());
 		}
 		offsetX /= uniqueTesseractAttributes.size();
 		offsetY /= uniqueTesseractAttributes.size();
@@ -267,7 +327,8 @@ public final class GetXMLAttributes {
 		// a better scale measurement for x and y the set method doesn't need to
 		// be changed
 		for (int i = 0; i < scannerAttributes.size(); i++) {
-			scannerAttributes.get(i).setTesseractCorrection(euclid, euclid, offsetX, offsetY);
+			scannerAttributes.get(i).setTesseractCorrection(euclid, euclid,
+					offsetX, offsetY);
 		}
 	}
 
@@ -281,5 +342,9 @@ public final class GetXMLAttributes {
 
 	public int getUniqueTesseractCount() {
 		return this.uniqueTesseractCount;
+	}
+
+	public int getBoundingboxTruePositive() {
+		return this.boundingboxTruePositive;
 	}
 }

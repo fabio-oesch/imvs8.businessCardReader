@@ -11,25 +11,28 @@ import java.util.ArrayList;
 
 import ch.fhnw.imvs8.businesscardreader.imagefilters.AutoBinaryFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Bernsen;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.FilterBundle;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterBundle;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.BinarizerAlgorithm;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.CloseFilter;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.EnhanceContrast;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterProcessor;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.LaplaceSharpenFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.LightFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Otsu;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Phansalkar;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.Preprocessor;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Sauvola;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
 public class Test {
-
 	// path to place where business cards are
 	static File folder;
 	// path to place where logs are stored
 	static String logs;
 	// average errors/Mail adresse
 	static double errorsPerMail = 0;
-	static boolean generateDebugImages = true;
+	static boolean generateDebugImages = false;
 
 	public static void main(String[] args) throws IOException {
 		boolean schwambi = true;
@@ -37,58 +40,24 @@ public class Test {
 			folder = new File("C:\\Users\\Jon\\FHNW\\IP5\\testdata\\business-cards");
 			logs = "C:\\Users\\Jon\\FHNW\\IP5\\testdata\\Logs\\";
 		} else {
-			folder = new File("/School/Projekt/testdata/business-cards");
-			logs = "/School/Projekt/testdata/Logs/";
+			folder = new File("/Documents/School/Project/testdata/business-cards");
+			logs = "/Documents/School/Project/testdata/Logs/";
 		}
 
 		// Add filters to the engine
-		GenericFilterBundle filters = new GenericFilterBundle();
+		GenericFilterProcessor filters = new GenericFilterProcessor();
 		filters.appendFilter(new GrayScaleFilter());
 		//filters.appendFilter(new LightFilter());
 		//filters.appendFilter(new AutoBinaryFilter());
+		//filters.appendFilter(new EnhanceContrast());
+		filters.appendFilter(new LaplaceSharpenFilter());
 		filters.appendFilter(new Phansalkar());
+		//filters.appendFilter(new Bernsen());
 		//filters.appendFilter(new CloseFilter());
 
 		testXMLS("_logs.csv", filters);
-		//testImageDisplay(filters);
 
 		//testAllConfigurations();
-	}
-
-	/**
-	 * creates a new file which writes the texts which it reads from the picture
-	 * into a new picture with the ending test.png creates a new file which
-	 * writes the texts which it reads from the picture into a new picture with
-	 * the ending test.png
-	 * 
-	 * @throws IOException
-	 */
-	public static void testImageDisplay(GenericFilterBundle filters) throws IOException {
-		OCREngine engine = new OCREngine(filters);
-
-		String[] folderList = folder.list();
-		for (int folders = 0; folders < folderList.length; folders++) {
-			File solutionFolder = new File(folder.getAbsolutePath() + "/" + folderList[folders] + "/testimages/");
-
-			AnalysisResult analysisResult = null;
-			PictureDisplayTest pictureDisplay = null;
-			File[] solutionFolderList = solutionFolder.listFiles();
-			for (int file = 0; solutionFolderList != null && file < solutionFolderList.length; file++) {
-
-				if (!solutionFolderList[file].getAbsolutePath().contains("debug") || !solutionFolderList[file].getAbsolutePath().endsWith(".txt")) {
-					System.out.println(solutionFolderList[file]);
-					analysisResult = engine.analyzeImage(solutionFolderList[file]);
-					pictureDisplay = new PictureDisplayTest(solutionFolderList[file]);
-					for (int word = 0; word < analysisResult.getResultSize(); word++) {
-						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.55), 0, 0), analysisResult.getBoundingBox(word).height,
-								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
-					}
-					pictureDisplay.finish(solutionFolderList[file].getAbsolutePath().substring(0, solutionFolderList[file].getAbsolutePath().lastIndexOf('.')) + "test"
-							+ solutionFolderList[file].getAbsolutePath().substring(solutionFolderList[file].getAbsolutePath().lastIndexOf('.')));
-				}
-			}
-
-		}
 	}
 
 	/**
@@ -141,7 +110,10 @@ public class Test {
 				errorsPerCard += test.getErrors();
 				percentagePerMail += test.getPercentageErrors();
 				String logline = name + ";" + testFolderList[file].getName() + ";" + String.format("%.3f", test.getPrecision()) + ";" + String.format("%.3f", test.getRecall())
-						+ ";" + String.format("%.3f", test.f_Measure()) + ";" + String.format("%.3f", test.getPercentageErrors()) + ";" + test.uniqueStuff() + "\n";
+						+ ";" + String.format("%.3f", test.f_Measure()) + ";" + String.format("%.3f", test.boundingboxGetPrecision()) + ";"
+						+ String.format("%.3f", test.boundingboxGetRecall()) + ";" + String.format("%.3f", test.boundingboxF_Measure()) + ";"
+						+ String.format("%.3f", test.characterGetPrecision()) + ";" + String.format("%.3f", test.characterGetRecall()) + ";"
+						+ String.format("%.3f", test.characterF_Measure()) + ";" + "\n";
 				bwLog.write(logline);
 				bw.write(logline);
 
@@ -151,8 +123,8 @@ public class Test {
 					for (int word = 0; word < analysisResult.getResultSize(); word++) {
 						pictureDisplay.addText(new Color((int) ((100 - analysisResult.getConfidence(word)) * 2.55), 0, 0), analysisResult.getBoundingBox(word).height,
 								analysisResult.getBoundingBox(word), analysisResult.getWord(word));
-						//String bla = analysisResult.getWord(word);
-						//System.out.println(bla);
+						// String bla = analysisResult.getWord(word);
+						// System.out.println(bla);
 					}
 					pictureDisplay.finish(testFolderList[file].getAbsolutePath() + "_debug_tesseract.png");
 				}
@@ -169,7 +141,7 @@ public class Test {
 	 * @throws IOException
 	 *             needs permission to write into a file and create it
 	 */
-	public static void testXMLS(String logName, FilterBundle filters) throws IOException {
+	public static void testXMLS(String logName, Preprocessor filters) throws IOException {
 		OCREngine engine = new OCREngine(filters);
 
 		if (generateDebugImages)
@@ -182,87 +154,43 @@ public class Test {
 		}
 		FileWriter fw = new FileWriter(logFile.getAbsoluteFile());
 		BufferedWriter bwLog = new BufferedWriter(fw);
-		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;Average Errors per Picture;unique_attributes;Scale;X Offset;Y Offset \n");
+		bwLog.write("E-Mail;PictureID;Precision;Recall;F_Measure;BoundingBox Precision;BoundingBox Recall;BoundingBox F_Measure; Character Precision; Character Recall; Character F_Measure \n");
 
-		testXMLForName(engine, "alban.frei@zuehlke.com", bwLog);
+		//testXMLForName(engine, "matthias.zimmermann@bsiag.com", bwLog);
 
 		// tests all the files in the folder
-
 		String[] folderList = folder.list();
 		for (int folders = 0; folders < folderList.length; folders++) {
 			testXMLForName(engine, folderList[folders], bwLog);
 		}
 
-		// bwLog.write("Average Percentage Errors per Mail: "
-		// + String.format("%.3f", errorsPerMail / folderList.length) + "\n");
 		bwLog.close();
 	}
 
 	public static final void testAllConfigurations() {
 		String subF = "AllConfigurations\\";
-		ArrayList<GenericFilterBundle> bundles = new ArrayList<>();
+		ArrayList<GenericFilterProcessor> bundles = new ArrayList<>();
 		ArrayList<String> logFiles = new ArrayList<>();
 
-		GenericFilterBundle b;
-
-		//testnothing
+		// testnothing
 		bundles.add(null);
 		logFiles.add(subF + "NoPreprocessing");
 
-		//test grayscale
-		b = new GenericFilterBundle();
+		// test grayscale
+		GenericFilterProcessor b = new GenericFilterProcessor();
 		b.appendFilter(new GrayScaleFilter());
 		bundles.add(b);
 		logFiles.add(subF + "GrayScaleOnly");
 
-		//test all autothreshold strategies
-		Method[] all = Method.values();
-		for (int i = 0; i < all.length; i++) {
-			b = new GenericFilterBundle();
-			b.appendFilter(new GrayScaleFilter());
-			b.appendFilter(new AutoBinaryFilter(all[i]));
-			bundles.add(b);
-			logFiles.add(subF + "AutoThreshold" + all[i].toString());
+		// test all autothreshold strategies
+		addAutoThreshold(bundles, logFiles, subF);
 
-			b = new GenericFilterBundle();
-			b.appendFilter(new GrayScaleFilter());
-			b.appendFilter(new LightFilter());
-			b.appendFilter(new AutoBinaryFilter(all[i]));
-			bundles.add(b);
-			logFiles.add(subF + "AutoThreshol" + all[i].toString() + "WithLightFilter");
-		}
-
-		//test AdaptiveBinarizerSauvola
-		b = new GenericFilterBundle();
-		b.appendFilter(new GrayScaleFilter());
-		b.appendFilter(new Sauvola());
-		bundles.add(b);
-		logFiles.add(subF + "AdaptiveBinarizerSauvola");
-
-		//test AdaptiveBinarizerOtsu
-		b = new GenericFilterBundle();
-		b.appendFilter(new GrayScaleFilter());
-		b.appendFilter(new Otsu());
-		bundles.add(b);
-		logFiles.add(subF + "AdaptiveBinarizerOtsu");
-
-		//test AdaptiveBinarizerBernsen
-		b = new GenericFilterBundle();
-		b.appendFilter(new GrayScaleFilter());
-		b.appendFilter(new Bernsen());
-		bundles.add(b);
-		logFiles.add(subF + "AdaptiveBinarizerBernsen");
-
-		//test AdaptiveBinarizerPhansalkar
-		b = new GenericFilterBundle();
-		b.appendFilter(new GrayScaleFilter());
-		b.appendFilter(new Phansalkar());
-		bundles.add(b);
-		logFiles.add(subF + "AdaptiveBinarizerPhansalkar");
+		// test all adaptive
+		// addAdaptiveThreshold(bundles, logFiles, subF);
 
 		for (int i = 0; i < bundles.size(); i++) {
 			try {
-				GenericFilterBundle bundle = bundles.get(i);
+				GenericFilterProcessor bundle = bundles.get(i);
 				String logFile = logFiles.get(i);
 				testXMLS(logFile, bundle);
 
@@ -272,11 +200,98 @@ public class Test {
 					w.write("PicturesProcessed: " + bundle.getFilteredPictureCount());
 					w.close();
 				}
-				//put out
+				// put out
 			} catch (Exception e) {
 				/* ignore */
 				e.printStackTrace();
 			}
+		}
+	}
+
+	private static void addAdaptiveThreshold(ArrayList<GenericFilterProcessor> bundles, ArrayList<String> logFiles, String subF) {
+		BinarizerAlgorithm[] adaptiveAlgos = { new Bernsen(), new Sauvola(), new Otsu(), new Phansalkar() };
+		GenericFilterProcessor b;
+		// test pure adaptive algos
+		for (int i = 0; i < adaptiveAlgos.length; i++) {
+			b = new GenericFilterProcessor();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(adaptiveAlgos[i]);
+			bundles.add(b);
+			logFiles.add(subF + "Adaptive" + adaptiveAlgos[i].toString());
+		}
+
+		// test with morphology
+		for (int i = 0; i < adaptiveAlgos.length; i++) {
+			b = new GenericFilterProcessor();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new CloseFilter());
+			b.appendFilter(adaptiveAlgos[i]);
+			bundles.add(b);
+			logFiles.add(subF + "Adaptive" + adaptiveAlgos[i].toString());
+		}
+
+		// test with closeFilter
+		for (int i = 0; i < adaptiveAlgos.length; i++) {
+			b = new GenericFilterProcessor();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new CloseFilter());
+			b.appendFilter(adaptiveAlgos[i]);
+			bundles.add(b);
+			logFiles.add(subF + "Adaptive" + adaptiveAlgos[i].toString() + "CloseFilter");
+		}
+
+		// test with contrast
+		for (int i = 0; i < adaptiveAlgos.length; i++) {
+			b = new GenericFilterProcessor();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new EnhanceContrast());
+			b.appendFilter(adaptiveAlgos[i]);
+			bundles.add(b);
+			logFiles.add(subF + "Adaptive" + adaptiveAlgos[i].toString() + "EnhancedContrast");
+		}
+
+		// test with Light
+		for (int i = 0; i < adaptiveAlgos.length; i++) {
+			b = new GenericFilterProcessor();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new EnhanceContrast());
+			b.appendFilter(adaptiveAlgos[i]);
+			bundles.add(b);
+			logFiles.add(subF + "Adaptive" + adaptiveAlgos[i].toString() + "LightCorrected");
+		}
+	}
+
+	private static void addAutoThreshold(ArrayList<GenericFilterProcessor> bundles, ArrayList<String> logFiles, String subF) {
+		GenericFilterProcessor b;
+		Method[] all = Method.values();
+		for (int i = 0; i < all.length; i++) {
+			System.out.println(all[i]);
+			b = new GenericFilterProcessor();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new AutoBinaryFilter(all[i]));
+			bundles.add(b);
+			logFiles.add(subF + "AutoThreshold" + all[i].toString() + ".csv");
+
+			b = new GenericFilterProcessor();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new LightFilter());
+			b.appendFilter(new AutoBinaryFilter(all[i]));
+			bundles.add(b);
+			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "LightCorrected.csv");
+
+			b = new GenericFilterProcessor();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new EnhanceContrast());
+			b.appendFilter(new AutoBinaryFilter(all[i]));
+			bundles.add(b);
+			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "EnhancedContrast.csv");
+
+			b = new GenericFilterProcessor();
+			b.appendFilter(new GrayScaleFilter());
+			b.appendFilter(new AutoBinaryFilter(all[i]));
+			b.appendFilter(new CloseFilter());
+			bundles.add(b);
+			logFiles.add(subF + "AutoThreshold" + all[i].toString() + "CloseFilter.csv");
 		}
 	}
 }
