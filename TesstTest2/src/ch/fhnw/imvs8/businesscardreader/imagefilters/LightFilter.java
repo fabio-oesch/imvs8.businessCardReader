@@ -13,7 +13,7 @@ import ij.process.ImageProcessor;
  */
 public class LightFilter implements ImageFilter {
 
-	int pixelCount = 20;
+	int pixelCount = 4;
 
 	public LightFilter() {
 
@@ -42,9 +42,10 @@ public class LightFilter implements ImageFilter {
 			}
 		}
 
-		for (int i = 0; i < intensities.length; i++) {
-			intensities[i] /= pixelCount * pixelCount;
-		}
+		/*
+		 * for (int i = 0; i < intensities.length; i++) { intensities[i] /=
+		 * pixelCount * pixelCount; }
+		 */
 
 		int max = findMax(intensities);
 		for (int i = 0; i < intensities.length; i++)
@@ -59,7 +60,7 @@ public class LightFilter implements ImageFilter {
 			}
 		}
 
-		return im;
+		return new ImagePlus("Light corrected", p);
 	}
 
 	private int findMax(int[] intensities) {

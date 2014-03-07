@@ -1,7 +1,7 @@
 package ch.fhnw.imvs8.businesscardreader.imagefilters;
 
 import ij.ImagePlus;
-import ij.plugin.ContrastEnhancer;
+import ij.process.ImageProcessor;
 
 /**
  * why you no enhance?
@@ -9,8 +9,9 @@ import ij.plugin.ContrastEnhancer;
  * @author olry
  * 
  */
-public class EnhanceContrast extends BinarizerAlgorithm {
-	int saturation = 3;
+public class EnhanceContrast implements ImageFilter {
+	int saturation = 30;
+	private final double percentage = 1.50;
 
 	/**
 	 * Enhances the Contrast of the Picture
@@ -20,9 +21,19 @@ public class EnhanceContrast extends BinarizerAlgorithm {
 
 	@Override
 	public ImagePlus filter(ImagePlus im) {
-		ContrastEnhancer ce = new ContrastEnhancer();
-		ce.stretchHistogram(im, saturation);
-		return im;
+
+		//		ContrastEnhancer ce = new ContrastEnhancer();
+		//		ce.stretchHistogram(im, saturation);
+		//		return im;
+
+		ImageProcessor p = im.getProcessor();
+		for (int i = 0; i < im.getWidth(); i++) {
+			for (int j = 0; j < im.getHeight(); j++) {
+				int tmp = p.getPixel(i, j);
+				p.putPixel(i, j, (int) (tmp * percentage));
+			}
+		}
+		return new ImagePlus("Contrast enhanced", p);
 	}
 
 	@Override

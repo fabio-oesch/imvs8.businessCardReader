@@ -77,4 +77,9 @@ public class Phansalkar extends BinarizerAlgorithm {
 		return im;
 	}
 
+	@Override
+	public String toString() {
+		return "Phansalkar";
+	}
+
 }

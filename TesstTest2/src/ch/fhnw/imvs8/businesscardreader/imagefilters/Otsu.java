@@ -8,6 +8,7 @@ import ij.process.ImageProcessor;
 
 public class Otsu extends BinarizerAlgorithm {
 
+	@Override
 	public ImagePlus filter(ImagePlus imp) {
 		// Otsu's threshold algorithm
 		// C++ code by Jordan Bevik <Jordan.Bevic@qtiworld.com>
@@ -42,9 +43,9 @@ public class Otsu extends BinarizerAlgorithm {
 		Roi roi = new OvalRoi(0, 0, radiusx2, radiusx2);
 		// ip.setRoi(roi);
 		for (int y = 0; y < h; y++) {
-			IJ.showProgress((double) (y) / (h - 1)); // this method is slow, so
-														// let's show the
-														// progress bar
+			IJ.showProgress((double) y / (h - 1)); // this method is slow, so
+													// let's show the
+													// progress bar
 			roiy = y - radius;
 			for (int x = 0; x < w; x++) {
 				roi.setLocation(x - radius, roiy);
@@ -78,17 +79,17 @@ public class Otsu extends BinarizerAlgorithm {
 					// loss of precision and
 					// will prevent overflow in the case of large saturated
 					// images
-					denom = (double) (N1) * (N - N1); // Maximum value of denom
-														// is (N^2)/4 = approx.
-														// 3E10
+					denom = (double) N1 * (N - N1); // Maximum value of denom
+													// is (N^2)/4 = approx.
+													// 3E10
 
 					if (denom != 0) {
 						// Float here is to avoid loss of precision when
 						// dividing
-						num = ((double) N1 / N) * S - Sk; // Maximum value of
-															// num = 255*N =
-															// approx 8E7
-						BCV = (num * num) / denom;
+						num = (double) N1 / N * S - Sk; // Maximum value of
+														// num = 255*N =
+														// approx 8E7
+						BCV = num * num / denom;
 					} else
 						BCV = 0;
 
@@ -102,13 +103,17 @@ public class Otsu extends BinarizerAlgorithm {
 				// intensity >= k
 				// (the algorithm was developed for I-> 1 if I <= k.)
 				// return kStar;
-				pixelsOut[position] = ((int) (pixels[position] & 0xff) > kStar) ? object
-						: backg;
+				pixelsOut[position] = (pixels[position] & 0xff) > kStar ? object : backg;
 			}
 		}
 		for (position = 0; position < w * h; position++)
 			pixels[position] = pixelsOut[position]; // update with thresholded
 													// pixels
 		return imp;
+	}
+
+	@Override
+	public String toString() {
+		return "Otsu";
 	}
 }
