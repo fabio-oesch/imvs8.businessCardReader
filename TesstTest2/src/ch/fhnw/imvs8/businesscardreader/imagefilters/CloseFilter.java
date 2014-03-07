@@ -26,7 +26,6 @@ public class CloseFilter implements ImageFilter {
 		int tmp = 125; //mark pixel as temporary, meaning will become a foreground pixel afterwards
 		for (int j = 0; j < height; j++) {
 			for (int i = 0; i < width; i++) {
-				System.out.println(p.getPixel(i, j));
 				if (p.getPixel(i, j) == background) {
 					if (i > 0 && p.getPixel(i - 1, j) == foreground)
 						p.putPixel(i, j, tmp);

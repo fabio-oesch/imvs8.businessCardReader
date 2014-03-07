@@ -16,6 +16,7 @@ import ch.fhnw.imvs8.businesscardreader.imagefilters.CloseFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.EnhanceContrast;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterProcessor;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
+import ch.fhnw.imvs8.businesscardreader.imagefilters.LaplaceSharpenFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.LightFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Otsu;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Phansalkar;
@@ -49,9 +50,10 @@ public class Test {
 		//filters.appendFilter(new LightFilter());
 		//filters.appendFilter(new AutoBinaryFilter());
 		//filters.appendFilter(new EnhanceContrast());
+		filters.appendFilter(new LaplaceSharpenFilter());
 		filters.appendFilter(new Phansalkar());
 		//filters.appendFilter(new Bernsen());
-		filters.appendFilter(new CloseFilter());
+		//filters.appendFilter(new CloseFilter());
 
 		testXMLS("_logs.csv", filters);
 

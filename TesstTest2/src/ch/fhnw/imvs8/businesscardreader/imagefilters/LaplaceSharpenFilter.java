@@ -2,6 +2,7 @@ package ch.fhnw.imvs8.businesscardreader.imagefilters;
 
 import ij.ImagePlus;
 import ij.io.FileSaver;
+import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 
 import java.awt.image.BufferedImage;
@@ -63,17 +64,24 @@ public class LaplaceSharpenFilter implements ImageFilter {
 				ipf.putPixelValue(i, j, ipo.getPixelValue(i, j) - val);
 			}
 		}
-		return new ImagePlus("laplace filtered image", ipf);
+
+		//not a grayscale image anymore, convert to gray
+		ImagePlus out = new ImagePlus("laplace filtered image", ipf);
+		ImageConverter c = new ImageConverter(out);
+		c.convertToGray8();
+		return out;
 	}
 
 	public static void main(String[] args) throws Exception {
 
-		BufferedImage image = ImageIO.read(new FileInputStream("table_edge.jpg"));
+		BufferedImage image = ImageIO.read(new FileInputStream("url.jpg"));
 		ImagePlus im = new ImagePlus("", image);
+
 		GrayScaleFilter g = new GrayScaleFilter();
 		LaplaceSharpenFilter lp = new LaplaceSharpenFilter();
 		im = g.filter(im);
 		im = lp.filter(im);
+
 		FileSaver s = new FileSaver(im);
 		s.saveAsBmp("edge.bmp");
 	}
