@@ -31,8 +31,9 @@ public class LaplaceSharpenFilter implements ImageFilter {
 		ImageProcessor ipo = original.getProcessor();
 
 		int size2 = size * size;
-		for (int i = 0; i < original.getWidth(); i++) {
-			for (int j = 0; j < original.getHeight(); j++) {
+		for (int j = 0; j < original.getHeight(); j++) {
+			for (int i = 0; i < original.getWidth(); i++) {
+
 				//laplace filter is symetrical, we don't need to flip the filter matrix
 				int sum = 0;
 				int half = size / 2;
@@ -49,7 +50,9 @@ public class LaplaceSharpenFilter implements ImageFilter {
 					}
 				}
 
-				ipf.putPixel(i, j, Math.min(255, Math.max(0, sum)));
+				ipf.putPixel(i, j, Math.min(255, Math.max(0, sum + 128)));
+				int bla = ipo.getPixel(i, j);
+				System.out.print("");
 			}
 		}
 
@@ -77,7 +80,7 @@ public class LaplaceSharpenFilter implements ImageFilter {
 
 	public static void main(String[] args) throws Exception {
 
-		BufferedImage image = ImageIO.read(new FileInputStream("yin.png"));
+		BufferedImage image = ImageIO.read(new FileInputStream("yin3.png"));
 		ImagePlus im = new ImagePlus("", image);
 
 		GrayScaleFilter g = new GrayScaleFilter();
