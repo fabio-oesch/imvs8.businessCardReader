@@ -2,6 +2,7 @@ package ch.fhnw.imvs8.businesscardreader.imagefilters;
 
 import ij.ImagePlus;
 import ij.io.FileSaver;
+import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 
 import java.awt.image.BufferedImage;
@@ -11,13 +12,13 @@ import javax.imageio.ImageIO;
 
 public class LaplaceSharpenFilter implements ImageFilter {
 	//private final float[][] laplace = { { 0, 0, -1, 0, 0 }, { 0, -1, -2, -1, 0 }, { -1, -2, 16, -2, -1 }, { 0, -1, -2, -1, 0 }, { 0, 0, -1, 0, 0 } }; //laplace filter matrix
-	private final float[][] laplace = { { 0, 1, 0 }, { 1, -4, 1 }, { 0, 1, 0 } };
+	//private final float[][] laplace = { { 0, 1, 0 }, { 1, -4, 1 }, { 0, 1, 0 } };
+	private final float[][] laplace = { { -1, -1, -1 }, { -1, 8, -1 }, { -1, -1, -1 } };
 	private final int size = 3;
-
 	private final double weight;
 
 	public LaplaceSharpenFilter() {
-		this(0.5);
+		this(1.0);
 	}
 
 	public LaplaceSharpenFilter(double weight) {
@@ -25,8 +26,15 @@ public class LaplaceSharpenFilter implements ImageFilter {
 	}
 
 	private ImagePlus convolve(ImagePlus original) {
-		BufferedImage filtered = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_USHORT_GRAY);
+
+		BufferedImage filtered = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		ImagePlus filteredImage = new ImagePlus("filtered", filtered);
+		ImageConverter ic = new ImageConverter(filteredImage);
+		ic.convertToGray32();
+
+		System.out.println(ImagePlus.GRAY32);
+		System.out.println(filteredImage.getType());
+
 		ImageProcessor ipf = filteredImage.getProcessor();
 		ImageProcessor ipo = original.getProcessor();
 
@@ -50,12 +58,28 @@ public class LaplaceSharpenFilter implements ImageFilter {
 					}
 				}
 
-				ipf.putPixel(i, j, Math.min(255, Math.max(0, sum + 128)));
-				int bla = ipo.getPixel(i, j);
-				System.out.print("");
+				ipf.putPixelValue(i, j, sum);
 			}
 		}
 
+		ic.convertToGray8();
+		System.out.println(ImagePlus.GRAY8);
+		System.out.println(filteredImage.getType());
+
+		int min = 1000000;
+		int max = 0;
+		for (int j = 0; j < original.getHeight(); j++) {
+			for (int i = 0; i < original.getWidth(); i++) {
+				int val = ipf.getPixel(i, j);
+				if (val > max)
+					max = val;
+				if (val < min)
+					min = val;
+			}
+		}
+
+		System.out.println(min);
+		System.out.println(max);
 		return new ImagePlus("filtered image", ipf);
 	}
 
@@ -64,23 +88,33 @@ public class LaplaceSharpenFilter implements ImageFilter {
 		ImageProcessor ipf = convolve(im).getProcessor();
 		ImageProcessor ipo = im.getProcessor();
 
-		/*
-		 * for (int i = 0; i < ipo.getWidth(); i++) { for (int j = 0; j <
-		 * ipo.getHeight(); j++) { double val = this.weight *
-		 * ipf.getPixelValue(i, j); //ipo.getPixel() - val ipf.putPixelValue(i,
-		 * j, ipf.getPixelValue(i, j)); } }
-		 */
+		double localMin = 10000000.0;
+		double localMax = 0;
+		for (int i = 0; i < ipo.getWidth(); i++) {
+			for (int j = 0; j < ipo.getHeight(); j++) {
+				double val = ipf.getPixelValue(i, j);
+				ipf.putPixelValue(i, j, ipo.getPixelValue(i, j) + val);
+
+				if (val < localMin)
+					localMin = val;
+
+				if (val > localMax)
+					localMax = val;
+			}
+		}
+
+		System.out.println(localMax);
+		System.out.println(localMin);
 
 		//not a grayscale image anymore, convert to gray
 		ImagePlus out = new ImagePlus("laplace filtered image", ipf);
-		//ImageConverter c = new ImageConverter(out);
-		//c.convertToGray8();
+		ImageConverter c = new ImageConverter(out);
+		c.convertToGray8();
 		return out;
 	}
 
 	public static void main(String[] args) throws Exception {
-
-		BufferedImage image = ImageIO.read(new FileInputStream("yin3.png"));
+		BufferedImage image = ImageIO.read(new FileInputStream("sharpen.png"));
 		ImagePlus im = new ImagePlus("", image);
 
 		GrayScaleFilter g = new GrayScaleFilter();
