@@ -10,6 +10,11 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
 
+/**
+ * 
+ * @author olry
+ * 
+ */
 public class InputProcessing {
 
 	// static String toCRF = "C:\\Documents\\Software\\CRF++-0.58";
@@ -41,17 +46,31 @@ public class InputProcessing {
 		}
 	}
 
-	public static BufferedReader readOutput(String toTestData) throws IOException {
+	public static HashMap<String, String> readOutput(String toTestData) throws IOException {
 		// Process process = new ProcessBuilder(toCRF + "\\crf_learn", toCRF +
 		// "\\example\\chunking\\template", toCRF
 		// + "\\example\\chunking\\train.data", toCRF +
 		// "\\example\\chunking\\model").start();
 
-		Process process = new ProcessBuilder(toCRF + "/crf_test", "-v2", "-m", toTestCRF + "/model2", toTestData).start();
+		// Process process = new ProcessBuilder(toCRF + "/crf_test", "-v1",
+		// "-m", toTestCRF + "/model2", toTestData).start();
+		Process process = new ProcessBuilder(toCRF + "/crf_test", "-m", toTestCRF + "/model2", toTestData).start();
 
 		InputStream is = process.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);
-		return new BufferedReader(isr);
+		BufferedReader br = new BufferedReader(isr);
+
+		HashMap<String, String> tokens = new HashMap<>();
+		String line;
+		while ((line = br.readLine()) != null) {
+			String[] lineArray = line.split("\t");
+			if (lineArray.length > 2) {
+				// only works when -v1 and -v2 is not set
+				tokens.put(lineArray[lineArray.length - 1], lineArray[0]);
+			}
+		}
+
+		return tokens;
 
 		/*
 		 * BufferedReader br = new BufferedReader(isr); String line;
