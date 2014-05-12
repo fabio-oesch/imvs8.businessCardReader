@@ -25,7 +25,7 @@ public class LookupTables {
 	private final Set<String> places;
 	private final Set<String> roadNames;
 	
-	public LookupTables(String folder) throws Exception {
+	public LookupTables(String folder) throws IOException, Exception {
 		this.folder = folder;
 		
 		try {
