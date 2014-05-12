@@ -41,6 +41,9 @@ public class OCREngine {
 	}
 
 	public OCREngine(Preprocessor p) {
+		final String dir = System.getProperty("user.dir");
+		System.out.println(dir);
+		System.setProperty("jna.library.path", dir+"/libtesseract.so");
 		this.processor = p;
 		api = TessAPI1.TessBaseAPICreate();
 
