@@ -1,4 +1,4 @@
-package testing;
+package test;
 
 import java.awt.Rectangle;
 import java.io.BufferedReader;

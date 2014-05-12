@@ -1,4 +1,4 @@
-package testing;
+package test;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import testing.diff_match_patch.Diff;
-import testing.diff_match_patch.Operation;
+import test.diff_match_patch.Diff;
+import test.diff_match_patch.Operation;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
 /**

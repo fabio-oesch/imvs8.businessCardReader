@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package testing;
+package test;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
