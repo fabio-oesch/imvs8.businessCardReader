@@ -41,8 +41,7 @@ public class OCREngine {
 	}
 
 	public OCREngine(Preprocessor p) {
-		final String dir = System.getProperty("user.dir");
-		System.setProperty("jna.library.path", dir);
+		System.setProperty("jna.library.path", "/usr/local/lib");
 		this.processor = p;
 		api = TessAPI1.TessBaseAPICreate();
 
