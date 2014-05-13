@@ -13,6 +13,16 @@ import ch.fhnw.imvs8.businesscardreader.imagefilters.Phansalkar;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
+/**
+ * Class which combines everything. It is responsible for reading an image and
+ * returning the tagged entities found in it.
+ * 
+ * It also handles the configuration of the subsystems and throws an exception,
+ * if one of them is corrupt.
+ * 
+ * @author Jon
+ * 
+ */
 public class BusinessCardReader {
 
 	private static final String LOOKUP_TABLES_FOLDER = "lookup_tables";
@@ -33,6 +43,8 @@ public class BusinessCardReader {
 	 *            environment variable "TESSDATA_PREFIX" to the parent folder of
 	 *            "tessdata".
 	 * @throws Exception
+	 *             Throws expection if the dataFolder does not contain the right
+	 *             subfolders and files or if a configuration file is corrupt.
 	 */
 	public BusinessCardReader(String dataFolder) throws Exception {
 		this.dataFolder = dataFolder;
