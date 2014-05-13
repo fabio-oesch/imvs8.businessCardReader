@@ -25,7 +25,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	private static final String saveFolder = "/";
 
 	private final String repoFolder;
-	private final DiskFileItemFactory factory;
+	private DiskFileItemFactory factory;
 
 	public BusinessCardServiceServlet() {
 		final String os = System.getProperty("os.name");
@@ -39,7 +39,6 @@ public class BusinessCardServiceServlet extends HttpServlet {
 		factory.setSizeThreshold(maxMemSize);
 		// Location to save data that is larger than maxMemSize.
 		factory.setRepository(new File(this.repoFolder));
-
 	}
 
 	@Override
@@ -63,7 +62,9 @@ public class BusinessCardServiceServlet extends HttpServlet {
 			out.println("<p>Nothing uploaded</p>");
 		} else {
 			// Create a new file upload handler
+
 			ServletFileUpload upload = new ServletFileUpload(factory);
+
 			// maximum file size to be uploaded.
 			upload.setSizeMax(maxFileSize);
 			System.out.println("hello");

@@ -7,18 +7,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
 /**
- * Named Entity Recognition Engine
- * Takes the Input of the OCREngine and runs them through CRF++
+ * Named Entity Recognition Engine Takes the Input of the OCREngine and runs
+ * them through CRF++
  * 
  * @author jon
- *
+ * 
  */
 public class NEREngine {
 
@@ -26,34 +28,40 @@ public class NEREngine {
 	private final String toCRF = "/home/olry/Documents/Software/CRF++-0.58";
 	private final String toTestCRF;
 	private final String tmpFileLoc = "/clean_test.data";
+
 	/**
 	 * Generates
-	 * @param trainingFiles location to the training files for the NEREngine
-	 * @param tables Lookup Tables to use
+	 * 
+	 * @param trainingFiles
+	 *            location to the training files for the NEREngine
+	 * @param tables
+	 *            Lookup Tables to use
 	 */
-	public NEREngine(String trainingFiles,LookupTables tables) {
+	public NEREngine(String trainingFiles, LookupTables tables) {
 		this.toTestCRF = trainingFiles;
 		this.creator = new FeatureCreator(tables);
 	}
-	
+
 	/**
 	 * Analyses a Result of an OCR Run
-	 * @param results of the OCREngine
-	 * @return Named Entity Recognition
+	 * 
+	 * @param results
+	 *            of the OCREngine
+	 * @return Named Entities.
 	 */
-	public Map<String,String> analyse(AnalysisResult results) {
-		Map<String,String> answer = null;
+	public Map<String, NamedEntity> analyse(AnalysisResult results) {
+		Map<String, NamedEntity> answer = null;
 		try {
 			creator.createFeatures(results, tmpFileLoc);
-			answer = this.readOutput(tmpFileLoc);
-		} 
-		catch(IOException e) {
+			List<NamedEntity> crfResult = this.readOutput(tmpFileLoc, results.getResultSize());
+			answer = this.putTogetherWords(crfResult);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return answer;
 	}
-	
+
 	private void process(String[] args) throws IOException {
 		// Process process = new ProcessBuilder(toCRF + "\\crf_learn", toCRF +
 		// "\\example\\chunking\\template", toCRF
@@ -74,7 +82,17 @@ public class NEREngine {
 		}
 	}
 
-	private HashMap<String, String> readOutput(String toTestData) throws IOException {
+	/**
+	 * Calls CRF over the command line and stores the results in a list
+	 * 
+	 * @param toTestData
+	 *            file location with a list of words and their features.
+	 * @param size
+	 *            how many words are here to recognize
+	 * @return List of Named Entities. This is the Raw CRF Output.
+	 * @throws IOException
+	 */
+	private List<NamedEntity> readOutput(String toTestData, int size) throws IOException {
 		// Process process = new ProcessBuilder(toCRF + "\\crf_learn", toCRF +
 		// "\\example\\chunking\\template", toCRF
 		// + "\\example\\chunking\\train.data", toCRF +
@@ -88,26 +106,34 @@ public class NEREngine {
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
 
-		HashMap<String, String> tokens = new HashMap<>();
+		List<NamedEntity> tokens = new ArrayList<>(size);
+
 		String line;
 		while ((line = br.readLine()) != null) {
 			String[] lineArray = line.split("\t");
 			if (lineArray.length > 2) {
 				// only works when -v1 and -v2 is not set
-				tokens.put(lineArray[lineArray.length - 1], lineArray[0]);
+				NamedEntity res = new NamedEntity();
+				res.entity = lineArray[0];
+				res.tag = lineArray[lineArray.length - 1];
+				res.confidence = Double.parseDouble(lineArray[lineArray.length - 2]);
+				tokens.add(res);
 			}
 		}
 
 		return tokens;
+	}
 
-		/*
-		 * BufferedReader br = new BufferedReader(isr); String line;
-		 * 
-		 * while ((line = br.readLine()) != null) { String[] lineArray =
-		 * line.split("\t"); if (lineArray.length > 2) { for (int i = 18; i <
-		 * lineArray.length; i++) { System.out.print(lineArray[i] + " "); } }
-		 * System.out.println(); }
-		 */
+	/**
+	 * Entities like telephone numbers are split over serveral words (for
+	 * example 079 333 33 33). This method puts them together in one entity
+	 * 
+	 * @param result
+	 * @return
+	 */
+	private Map<String, NamedEntity> putTogetherWords(List<NamedEntity> result) {
+
+		return null;
 	}
 
 	private void countFuckingWords() throws IOException {
