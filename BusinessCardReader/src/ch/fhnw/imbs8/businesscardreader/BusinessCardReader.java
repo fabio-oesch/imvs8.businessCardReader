@@ -15,12 +15,27 @@ import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
 public class BusinessCardReader {
 
-	private static final String LOOKUP_TABLES_FOLDER = "";
-	private static final String NER_CONFIGURATION_FOLDER = "";
+	private static final String LOOKUP_TABLES_FOLDER = "lookup_tables";
+	private static final String NER_CONFIGURATION_FOLDER = "crfdata";
 	private final OCREngine ocr;
 	private final NEREngine ner;
+	private final String dataFolder;
 
-	public BusinessCardReader() throws Exception {
+	/**
+	 * Creates a Business Card Reader Object
+	 * 
+	 * @param dataFolder
+	 *            path to folder containing all configuration files. Subfolders
+	 *            Expected: -crfdata -lookup_tables
+	 * 
+	 *            It makes sense to put the folder "tessdata" in there with the
+	 *            others, but it doesn't have to be. Be sure to set the system
+	 *            environment variable "TESSDATA_PREFIX" to the parent folder of
+	 *            "tessdata".
+	 * @throws Exception
+	 */
+	public BusinessCardReader(String dataFolder) throws Exception {
+		this.dataFolder = dataFolder;
 		GenericFilterProcessor filters = new GenericFilterProcessor();
 		filters.appendFilter(new GrayScaleFilter());
 		filters.appendFilter(new Phansalkar());
@@ -29,19 +44,19 @@ public class BusinessCardReader {
 
 		LookupTables tables = null;
 		try {
-			tables = new LookupTables(LOOKUP_TABLES_FOLDER);
+			tables = new LookupTables(dataFolder + File.separator + LOOKUP_TABLES_FOLDER);
 		} catch (Exception e) {
-			final String currentDir = System.getProperty("user.dir");
-			String message = "Invalid File or Folder at: " + currentDir + File.separator + LOOKUP_TABLES_FOLDER;
+			String message = "Invalid File or Folder at: " + dataFolder + File.separator + LOOKUP_TABLES_FOLDER;
 			Exception ex = new Exception(message, e);
 			e.printStackTrace();
 			throw ex;
 		}
-		ner = new NEREngine(NER_CONFIGURATION_FOLDER, tables);
+		ner = new NEREngine(dataFolder + File.separator + NER_CONFIGURATION_FOLDER, tables);
 	}
 
 	/**
-	 * reads an image and returns a list
+	 * reads an image and returns a list of found entities. The keys are tags
+	 * found for this entity and the values are the entities themselfes.
 	 * 
 	 * @param image
 	 *            path to image
