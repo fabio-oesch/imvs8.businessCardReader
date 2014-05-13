@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,32 +53,12 @@ public class NEREngine {
 		try {
 			creator.createFeatures(results, tmpFileLoc);
 			List<NamedEntity> crfResult = this.readOutput(tmpFileLoc, results.getResultSize());
-			answer = this.putTogetherWords(crfResult);
+			answer = this.putEntitiesTogether(crfResult);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		return answer;
-	}
-
-	private void process(String[] args) throws IOException {
-		// Process process = new ProcessBuilder(toCRF + "\\crf_learn", toCRF +
-		// "\\example\\chunking\\template", toCRF
-		// + "\\example\\chunking\\train.data", toCRF +
-		// "\\example\\chunking\\model").start();
-
-		Process process = new ProcessBuilder(toCRF + "/crf_learn", toTestCRF + "/template", toTestCRF + "/train.data", toTestCRF + "/model").start();
-
-		InputStream is = process.getInputStream();
-		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader br = new BufferedReader(isr);
-		String line;
-
-		System.out.printf("Output of running %s is:", Arrays.toString(args));
-
-		while ((line = br.readLine()) != null) {
-			System.out.println(line);
-		}
 	}
 
 	/**
@@ -128,12 +107,17 @@ public class NEREngine {
 	 * Entities like telephone numbers are split over serveral words (for
 	 * example 079 333 33 33). This method puts them together in one entity
 	 * 
-	 * @param result
+	 * @param entities
 	 * @return
 	 */
-	private Map<String, NamedEntity> putTogetherWords(List<NamedEntity> result) {
+	private Map<String, NamedEntity> putEntitiesTogether(List<NamedEntity> entities) {
+		HashMap<String, NamedEntity> answer = new HashMap<>(entities.size());
 
-		return null;
+		for (int i = 0; i < entities.size(); i++) {
+
+		}
+
+		return answer;
 	}
 
 	private void countFuckingWords() throws IOException {

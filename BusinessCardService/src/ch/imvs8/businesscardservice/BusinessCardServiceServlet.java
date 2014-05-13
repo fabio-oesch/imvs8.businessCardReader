@@ -17,7 +17,6 @@ import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 @WebServlet("/scanner")
 public class BusinessCardServiceServlet extends HttpServlet {
-
 	private static final long serialVersionUID = 1L;
 
 	private static final int maxFileSize = 50 * 1024;
