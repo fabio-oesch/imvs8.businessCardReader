@@ -18,10 +18,8 @@ import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 @WebServlet("/scanner")
 public class BusinessCardServiceServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+
 	private static final int maxFileSize = 50 * 1024;
 	private static final int maxMemSize = 4 * 1024;
 	private static final String saveFolder = "/";
@@ -30,16 +28,18 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	private final DiskFileItemFactory factory;
 
 	public BusinessCardServiceServlet() {
-		repoFolder = "";
+		final String os = System.getProperty("os.name");
+
+		if (os.contains("Windows"))
+			repoFolder = "C:\\temp";
+		else
+			repoFolder = "/tmp";
 
 		factory = new DiskFileItemFactory();
 		factory.setSizeThreshold(maxMemSize);
 		// Location to save data that is larger than maxMemSize.
 		factory.setRepository(new File(this.repoFolder));
 
-		/*
-		 * commons-fileupload-1.2.2.jar commons-io-2.4.jar
-		 */
 	}
 
 	@Override
@@ -59,20 +59,16 @@ public class BusinessCardServiceServlet extends HttpServlet {
 		out.println("<title>Business Card Service</title>");
 		out.println("</head>");
 		out.println("<body>");
-		if (ServletFileUpload.isMultipartContent(request)) {
-
+		if (!ServletFileUpload.isMultipartContent(request)) {
 			out.println("<p>Nothing uploaded</p>");
-
 		} else {
-
 			// Create a new file upload handler
 			ServletFileUpload upload = new ServletFileUpload(factory);
 			// maximum file size to be uploaded.
 			upload.setSizeMax(maxFileSize);
+			System.out.println("hello");
 			File f = this.saveFile(upload, request);
-
 			//businesscardreader call
-
 			this.printUserForm(out);
 		}
 
@@ -83,7 +79,6 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//save user result
-
 		request.getRequestDispatcher("BusinessCardService/thankyou.html").forward(request, response);
 	}
 
@@ -97,7 +92,15 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	private File saveFile(ServletFileUpload upload, HttpServletRequest request) {
 		File file = null;
 		try {
+			System.out.println("bla");
 			FileItemIterator it = upload.getItemIterator(request);
+			/*
+			 * Map<String, List<FileItem>> stuff =
+			 * upload.parseParameterMap(request);
+			 * 
+			 * Iterator<List<FileItem>> it = stuff.values().iterator();
+			 */
+
 			while (it.hasNext()) {
 				FileItem item = (FileItem) it.next();
 				if (!item.isFormField()) {
@@ -107,11 +110,12 @@ public class BusinessCardServiceServlet extends HttpServlet {
 					long sizeInBytes = item.getSize();
 					file = new File(saveFolder + fileName);
 					item.write(file);
+					System.out.println(file);
 					return file;
 				}
 			}
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 
 		return null;
