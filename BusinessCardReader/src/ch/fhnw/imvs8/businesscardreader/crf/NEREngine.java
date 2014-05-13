@@ -9,8 +9,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
@@ -27,7 +29,7 @@ public class NEREngine {
 	private final String toCRF = "/home/olry/Documents/Software/CRF++-0.58";
 	private final String toTestCRF;
 	private final String tmpFileLoc = "/clean_test.data";
-
+	private final HashSet<String> concatenationRequired;
 	/**
 	 * Generates
 	 * 
@@ -39,6 +41,9 @@ public class NEREngine {
 	public NEREngine(String trainingFiles, LookupTables tables) {
 		this.toTestCRF = trainingFiles;
 		this.creator = new FeatureCreator(tables);
+		
+		this.concatenationRequired = new HashSet<>();
+		//TODO: add tags which need concatenation.
 	}
 
 	/**
@@ -53,7 +58,7 @@ public class NEREngine {
 		try {
 			creator.createFeatures(results, tmpFileLoc);
 			List<NamedEntity> crfResult = this.readOutput(tmpFileLoc, results.getResultSize());
-			answer = this.putEntitiesTogether(crfResult);
+			answer = this.concatenateEntities(crfResult, this.concatenationRequired);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -104,19 +109,42 @@ public class NEREngine {
 	}
 
 	/**
-	 * Entities like telephone numbers are split over serveral words (for
-	 * example 079 333 33 33). This method puts them together in one entity
+	 * Entities like telephone numbers are split over serveral words. For
+	 * example 079 333 33 33 are separate words, this method concatenates them into one entity.
 	 * 
 	 * @param entities
+	 * @param needsConcatenation
+	 * 			Set of Strings, each string defines a Tag which needs concatenation with the following entities in the sequence "entities".
+	 * 			For example: TEL
 	 * @return
 	 */
-	private Map<String, NamedEntity> putEntitiesTogether(List<NamedEntity> entities) {
+	private Map<String, NamedEntity> concatenateEntities(List<NamedEntity> entities,Set<String> needsConcatenation) {
 		HashMap<String, NamedEntity> answer = new HashMap<>(entities.size());
-
-		for (int i = 0; i < entities.size(); i++) {
-
+		
+		//state machine, concatenate is the only state switcher
+		boolean concatenate = false;
+		NamedEntity entity = null;
+		for(NamedEntity e : entities) {
+			if(!concatenate) {
+				//if they don't need to be concatenated, put them to answers
+				if(needsConcatenation.contains(e.tag)) {
+					entity = e;
+					concatenate = true;
+				} else {
+					answer.put(e.tag, e);
+				}
+			}
+			else {
+				//while entities have the same tag, concatenate them
+				if(entity.tag.equals(e.tag)) {
+					entity.entity += " " + e.entity;
+				} else {
+					answer.put(entity.tag, entity);
+					concatenate = false;
+					entity = null;
+				}
+			}
 		}
-
 		return answer;
 	}
 
