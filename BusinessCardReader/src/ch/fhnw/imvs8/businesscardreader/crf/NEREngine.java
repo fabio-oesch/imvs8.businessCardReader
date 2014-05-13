@@ -17,8 +17,8 @@ import java.util.Set;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
 /**
- * Named Entity Recognition Engine Takes the Input of the OCREngine and runs
- * them through CRF++
+ * Represents a Named Entity Recognition Engine. It takes the Input of the OCREngine and runs
+ * them through CRF++.
  * 
  * @author jon
  * 
@@ -43,7 +43,10 @@ public class NEREngine {
 		this.creator = new FeatureCreator(tables);
 		
 		this.concatenationRequired = new HashSet<>();
-		//TODO: add tags which need concatenation.
+		this.concatenationRequired.add("I-TF");
+		this.concatenationRequired.add("I-TW");
+		this.concatenationRequired.add("I-TM");
+		this.concatenationRequired.add("ORG");
 	}
 
 	/**
@@ -97,10 +100,9 @@ public class NEREngine {
 			String[] lineArray = line.split("\t");
 			if (lineArray.length > 2) {
 				// only works when -v1 and -v2 is not set
-				NamedEntity res = new NamedEntity();
-				res.entity = lineArray[0];
-				res.tag = lineArray[lineArray.length - 1];
-				res.confidence = Double.parseDouble(lineArray[lineArray.length - 2]);
+				double conf = Double.parseDouble(lineArray[lineArray.length - 2]);
+				NamedEntity res = new NamedEntity(lineArray[lineArray.length - 1],lineArray[0],conf);
+				
 				tokens.add(res);
 			}
 		}
@@ -124,11 +126,13 @@ public class NEREngine {
 		//state machine, concatenate is the only state switcher
 		boolean concatenate = false;
 		NamedEntity entity = null;
+		String concatenation = null;
 		for(NamedEntity e : entities) {
 			if(!concatenate) {
 				//if they don't need to be concatenated, put them to answers
 				if(needsConcatenation.contains(e.tag)) {
 					entity = e;
+					concatenation = e.entity;
 					concatenate = true;
 				} else {
 					answer.put(e.tag, e);
@@ -137,9 +141,11 @@ public class NEREngine {
 			else {
 				//while entities have the same tag, concatenate them
 				if(entity.tag.equals(e.tag)) {
-					entity.entity += " " + e.entity;
+					concatenation += " " + e.entity;
 				} else {
-					answer.put(entity.tag, entity);
+					NamedEntity conc = new NamedEntity(entity.tag,concatenation,e.confidence);
+					answer.put(conc.tag, conc);
+					concatenation = null;
 					concatenate = false;
 					entity = null;
 				}
