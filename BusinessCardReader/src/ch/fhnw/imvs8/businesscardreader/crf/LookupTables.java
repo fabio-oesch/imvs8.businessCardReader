@@ -13,10 +13,10 @@ import java.util.Set;
  * 
  */
 public class LookupTables {
-	public final static String FIRSTNAME_FILE = "";
-	public final static String LASTNAME_FILE = "";
+	public final static String FIRSTNAME_FILE = "prenames.txt";
+	public final static String LASTNAME_FILE = "lastnames.txt";
 	public final static String ZIP_FILE = "";
-	public final static String PLACE_FILE = "";
+	public final static String PLACE_FILE = "places.txt";
 	public final static String ROADNAME_FILE = "";
 
 	private final String folder;
