@@ -1,4 +1,4 @@
-package ch.fhnw.imbs8.businesscardreader;
+package ch.fhnw.imvs8.businesscardreader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
