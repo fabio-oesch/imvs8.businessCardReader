@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
 /**
@@ -191,60 +189,4 @@ public class NEREngine {
 		}
 		return answer;
 	}*/
-
-	private void countFuckingWords() throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader(toModel + "/clean_test.txt"));
-		String line = reader.readLine();
-		String[] lineArr = line.split(" ");
-		int should = lineArr.length;
-		int lineNumber = 1;
-		while (line != null) {
-			lineNumber++;
-			line = reader.readLine();
-			lineArr = line.split(" ");
-			if (should != lineArr.length)
-				System.out.println(lineNumber + " " + lineArr.length);
-		}
-		reader.close();
-	}
-
-	private void replaceTestData() throws IOException {
-		BufferedReader readerTrainData = new BufferedReader(new FileReader(toModel + "/clean_template_train.data"));
-		BufferedReader readerTestData = new BufferedReader(new FileReader(toModel + "/train.data"));
-		BufferedWriter writerTestData = new BufferedWriter(new FileWriter(toModel + "/clean_train.data"));
-
-		HashMap<String, String[]> hashmap = new HashMap<>();
-		String line = readerTrainData.readLine();
-		String[] lineArr = line.split(" ");
-		while (line != null) {
-			lineArr = line.split(" ");
-			hashmap.put(lineArr[lineArr.length - 1], lineArr);
-			line = readerTrainData.readLine();
-		}
-
-		line = readerTestData.readLine();
-		lineArr = line.split(" ");
-		while (line != null) {
-			lineArr = line.split(" ");
-			if (lineArr.length > 1) {
-				writerTestData.write(lineArr[0] + " ");
-				String[] lineResult = hashmap.get(lineArr[lineArr.length - 1]);
-				if (lineResult == null) {
-					lineResult = hashmap.get(lineArr[lineArr.length - 1].substring(2));
-					if (lineResult == null) {
-						lineResult = hashmap.get("IDK");
-					}
-				}
-				for (int i = 0; i < lineResult.length; i++) {
-					writerTestData.write(lineResult[i] + " ");
-				}
-			}
-			writerTestData.write("\n");
-			line = readerTestData.readLine();
-		}
-
-		writerTestData.close();
-		readerTestData.close();
-		readerTrainData.close();
-	}
 }
