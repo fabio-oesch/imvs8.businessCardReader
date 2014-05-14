@@ -26,20 +26,21 @@ import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 public class NEREngine {
 
 	private FeatureCreator creator;
-	private final String toCRF = "/home/olry/Documents/Software/CRF++-0.58";
+	private final String toCRF;
 	private final String toTestCRF;
 	private final String tmpFileLoc = "/clean_test.data";
 	private final HashSet<String> concatenationRequired;
 	/**
 	 * Generates
 	 * 
-	 * @param trainingFiles
+	 * @param trainingFile
 	 *            location to the training files for the NEREngine
 	 * @param tables
 	 *            Lookup Tables to use
 	 */
-	public NEREngine(String trainingFiles, LookupTables tables) {
-		this.toTestCRF = trainingFiles;
+	public NEREngine(String CRFLocation, String trainingFile, LookupTables tables) {
+		this.toCRF = CRFLocation;
+		this.toTestCRF = trainingFile;
 		this.creator = new FeatureCreator(tables);
 		
 		this.concatenationRequired = new HashSet<>();

@@ -15,9 +15,9 @@ import java.util.Set;
 public class LookupTables {
 	public final static String FIRSTNAME_FILE = "prenames.txt";
 	public final static String LASTNAME_FILE = "lastnames.txt";
-	public final static String ZIP_FILE = "";
+	public final static String ZIP_FILE = "ziplist.txt";
 	public final static String PLACE_FILE = "places.txt";
-	public final static String ROADNAME_FILE = "";
+	public final static String ROADNAME_FILE = "streetnames.txt";
 
 	private final String folder;
 	private final Set<String> firstNames;

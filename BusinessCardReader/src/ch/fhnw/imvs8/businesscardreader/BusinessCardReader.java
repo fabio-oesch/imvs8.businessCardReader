@@ -27,6 +27,7 @@ public class BusinessCardReader {
 
 	private static final String LOOKUP_TABLES_FOLDER = "lookup_tables";
 	private static final String NER_CONFIGURATION_FOLDER = "crfdata";
+	private static final String CRF_LOCATION = "/usr/local/bin";
 	private final OCREngine ocr;
 	private final NEREngine ner;
 	private final String dataFolder;
@@ -63,7 +64,7 @@ public class BusinessCardReader {
 			e.printStackTrace();
 			throw ex;
 		}
-		ner = new NEREngine(dataFolder + File.separator + NER_CONFIGURATION_FOLDER, tables);
+		ner = new NEREngine(CRF_LOCATION, dataFolder + File.separator + NER_CONFIGURATION_FOLDER, tables);
 	}
 
 	/**
