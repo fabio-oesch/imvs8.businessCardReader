@@ -30,7 +30,6 @@ public class BusinessCardReader {
 	private static final String CRF_LOCATION = "/usr/local/bin";
 	private final OCREngine ocr;
 	private final NEREngine ner;
-	private final String dataFolder;
 
 	/**
 	 * Creates a Business Card Reader Object
@@ -48,7 +47,6 @@ public class BusinessCardReader {
 	 *             subfolders and files or if a configuration file is corrupt.
 	 */
 	public BusinessCardReader(String dataFolder) throws Exception {
-		this.dataFolder = dataFolder;
 		GenericFilterProcessor filters = new GenericFilterProcessor();
 		filters.appendFilter(new GrayScaleFilter());
 		filters.appendFilter(new Phansalkar());

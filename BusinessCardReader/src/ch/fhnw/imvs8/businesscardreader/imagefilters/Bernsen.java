@@ -32,11 +32,11 @@ public class Bernsen extends BinarizerAlgorithm {
 		Maximp = duplicateImage(ip);
 		ipMax = Maximp.getProcessor();
 		RankFilters rf = new RankFilters();
-		rf.rank(ipMax, radius, rf.MAX);// Maximum
+		rf.rank(ipMax, radius, RankFilters.MAX);// Maximum
 		// Maximp.show();
 		Minimp = duplicateImage(ip);
 		ipMin = Minimp.getProcessor();
-		rf.rank(ipMin, radius, rf.MIN); // Minimum
+		rf.rank(ipMin, radius, RankFilters.MIN); // Minimum
 		// Minimp.show();
 		byte[] pixels = (byte[]) ip.getPixels();
 		byte[] max = (byte[]) ipMax.getPixels();

@@ -34,13 +34,13 @@ public class Sauvola extends BinarizerAlgorithm {
 
 		ipMean = Meanimp.getProcessor();
 		RankFilters rf = new RankFilters();
-		rf.rank(ipMean, radius, rf.MEAN);// Mean
+		rf.rank(ipMean, radius, RankFilters.MEAN);// Mean
 		// Meanimp.show();
 		Varimp = duplicateImage(ip);
 		ic = new ImageConverter(Varimp);
 		ic.convertToGray32();
 		ipVar = Varimp.getProcessor();
-		rf.rank(ipVar, radius, rf.VARIANCE); // Variance
+		rf.rank(ipVar, radius, RankFilters.VARIANCE); // Variance
 		// Varimp.show();
 		byte[] pixels = (byte[]) ip.getPixels();
 		float[] mean = (float[]) ipMean.getPixels();
