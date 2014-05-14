@@ -50,7 +50,6 @@ public class GetXMLAttributes {
 					} else if (reader.getLocalName() == "label" && !reader.getAttributeValue(0).equals("")) {
 						xmlAttributes.put(reader.getAttributeValue(0), fieldName);
 						label = reader.getAttributeValue(0);
-
 					}
 				}
 				reader.next();

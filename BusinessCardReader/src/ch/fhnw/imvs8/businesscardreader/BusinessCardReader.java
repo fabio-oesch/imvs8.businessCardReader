@@ -55,15 +55,8 @@ public class BusinessCardReader {
 
 		ocr = new OCREngine(filters);
 
-		LookupTables tables = null;
-		try {
-			tables = new LookupTables(dataFolder + File.separator + LOOKUP_TABLES_FOLDER);
-		} catch (Exception e) {
-			String message = "Invalid File or Folder at: " + dataFolder + File.separator + LOOKUP_TABLES_FOLDER;
-			Exception ex = new Exception(message, e);
-			e.printStackTrace();
-			throw ex;
-		}
+		LookupTables tables = new LookupTables(dataFolder + File.separator + LOOKUP_TABLES_FOLDER);
+	
 		ner = new NEREngine(CRF_LOCATION, dataFolder + File.separator + NER_CONFIGURATION_FOLDER, tables);
 	}
 

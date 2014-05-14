@@ -1,6 +1,7 @@
 package ch.fhnw.imvs8.businesscardreader.crf;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -33,6 +34,11 @@ public class FeatureCreator {
 	 * @throws IOException 
 	 */
 	public String createFeatures(AnalysisResult res,String tmpFile) throws IOException {
+		File f = new File(tmpFile);
+		
+		if(!f.exists())
+			f.createNewFile();
+		
 		BufferedWriter w = new BufferedWriter(new FileWriter(tmpFile));
 		
 		for(int i = 0; i < res.getResultSize();i++) {
@@ -79,8 +85,8 @@ public class FeatureCreator {
 		out.append("ci"); if(tables.getPlacesList().contains(word)) out.append(t); else out.append(f);
 		out.append(e);
 		
-		
-		
+		//TODO: add other features, currently it just adds empty features in order to make it run
+		out.append("mw0 tm0 ww0 tw0 fw0 tf0 em0 ti0 we0 cb0 nu0 idk0");
 		
 		return out.toString();
 	}

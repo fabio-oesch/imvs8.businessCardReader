@@ -27,27 +27,30 @@ import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
  */
 public class NEREngine {
 
+	private final String tmpFileName = "test.data";
+	
 	private FeatureCreator creator;
 	private final String toCRF;
-	private final String toTestCRF;
-	private final String tmpFileLoc = "/clean_test.data";
+	private final String toModel;
+	private final String tmpFileLoc;
 	private final HashSet<String> concatenationRequired;
 	/**
 	 * Generates
 	 * 
-	 * @param trainingFile
+	 * @param modelFile
 	 *            location to the training files for the NEREngine
 	 * @param tables
 	 *            Lookup Tables to use
 	 * @throws FileNotFoundException 
 	 */
-	public NEREngine(String CRFLocation, String trainingFile, LookupTables tables) throws FileNotFoundException {
-		File f = new File(trainingFile);
+	public NEREngine(String CRFLocation, String modelFile, LookupTables tables) throws FileNotFoundException {
+		File f = new File(modelFile);
 		if(!f.exists())
-			throw new FileNotFoundException("model file not found: "+trainingFile);
+			throw new FileNotFoundException("model file not found: "+modelFile);
+		
 		
 		this.toCRF = CRFLocation;
-		this.toTestCRF = trainingFile;
+		this.toModel = modelFile;
 		this.creator = new FeatureCreator(tables);
 		
 		this.concatenationRequired = new HashSet<>();
@@ -55,6 +58,9 @@ public class NEREngine {
 		this.concatenationRequired.add("I-TW");
 		this.concatenationRequired.add("I-TM");
 		this.concatenationRequired.add("ORG");
+		
+		final String dir = System.getProperty("user.dir");
+		tmpFileLoc = dir +File.separator+tmpFileName;
 	}
 
 	/**
@@ -70,7 +76,7 @@ public class NEREngine {
 		try {
 			creator.createFeatures(results, tmpFileLoc);
 			List<NamedEntity> crfResult = this.readOutput(tmpFileLoc, results.getResultSize());
-			answer = this.concatenateEntities(crfResult, this.concatenationRequired);
+			answer = this.concatenateEntitiesSimple(crfResult);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -96,21 +102,23 @@ public class NEREngine {
 
 		// Process process = new ProcessBuilder(toCRF + "/crf_test", "-v1",
 		// "-m", toTestCRF + "/model2", toTestData).start();
-		Process process = new ProcessBuilder(toCRF + "/crf_test", "-m", toTestCRF + "/model2", toTestData).start();
-
+		Process process = new ProcessBuilder(toCRF + "/crf_test", "-v1", "-m", toModel + "/model", toTestData).start();
 		InputStream is = process.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
-
+		
 		List<NamedEntity> tokens = new ArrayList<>(size);
-
 		String line;
 		while ((line = br.readLine()) != null) {
 			String[] lineArray = line.split("\t");
 			if (lineArray.length > 2) {
 				// only works when -v1 and -v2 is not set
-				double conf = Double.parseDouble(lineArray[lineArray.length - 2]);
-				NamedEntity res = new NamedEntity(lineArray[lineArray.length - 1],lineArray[0],conf);
+				String labelAndConfidence = lineArray[lineArray.length - 1];
+				int dashIndex = labelAndConfidence.indexOf('/');
+				
+				String label = labelAndConfidence.substring(0, dashIndex);
+				double conf = Double.parseDouble(labelAndConfidence.substring(dashIndex+1));
+				NamedEntity res = new NamedEntity(label,lineArray[0],conf);
 				
 				tokens.add(res);
 			}
@@ -119,6 +127,27 @@ public class NEREngine {
 		return tokens;
 	}
 
+	/**
+	 * Simply concatenate entities with the same tag.
+	 * @param entities
+	 * @return concatenated entities in a Map, the Key is the tag.
+	 */
+	private Map<String, NamedEntity> concatenateEntitiesSimple(List<NamedEntity> entities) {
+		HashMap<String, NamedEntity> answer = new HashMap<>(entities.size());
+		
+		for(NamedEntity e : entities) {
+			if(answer.containsKey(e.tag)) {
+				NamedEntity entity = answer.get(e.tag);
+				answer.remove(e.tag);
+				NamedEntity concatenated = new NamedEntity(e.tag,entity.entity+" "+e.entity,entity.confidence*e.confidence);
+				answer.put(e.tag, concatenated);
+			} else {
+				answer.put(e.tag, e);
+			}
+		}
+		
+		return answer;
+	}
 	/**
 	 * Entities like telephone numbers are split over serveral words. For
 	 * example 079 333 33 33 are separate words, this method concatenates them into one entity.
@@ -129,7 +158,7 @@ public class NEREngine {
 	 * 			For example: TEL
 	 * @return
 	 */
-	private Map<String, NamedEntity> concatenateEntities(List<NamedEntity> entities,Set<String> needsConcatenation) {
+	/*private Map<String, NamedEntity> concatenateEntitiesComplex(List<NamedEntity> entities,Set<String> needsConcatenation) {
 		HashMap<String, NamedEntity> answer = new HashMap<>(entities.size());
 		
 		//state machine, concatenate is the only state switcher
@@ -161,10 +190,10 @@ public class NEREngine {
 			}
 		}
 		return answer;
-	}
+	}*/
 
 	private void countFuckingWords() throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader(toTestCRF + "/clean_test.txt"));
+		BufferedReader reader = new BufferedReader(new FileReader(toModel + "/clean_test.txt"));
 		String line = reader.readLine();
 		String[] lineArr = line.split(" ");
 		int should = lineArr.length;
@@ -180,9 +209,9 @@ public class NEREngine {
 	}
 
 	private void replaceTestData() throws IOException {
-		BufferedReader readerTrainData = new BufferedReader(new FileReader(toTestCRF + "/clean_template_train.data"));
-		BufferedReader readerTestData = new BufferedReader(new FileReader(toTestCRF + "/train.data"));
-		BufferedWriter writerTestData = new BufferedWriter(new FileWriter(toTestCRF + "/clean_train.data"));
+		BufferedReader readerTrainData = new BufferedReader(new FileReader(toModel + "/clean_template_train.data"));
+		BufferedReader readerTestData = new BufferedReader(new FileReader(toModel + "/train.data"));
+		BufferedWriter writerTestData = new BufferedWriter(new FileWriter(toModel + "/clean_train.data"));
 
 		HashMap<String, String[]> hashmap = new HashMap<>();
 		String line = readerTrainData.readLine();
