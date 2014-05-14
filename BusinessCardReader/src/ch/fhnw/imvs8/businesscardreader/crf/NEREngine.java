@@ -2,6 +2,8 @@ package ch.fhnw.imvs8.businesscardreader.crf;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -37,8 +39,13 @@ public class NEREngine {
 	 *            location to the training files for the NEREngine
 	 * @param tables
 	 *            Lookup Tables to use
+	 * @throws FileNotFoundException 
 	 */
-	public NEREngine(String CRFLocation, String trainingFile, LookupTables tables) {
+	public NEREngine(String CRFLocation, String trainingFile, LookupTables tables) throws FileNotFoundException {
+		File f = new File(trainingFile);
+		if(!f.exists())
+			throw new FileNotFoundException("model file not found: "+trainingFile);
+		
 		this.toCRF = CRFLocation;
 		this.toTestCRF = trainingFile;
 		this.creator = new FeatureCreator(tables);
@@ -56,6 +63,7 @@ public class NEREngine {
 	 * @param results
 	 *            of the OCREngine
 	 * @return Named Entities.
+	 * 			  Table with the NamedEntities, the Label (for example "email") is the Key and the NamedEntity the value;
 	 */
 	public Map<String, NamedEntity> analyse(AnalysisResult results) {
 		Map<String, NamedEntity> answer = null;
@@ -168,6 +176,7 @@ public class NEREngine {
 			if (should != lineArr.length)
 				System.out.println(lineNumber + " " + lineArr.length);
 		}
+		reader.close();
 	}
 
 	private void replaceTestData() throws IOException {

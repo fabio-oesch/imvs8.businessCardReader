@@ -89,7 +89,7 @@ public class OCRTest {
 		}
 
 		out.close();
-
+		r.close();
 		writeStatisticsFile(testdataFolder + logFileName + "_statistics.csv", statistics, countCharacters(solution), content.length);
 
 	}

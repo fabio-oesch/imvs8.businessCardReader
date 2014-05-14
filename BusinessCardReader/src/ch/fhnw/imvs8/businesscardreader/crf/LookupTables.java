@@ -36,7 +36,7 @@ public class LookupTables {
 			this.zips = createSet(this.folder + "/" + ZIP_FILE);
 			this.roadNames = createSet(this.folder + "/" + ROADNAME_FILE);
 		} catch (Exception e) {
-			StringBuilder b = new StringBuilder("Invalid files in folder: ");
+			StringBuilder b = new StringBuilder("Invalid or missing files in folder: ");
 			b.append(folder);
 			b.append("\nExpected files in folder:\n");
 			b.append(FIRSTNAME_FILE);

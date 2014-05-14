@@ -4,21 +4,38 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
+
 public class BusinessCardReaderIntegrationTest {
 
 	@Test
-	public void TestInvalidLookupTableLocation() {
-		fail("Not yet implemented");
+	public void EmptyFolderTest() {
+		try{
+			BusinessCardReader reader = new BusinessCardReader("test_data/EmptyFolderTest");
+		} catch(Exception e) {
+			Exception cause = (Exception)e.getCause();
+			
+			assertTrue("Not expected Error", cause.getMessage().startsWith("Invalid or missing files in folder:"));
+		}
 	}
 	
 	@Test
-	public void TestInvalidLookupTable() {
-		fail("Not yet implemented");
+	public void MissingModelTest() {
+		try{
+			BusinessCardReader reader = new BusinessCardReader("test_data/MissingCRFModelTest");
+		} catch(Exception e) {
+			Exception cause = (Exception)e.getCause();
+			
+			assertTrue("Not expected Error", cause.getMessage().startsWith("model file not found:"));
+		}
 	}
 	
-	public void ValidRunthrough() {
+	public void ValidRuntTest() {
 		
-		try{ }
+		try{ 
+			BusinessCardReader reader = new BusinessCardReader("test_data/ValidTest");
+			reader.readImage("test_data/");
+		}
 		catch(Exception e) {
 			fail("Exception was thrown. Exception: "+e.getMessage());
 		}
