@@ -12,7 +12,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Immutable object holding all lookuptables used in the CRF analysis
+ * Immutable object holding all lookup tables used for the feature vector.
+ * Used by Object: FeatureCreator
  * 
  * @author jon
  * 
@@ -24,6 +25,11 @@ public class LookupTables {
 	public final static String PLACE_FILE = "places.txt";
 	public final static String ROADNAME_FILE = "streetnames.txt";
 	public final static String DOMAIN_FILE ="domains.txt";
+	public final static String MOBILEWORDS_FILE ="mobilewords.txt";
+	public final static String TELWORDS_FILE ="telwords.txt";
+	public final static String FAXWORDS_FILE="faxwords.txt";
+	public final static String MOBILEPREFIX_FILE ="mobileprefix.txt";
+	public final static String FIXNETPREFIX_FILE="fixnetprefix.txt";
 	
 	private final String folder;
 	private final Set<String> firstNames;
@@ -31,6 +37,11 @@ public class LookupTables {
 	private final Set<String> zips;
 	private final Set<String> places;
 	private final Set<String> roadNames;
+	private final Set<String> mobileWords;
+	private final Set<String> telWords;
+	private final Set<String> faxWords;
+	private final Set<String> mobilePrefix;
+	private final Set<String> fixnetPrefix;
 	
 	private final List<String> domains;
 
@@ -43,7 +54,14 @@ public class LookupTables {
 			this.places = createSet(this.folder + File.separator + PLACE_FILE);
 			this.zips = createSet(this.folder + File.separator + ZIP_FILE);
 			this.roadNames = createSet(this.folder + File.separator + ROADNAME_FILE);
+			mobileWords = createSet(this.folder + File.separator + MOBILEWORDS_FILE);
+			telWords = createSet(this.folder + File.separator + TELWORDS_FILE);
+			faxWords = createSet(this.folder + File.separator + FAXWORDS_FILE);
+			mobilePrefix = createSet(this.folder + File.separator + MOBILEPREFIX_FILE);
+			fixnetPrefix = createSet(this.folder + File.separator + FIXNETPREFIX_FILE);
+			
 			this.domains = createList(this.folder + File.separator + DOMAIN_FILE);
+			
 		} catch (Exception e) {
 			StringBuilder b = new StringBuilder("Invalid or missing files in folder: ");
 			b.append(folder);
@@ -60,6 +78,15 @@ public class LookupTables {
 			b.append("\n");
 			b.append(DOMAIN_FILE);
 			b.append("\n");
+			b.append(MOBILEWORDS_FILE);
+			b.append("\n");
+			b.append(TELWORDS_FILE);
+			b.append("\n");
+			b.append(FAXWORDS_FILE);
+			b.append("\n");
+			b.append(MOBILEPREFIX_FILE);
+			b.append("\n");
+			b.append(FIXNETPREFIX_FILE);
 
 			throw new Exception(b.toString());
 		}
@@ -90,7 +117,7 @@ public class LookupTables {
 	 * @return
 	 */
 	public Set<String> getMobileWordSet() {
-		return null;
+		return this.mobileWords;
 	}
 	
 	/**
@@ -98,7 +125,7 @@ public class LookupTables {
 	 * @return
 	 */
 	public Set<String> getTelWordSet() {
-		return null;
+		return this.telWords;
 	}
 	
 	/**
@@ -106,7 +133,7 @@ public class LookupTables {
 	 * @return
 	 */
 	public Set<String> getFaxWordSet() {
-		return null;
+		return this.faxWords;
 	}
 	
 	/**
@@ -114,7 +141,7 @@ public class LookupTables {
 	 * @return
 	 */
 	public Set<String> getMobilePrefixSet() {
-		return null;
+		return this.mobilePrefix;
 	}
 	
 	/**
@@ -122,7 +149,7 @@ public class LookupTables {
 	 * @return
 	 */
 	public Set<String> getFixnetPrefixSet() {
-		return null;
+		return this.fixnetPrefix;
 	}
 	
 	/**
