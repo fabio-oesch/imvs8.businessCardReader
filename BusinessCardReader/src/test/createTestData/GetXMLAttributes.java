@@ -29,14 +29,16 @@ public class GetXMLAttributes {
 	 * @throws IOException
 	 * @throws NumberFormatException
 	 */
-	public HashMap<String, String> readXMLAttributes(File xmlInputFile) throws NumberFormatException, IOException {
+	public static HashMap<String, String> readXMLAttributes(File xmlInputFile) throws NumberFormatException,
+			IOException {
 
 		HashMap<String, String> xmlAttributes = new HashMap<>();
 		// Create a XMLInputFactory which will read the xml-taggs
 		XMLInputFactory inputFactor = XMLInputFactory.newInstance();
 		try {
 			// Create a reader with the ANSI Encoding
-			XMLStreamReader reader = inputFactor.createXMLStreamReader(new InputStreamReader(new FileInputStream(xmlInputFile), "ISO-8859-1"));
+			XMLStreamReader reader = inputFactor.createXMLStreamReader(new InputStreamReader(new FileInputStream(
+					xmlInputFile), "ISO-8859-1"));
 			// Save text and fieldName in a String
 			String label = null;
 			String fieldName = null;

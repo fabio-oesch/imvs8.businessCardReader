@@ -4,10 +4,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterProcessor;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.LaplaceSharpenFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Phansalkar;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Preprocessor;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
@@ -30,12 +31,21 @@ public class Generator {
 		// Add filters to the engine
 		GenericFilterProcessor filters = new GenericFilterProcessor();
 		filters.appendFilter(new GrayScaleFilter());
-		filters.appendFilter(new LaplaceSharpenFilter());
 		filters.appendFilter(new Phansalkar());
 
-		createTestFiles(filters, "testdata.crf.csv");
+		createTestFiles(filters, "testdata.crf.txt");
 	}
 
+	/**
+	 * creates test files to make a model or test crf++
+	 * 
+	 * @param filters
+	 *            the filters which should be applied on the pictures
+	 * @param crfName
+	 *            name of the file which shoulde be created
+	 * @throws IOException
+	 *             if cant read to file or cant write into it
+	 */
 	static void createTestFiles(Preprocessor filters, String crfName) throws IOException {
 
 		OCREngine engine = new OCREngine(filters);
@@ -47,15 +57,13 @@ public class Generator {
 		}
 		FileWriter fw = new FileWriter(logFile.getAbsoluteFile());
 		BufferedWriter bwCRF = new BufferedWriter(fw);
-		bwCRF.write("E-Mail;PictureID;Precision;Recall;F_Measure;BoundingBox Precision;BoundingBox Recall;BoundingBox F_Measure; Character Precision; Character Recall; Character F_Measure \n");
 
 		// tests all the files in the folder
 		String[] folderList = folder.list();
-		// for (int folders = 0; folders < folderList.length; folders++) {
-		// testXMLForName(engine, folderList[folders], bwLog);
-		// }
-
-		tesseractAttributes(engine, folderList[0], bwCRF);
+		for (int folders = 0; folders < folderList.length; folders++) {
+			tesseractAttributes(engine, folderList[folders], bwCRF);
+			bwCRF.write("\n");
+		}
 
 		bwCRF.close();
 	}
@@ -70,7 +78,7 @@ public class Generator {
 	 * @throws IOException
 	 *             needs permission to write and create a new file
 	 */
-	private static void tesseractAttributes(OCREngine engine, String name, BufferedWriter bwLog) throws IOException {
+	private static void tesseractAttributes(OCREngine engine, String name, BufferedWriter bwCRF) throws IOException {
 		File solutionFolder = new File(folder.getAbsolutePath() + "/" + name + "/solution/");
 
 		File testFolder = new File(folder.getAbsolutePath() + "/" + name + "/testimages/");
@@ -85,28 +93,62 @@ public class Generator {
 
 		// Compare with every file in folder
 		File[] testFolderList = testFolder.listFiles();
-		for (int file = 0; file < testFolderList.length && file < 1; file++) {
-			if (!testFolderList[file].getAbsolutePath().contains("debug") && !testFolderList[file].getAbsolutePath().contains("_scale.txt")) {
+		for (int file = 0; file < testFolderList.length; file++) {
+			if (!testFolderList[file].getAbsolutePath().contains("debug")
+					&& !testFolderList[file].getAbsolutePath().contains("_scale.txt")
+					&& testFolderList[file].getAbsolutePath().contains("scan")) {
 				System.out.println(testFolderList[file].getAbsolutePath());
 				AnalysisResult analysisResult = engine.analyzeImage(testFolderList[file]);
 
+				HashMap<String, String> xmlResuls = GetXMLAttributes.readXMLAttributes(scannerFile);
+				boolean found;
 				for (int i = 0; i < analysisResult.getResultSize(); i++) {
-					System.out.println(analysisResult.getWord(i));
+					if (!analysisResult.getWord(i).equals("") && !analysisResult.getWord(i).contains(" ")) {
+						found = false;
+						Iterator<String> it = xmlResuls.keySet().iterator();
+						while (it.hasNext() && !found) {
+							String current = it.next();
+							if (current.contains(analysisResult.getWord(i))) {
+								bwCRF.write("=\"" + analysisResult.getWord(i) + "\"" + ";" + xmlResuls.get(current)
+										+ "\n");
+								found = true;
+							}
+						}
+						if (!found) {
+							addLabel(bwCRF, analysisResult.getWord(i));
+						}
+					}
 				}
-
-				// String logline = name + ";" + testFolderList[file].getName()
-				// + ";" + String.format("%.3f", test.getPrecision()) + ";" +
-				// String.format("%.3f", test.getRecall())
-				// + ";" + String.format("%.3f", test.f_Measure()) + ";" +
-				// String.format("%.3f", test.boundingboxGetPrecision()) + ";"
-				// + String.format("%.3f", test.boundingboxGetRecall()) + ";" +
-				// String.format("%.3f", test.boundingboxF_Measure()) + ";"
-				// + String.format("%.3f", test.characterGetPrecision()) + ";" +
-				// String.format("%.3f", test.characterGetRecall()) + ";"
-				// + String.format("%.3f", test.characterF_Measure()) + ";" +
-				// "\n";
-				// bwLog.write(logline);
 			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param bwCRF
+	 * @param currentWord
+	 * @throws IOException
+	 */
+	public static void addLabel(BufferedWriter bwCRF, String currentWord) throws IOException {
+		if (currentWord.toLowerCase().contains("www")) {
+			bwCRF.write("=\"" + currentWord + "\";web\n");
+		} else if (currentWord.toLowerCase().contains("@") || currentWord.contains("mail")) {
+			bwCRF.write("=\"" + currentWord + "\";E-mail\n");
+		} else if (currentWord.toLowerCase().contains("tel") || currentWord.toLowerCase().contains("dire")
+				|| currentWord.toLowerCase().contains("phone")) {
+			bwCRF.write("=\"" + currentWord + "\";B-TN\n");
+		} else if (currentWord.toLowerCase().contains("mobile")) {
+			bwCRF.write("=\"" + currentWord + "\";B-MN\n");
+		} else if (currentWord.toLowerCase().contains("fax")) {
+			bwCRF.write("=\"" + currentWord + "\";B-FN\n");
+		} else if (currentWord.toLowerCase().contains("tel")) {
+			bwCRF.write("=\"" + currentWord + "\";B-TN\n");
+		} else if (currentWord.toLowerCase().contains("ch-")) {
+			bwCRF.write("=\"" + currentWord + "\";PLZ\n");
+		} else if (currentWord.length() == 4) {
+			bwCRF.write("=\"" + currentWord + "\";PLZ\n");
+		} else {
+			bwCRF.write("=\"" + currentWord + "\"\n");
 		}
 	}
 }
