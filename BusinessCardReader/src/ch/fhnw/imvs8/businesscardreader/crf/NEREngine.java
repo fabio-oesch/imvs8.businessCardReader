@@ -126,7 +126,7 @@ public class NEREngine {
 			if(answer.containsKey(e.tag)) {
 				NamedEntity entity = answer.get(e.tag);
 				answer.remove(e.tag);
-				NamedEntity concatenated = new NamedEntity(e.tag,entity.entity+" "+e.entity,entity.confidence*e.confidence);
+				NamedEntity concatenated = new NamedEntity(e.tag,entity.entity+" "+e.entity,Math.min(entity.confidence,e.confidence));
 				answer.put(e.tag, concatenated);
 			} else {
 				answer.put(e.tag, e);
@@ -135,47 +135,4 @@ public class NEREngine {
 		
 		return answer;
 	}
-	/**
-	 * Entities like telephone numbers are split over serveral words. For
-	 * example 079 333 33 33 are separate words, this method concatenates them into one entity.
-	 * 
-	 * @param entities
-	 * @param needsConcatenation
-	 * 			Set of Strings, each string defines a Tag which needs concatenation with the following entities in the sequence "entities".
-	 * 			For example: TEL
-	 * @return
-	 */
-	/*private Map<String, NamedEntity> concatenateEntitiesComplex(List<NamedEntity> entities,Set<String> needsConcatenation) {
-		HashMap<String, NamedEntity> answer = new HashMap<>(entities.size());
-		
-		//state machine, concatenate is the only state switcher
-		boolean concatenate = false;
-		NamedEntity entity = null;
-		String concatenation = null;
-		for(NamedEntity e : entities) {
-			if(!concatenate) {
-				//if they don't need to be concatenated, put them to answers
-				if(needsConcatenation.contains(e.tag)) {
-					entity = e;
-					concatenation = e.entity;
-					concatenate = true;
-				} else {
-					answer.put(e.tag, e);
-				}
-			}
-			else {
-				//while entities have the same tag, concatenate them
-				if(entity.tag.equals(e.tag)) {
-					concatenation += " " + e.entity;
-				} else {
-					NamedEntity conc = new NamedEntity(entity.tag,concatenation,e.confidence);
-					answer.put(conc.tag, conc);
-					concatenation = null;
-					concatenate = false;
-					entity = null;
-				}
-			}
-		}
-		return answer;
-	}*/
 }
