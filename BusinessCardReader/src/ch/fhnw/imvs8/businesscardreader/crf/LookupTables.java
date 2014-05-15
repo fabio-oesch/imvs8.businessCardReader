@@ -65,23 +65,23 @@ public class LookupTables {
 		}
 	}
 
-	public Set<String> getPrenameList() {
+	public Set<String> getPrenameSet() {
 		return this.firstNames;
 	}
 
-	public Set<String> getLastnameList() {
+	public Set<String> getLastnameSet() {
 		return this.lastNames;
 	}
 
-	public Set<String> getZipList() {
+	public Set<String> getZipSet() {
 		return this.zips;
 	}
 
-	public Set<String> getRoadnameList() {
+	public Set<String> getRoadnameSet() {
 		return this.roadNames;
 	}
 
-	public Set<String> getPlacesList() {
+	public Set<String> getPlacesSet() {
 		return this.places;
 	}
 	

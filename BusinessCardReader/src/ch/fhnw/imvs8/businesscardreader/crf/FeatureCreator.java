@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
@@ -66,23 +67,23 @@ public class FeatureCreator {
 		StringBuilder out = new StringBuilder(word); out.append(e);
 		
 		//is in prename LUT feature
-		out.append("fp"); if(tables.getPrenameList().contains(word)) out.append(t); else out.append(f);
+		out.append("fp"); if(tables.getPrenameSet().contains(word)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//is in lastname LUT feature
-		out.append("lp"); if(tables.getLastnameList().contains(word)) out.append(t); else out.append(f);
+		out.append("lp"); if(tables.getLastnameSet().contains(word)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//is in roadname LUT feature
-		out.append("st"); if(tables.getRoadnameList().contains(word)) out.append(t); else out.append(f);
+		out.append("st"); if(tables.getRoadnameSet().contains(word)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//is in zip LUT feature
-		out.append("pc"); if(tables.getZipList().contains(word)) out.append(t); else out.append(f);
+		out.append("pc"); if(tables.getZipSet().contains(word)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//is in places LUT feature
-		out.append("ci"); if(tables.getPlacesList().contains(word)) out.append(t); else out.append(f);
+		out.append("ci"); if(tables.getPlacesSet().contains(word)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//TODO: add other features, currently it just adds empty features in order to make it run
@@ -92,10 +93,21 @@ public class FeatureCreator {
 		out.append("em"); if(word.contains("@")) out.append(t); else out.append(f);
 		out.append(e);
 		
-		out.append("ti0 we0 ");
+		out.append("ti0 ");
 		
 		//word contains a domain like ".com"
-		out
+		out.append("we");
+		List<String> domains = tables.getDomainsList();
+		String found = f;
+		for(String s : domains)
+			if(word.contains(s)) {
+				found = t;
+				break;
+			}
+		out.append(found);
+		out.append(e);
+		
+		//
 		
 		out.append("cb0 ");
 		
