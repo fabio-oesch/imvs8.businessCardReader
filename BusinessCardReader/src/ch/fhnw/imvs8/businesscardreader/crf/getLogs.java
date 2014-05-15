@@ -18,11 +18,11 @@ public class getLogs {
 
 	private double[] labelPercentage; // percentage per label
 	private int[] countPerLabel; // count per label
-	private HashMap<String, Integer> labelPosition; // position of the labels in
+	private HashMap<String, Integer> labelPosition = new HashMap<>(); // position of the labels in
 													// the array
 
 	private boolean[] cardCorrect; // count of cards which are correct
-	private ArrayList<String> cardCorrectLabel; // String of labels
+	private ArrayList<String> cardCorrectLabel = new ArrayList<>(); // String of labels
 
 	/**
 	 * create an object of the logs with all the labels as a String
@@ -32,6 +32,7 @@ public class getLogs {
 	 * @throws IOException
 	 */
 	public getLogs(String[] labels) throws IOException {
+		
 		for (int labelPos = 0; labelPos < labels.length; labelPos++) {
 			labelPosition.put(labels[labelPos], labelPos);
 		}
@@ -75,11 +76,11 @@ public class getLogs {
 	 */
 	public void addCard() {
 		boolean hasAllCorrect = true;
-		for (int i = 0; i < cardCorrect.length && hasAllCorrect; i++) {
-			if (!cardCorrect[i]) {
-				hasAllCorrect = false;
-			}
-		}
+//		for (int i = 0; i < cardCorrect.length && hasAllCorrect; i++) {
+//			if (!cardCorrect[i]) {
+//				hasAllCorrect = false;
+//			}
+//		}
 
 		if (hasAllCorrect) {
 			cardCorrectCount++;

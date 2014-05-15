@@ -60,7 +60,7 @@ public class FeatureCreator {
 	 * @param word
 	 * @return String word with line of features for CRF++
 	 */
-	private String createLine(String word) {
+	public String createLine(String word) {
 		String e = " ";
 		String t = "1";		//true
 		String f = "0"; 	//false
