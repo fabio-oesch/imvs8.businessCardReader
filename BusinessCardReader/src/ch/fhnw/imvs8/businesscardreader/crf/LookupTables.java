@@ -85,6 +85,42 @@ public class LookupTables {
 		return this.places;
 	}
 	
+	/**
+	 * Set of words typically leading a mobile number
+	 * @return
+	 */
+	public Set<String> getMobileWordSet() {
+		return null;
+	}
+	
+	/**
+	 * Set of words typically leading a work/fixnet telephone number
+	 * @return
+	 */
+	public Set<String> getTelWordSet() {
+		return null;
+	}
+	
+	/**
+	 * Set of words typically leading a fax/fixnet telephone number
+	 * @return
+	 */
+	public Set<String> getFaxWordSet() {
+		return null;
+	}
+	
+	/**
+	 * Set of telephone number prefixes (as string) found in mobile numbers
+	 * @return
+	 */
+	public Set<String> getMobilePrefixSet() {
+		return null;
+	}
+	
+	/**
+	 * Set of telephone number prefixes (as string) found in fixnet numbers
+	 * @return
+	 */
 	public List<String> getDomainsList() {
 		return this.domains;
 	}
