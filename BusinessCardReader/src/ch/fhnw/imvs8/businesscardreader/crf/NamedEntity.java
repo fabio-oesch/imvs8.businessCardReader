@@ -10,7 +10,7 @@ package ch.fhnw.imvs8.businesscardreader.crf;
  *
  */
 public class NamedEntity {
-	public static final String[] LABELS = {"FN", "LN","ST","PLZ","ORT","B-TM","I-TM","B-TW","I-TW","B-TF","I-TF","EMA","TIT","WEB","ORG","IDK"};
+	public static final String[] LABELS = {"FN", "LN","ST","PLZ","ORT","B-MN","I-MN","B-TN","I-TN","B-FN","I-FN","EMA","TIT","WEB","ORG","IDK"};
 	
 	private final double confidence;
 	private final String label;
