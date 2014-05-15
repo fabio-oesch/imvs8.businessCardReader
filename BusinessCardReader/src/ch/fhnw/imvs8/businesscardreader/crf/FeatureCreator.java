@@ -104,12 +104,13 @@ public class FeatureCreator {
 		
 		//is word a typical fixnet number prefix (for example 055)
 		out.append("fixpre");if(tables.getFixnetPrefixSet().contains(word)) out.append(t); else out.append(f);
+		out.append(e);
 		
 		//sets the numbers feature. There are currently 5 features dedicated to numbers. Each feature says if this word is a number and how many digits it has.
 		if(word.matches("-?\\d+")) {
-			int length = Math.min(word.length(), 4);
+			int length = word.length();
 			
-			for(int i = 0;i < length;i++) {
+			for(int i = 0; i < 4;i++) {
 				out.append("nu");
 				out.append(i+1);
 				out.append("dig");

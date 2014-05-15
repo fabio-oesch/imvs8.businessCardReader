@@ -65,6 +65,9 @@ public class LookupTables {
 		} catch (Exception e) {
 			StringBuilder b = new StringBuilder("Invalid or missing files in folder: ");
 			b.append(folder);
+			b.append("\nProblem:");
+			b.append(e.getMessage());
+			b.append("\n");
 			b.append("\nExpected files in folder:\n");
 			b.append(FIRSTNAME_FILE);
 			b.append("\n");

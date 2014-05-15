@@ -1,1 +1,18 @@
- 
+ D:
+ d:
+ D
+ d
+ T:
+ T
+ t:
+ t
+ Tel:
+ Tel
+ direkt:
+ direkt
+ direct:
+ direct
+ Direkt:
+ Direkt
+ Direct:
+ Direct
