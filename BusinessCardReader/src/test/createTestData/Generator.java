@@ -124,9 +124,12 @@ public class Generator {
 	}
 
 	/**
+	 * creates a label if none is found or if no case is matching leave it blank
 	 * 
 	 * @param bwCRF
+	 *            writer of the file to write into it
 	 * @param currentWord
+	 *            the word which is being processed
 	 * @throws IOException
 	 */
 	public static void addLabel(BufferedWriter bwCRF, String currentWord) throws IOException {
