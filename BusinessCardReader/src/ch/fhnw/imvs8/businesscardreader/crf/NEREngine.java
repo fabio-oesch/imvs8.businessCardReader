@@ -18,10 +18,8 @@ import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
  * them through CRF++.
  * 
  * @author jon
- * 
  */
 public class NEREngine {
-
 	private final String tmpFileName = "test.data";
 	
 	private FeatureCreator creator;
@@ -29,6 +27,7 @@ public class NEREngine {
 	private final String toModel;
 	private final String tmpFileLoc;
 	private final HashSet<String> concatenationRequired;
+	
 	/**
 	 * Generates
 	 * 
@@ -90,13 +89,6 @@ public class NEREngine {
 	 * @throws IOException
 	 */
 	private List<NamedEntity> readOutput(String toTestData, int size) throws IOException {
-		// Process process = new ProcessBuilder(toCRF + "\\crf_learn", toCRF +
-		// "\\example\\chunking\\template", toCRF
-		// + "\\example\\chunking\\train.data", toCRF +
-		// "\\example\\chunking\\model").start();
-
-		// Process process = new ProcessBuilder(toCRF + "/crf_test", "-v1",
-		// "-m", toTestCRF + "/model2", toTestData).start();
 		Process process = new ProcessBuilder(toCRF + "/crf_test", "-v1", "-m", toModel + "/model", toTestData).start();
 		InputStream is = process.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);

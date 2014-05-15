@@ -86,7 +86,30 @@ public class FeatureCreator {
 		out.append(e);
 		
 		//TODO: add other features, currently it just adds empty features in order to make it run
-		out.append("mw0 tm0 ww0 tw0 fw0 tf0 em0 ti0 we0 cb0 nu0 idk0");
+		out.append("mw0 tm0 ww0 tw0 fw0 tf0 ");
+		
+		//contains an @
+		out.append("em"); if(word.contains("@")) out.append(t); else out.append(f);
+		out.append(e);
+		
+		out.append("ti0 we0 ");
+		
+		//word contains a domain like ".com"
+		out
+		
+		out.append("cb0 ");
+		
+		//is a number
+		out.append("nu");
+		try{
+			int number = Integer.parseInt(word);
+			out.append(t);
+		} catch(Exception ex) {
+			out.append(f);
+		}
+		out.append(e);
+		
+		out.append("idk0");
 		
 		return out.toString();
 	}

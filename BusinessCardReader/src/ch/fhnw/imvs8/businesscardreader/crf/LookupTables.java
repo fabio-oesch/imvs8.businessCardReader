@@ -1,10 +1,15 @@
 package ch.fhnw.imvs8.businesscardreader.crf;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Immutable object holding all lookuptables used in the CRF analysis
@@ -18,23 +23,27 @@ public class LookupTables {
 	public final static String ZIP_FILE = "ziplist.txt";
 	public final static String PLACE_FILE = "places.txt";
 	public final static String ROADNAME_FILE = "streetnames.txt";
-
+	public final static String DOMAIN_FILE ="domains.txt";
+	
 	private final String folder;
 	private final Set<String> firstNames;
 	private final Set<String> lastNames;
 	private final Set<String> zips;
 	private final Set<String> places;
 	private final Set<String> roadNames;
+	
+	private final List<String> domains;
 
 	public LookupTables(String folder) throws Exception {
 		this.folder = folder;
 
 		try {
-			this.firstNames = createSet(this.folder + "/" + FIRSTNAME_FILE);
-			this.lastNames = createSet(this.folder + "/" + LASTNAME_FILE);
-			this.places = createSet(this.folder + "/" + PLACE_FILE);
-			this.zips = createSet(this.folder + "/" + ZIP_FILE);
-			this.roadNames = createSet(this.folder + "/" + ROADNAME_FILE);
+			this.firstNames = createSet(this.folder + File.separator + FIRSTNAME_FILE);
+			this.lastNames = createSet(this.folder + File.separator + LASTNAME_FILE);
+			this.places = createSet(this.folder + File.separator + PLACE_FILE);
+			this.zips = createSet(this.folder + File.separator + ZIP_FILE);
+			this.roadNames = createSet(this.folder + File.separator + ROADNAME_FILE);
+			this.domains = createList(this.folder + File.separator + DOMAIN_FILE);
 		} catch (Exception e) {
 			StringBuilder b = new StringBuilder("Invalid or missing files in folder: ");
 			b.append(folder);
@@ -48,6 +57,8 @@ public class LookupTables {
 			b.append(ZIP_FILE);
 			b.append("\n");
 			b.append(ROADNAME_FILE);
+			b.append("\n");
+			b.append(DOMAIN_FILE);
 			b.append("\n");
 
 			throw new Exception(b.toString());
@@ -73,9 +84,25 @@ public class LookupTables {
 	public Set<String> getPlacesList() {
 		return this.places;
 	}
+	
+	public List<String> getDomainsList() {
+		return this.domains;
+	}
 
-	public static Set<String> createSet(String file) throws IOException {
-		HashSet<String> answer = new HashSet<>(1000); //heuristic, generally large files, so could be more!
+	private static List<String> createList(String file) throws IOException {
+		LinkedList<String> list = new LinkedList<>();
+		BufferedReader r = new BufferedReader(new FileReader(file));
+		
+		String line = null;
+		while ((line = r.readLine()) != null)
+			list.add(line);
+		
+		
+		return new ArrayList<String>(list);
+	}
+	
+	private static Set<String> createSet(String file) throws IOException {
+		TreeSet<String> answer = new TreeSet<>();
 		BufferedReader r = new BufferedReader(new FileReader(file));
 		String line = null;
 
