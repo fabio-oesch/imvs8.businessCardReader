@@ -51,56 +51,56 @@ public class CreateVCard {
 		while (it.hasNext()) {
 			NamedEntity entity = it.next();
 			
-			switch (entity.tag) {
+			switch (entity.getLabel()) {
 			case "FN":
-				name.setGivenName(entity.entity);
+				name.setGivenName(entity.getEntity());
 				break;
 			case "LN":
-				name.setFamilyName(entity.entity);
+				name.setFamilyName(entity.getEntity());
 				break;
 			case "TIT":
-				name.addHonorificPrefix(entity.entity);
+				name.addHonorificPrefix(entity.getEntity());
 				break;
 			case "ST":
-				address.setStreetAddress(entity.entity);
+				address.setStreetAddress(entity.getEntity());
 				break;
 			case "ORT":
-				address.setRegion(entity.entity);
+				address.setRegion(entity.getEntity());
 				break;
 			case "PLZ":
-				address.setPostalCode(entity.entity);
+				address.setPostalCode(entity.getEntity());
 				break;
 			case "EMA":
 				EmailFeature email = new EmailType();
-				email.setEmail(entity.entity);
+				email.setEmail(entity.getEntity());
 				vcard.addEmail(email);
 				break;
 			case "WEB":
-				vcard.addURL(new URLType(new URL(entity.entity)));
+				vcard.addURL(new URLType(new URL(entity.getEntity())));
 				break;
 			case "ORG":
 				OrganizationFeature organizations = new OrganizationType();
-				organizations.addOrganization(entity.entity);
+				organizations.addOrganization(entity.getEntity());
 				vcard.setOrganizations(organizations);
 				break;
 			case "I-TW":
 				TelephoneFeature telephoneWork = new TelephoneType();
 				telephoneWork.setCharset("UTF-8");
-				telephoneWork.setTelephone(entity.entity);
+				telephoneWork.setTelephone(entity.getEntity());
 				telephoneWork.addTelephoneParameterType(TelephoneParameterType.WORK);
 				vcard.addTelephoneNumber(telephoneWork);
 				break;
 			case "I-TF":
 				TelephoneFeature telephoneFax = new TelephoneType();
 				telephoneFax.setCharset("UTF-8");
-				telephoneFax.setTelephone(entity.entity);
+				telephoneFax.setTelephone(entity.getEntity());
 				telephoneFax.addTelephoneParameterType(TelephoneParameterType.FAX);
 				vcard.addTelephoneNumber(telephoneFax);
 				break;
 			case "I-TM":
 				TelephoneFeature telephoneMobile = new TelephoneType();
 				telephoneMobile.setCharset("UTF-8");
-				telephoneMobile.setTelephone(entity.entity);
+				telephoneMobile.setTelephone(entity.getEntity());
 				telephoneMobile.addTelephoneParameterType(TelephoneParameterType.CELL);
 				vcard.addTelephoneNumber(telephoneMobile);
 				break;

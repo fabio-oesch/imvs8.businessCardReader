@@ -42,7 +42,7 @@ public class BusinessCardReaderIntegrationTest {
 			Iterator<NamedEntity> it = entities.values().iterator();
 			while(it.hasNext()) {
 				NamedEntity e = it.next();
-				System.out.println(e.tag + " " + e.entity + " "+ e.confidence);
+				System.out.println(e.getLabel() + " " + e.getEntity() + " "+ e.getConfidence());
 			}
 		}
 		catch(Exception e) {

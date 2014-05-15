@@ -123,13 +123,13 @@ public class NEREngine {
 		HashMap<String, NamedEntity> answer = new HashMap<>(entities.size());
 		
 		for(NamedEntity e : entities) {
-			if(answer.containsKey(e.tag)) {
-				NamedEntity entity = answer.get(e.tag);
-				answer.remove(e.tag);
-				NamedEntity concatenated = new NamedEntity(e.tag,entity.entity+" "+e.entity,Math.min(entity.confidence,e.confidence));
-				answer.put(e.tag, concatenated);
+			if(answer.containsKey(e.getLabel())) {
+				NamedEntity entity = answer.get(e.getLabel());
+				answer.remove(e.getLabel());
+				NamedEntity concatenated = new NamedEntity(e.getLabel(),entity.getEntity()+" "+e.getEntity(),Math.min(entity.getConfidence(),e.getConfidence()));
+				answer.put(e.getLabel(), concatenated);
 			} else {
-				answer.put(e.tag, e);
+				answer.put(e.getLabel(), e);
 			}
 		}
 		
