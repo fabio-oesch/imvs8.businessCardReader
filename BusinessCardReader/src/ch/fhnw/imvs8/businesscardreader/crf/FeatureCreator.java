@@ -86,14 +86,61 @@ public class FeatureCreator {
 		out.append("ci"); if(tables.getPlacesSet().contains(word)) out.append(t); else out.append(f);
 		out.append(e);
 		
-		//TODO: add other features, currently it just adds empty features in order to make it run
-		out.append("mw0 tm0 ww0 tw0 fw0 tf0 ");
+		//is a word a typical leading a mobile telephone number
+		out.append("mw");if(tables.getMobileWordSet().contains(word)) out.append(t); else out.append(f);
+		out.append(e);
+		
+		//is word a typical mobile number prefix (for example 079)
+		out.append("mpre");if(tables.getMobilePrefixSet().contains(word)) out.append(t); else out.append(f);
+		out.append(e);
+		
+		//is a word typically leading a fixnet telephone number
+		out.append("tw");if(tables.getTelWordSet().contains(word)) out.append(t); else out.append(f);
+		out.append(e);
+		
+		//is a word typically leading a fixnet telephone number
+		out.append("fw");if(tables.getFaxWordSet().contains(word)) out.append(t); else out.append(f);
+		out.append(e);
+		
+		//is word a typical fixnet number prefix (for example 055)
+		out.append("fixpre");if(tables.getFixnetPrefixSet().contains(word)) out.append(t); else out.append(f);
+		
+		
+		//sets the numbers feature. There are currently 5 features dedicated to numbers. Each feature says if this word is a number and how many digits it has.
+		if(word.matches("-?\\d+")) {
+			int length = Math.min(word.length(), 4);
+			
+			for(int i = 0;i < length;i++) {
+				out.append("nu");
+				out.append(i+1);
+				out.append("dig");
+				if((i+1) ==length)
+					out.append(t);
+				else
+					out.append(f);
+					
+				out.append(e);
+			}
+			
+			//handle case if it is longer than 4
+			if(word.length() > 4) {
+				out.append("nu4plusdig1 ");
+			}
+			else {
+				out.append("nu4plusdig0 ");
+			}
+			
+		}
+		else {
+			out.append("nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 ");
+		}
 		
 		//contains an @
 		out.append("em"); if(word.contains("@")) out.append(t); else out.append(f);
 		out.append(e);
 		
-		out.append("ti0 ");
+		//title, not used atm
+		//out.append("ti0 ");
 		
 		//word contains a domain like ".com"
 		out.append("we");
@@ -106,22 +153,7 @@ public class FeatureCreator {
 			}
 		out.append(found);
 		out.append(e);
-		
-		//
-		
-		out.append("cb0 ");
-		
-		//is a number
-		out.append("nu");
-		try{
-			int number = Integer.parseInt(word);
-			out.append(t);
-		} catch(Exception ex) {
-			out.append(f);
-		}
-		out.append(e);
-		
-		out.append("idk0");
+
 		
 		return out.toString();
 	}

@@ -121,6 +121,14 @@ public class LookupTables {
 	 * Set of telephone number prefixes (as string) found in fixnet numbers
 	 * @return
 	 */
+	public Set<String> getFixnetPrefixSet() {
+		return null;
+	}
+	
+	/**
+	 * Set of telephone number prefixes (as string) found in fixnet numbers
+	 * @return
+	 */
 	public List<String> getDomainsList() {
 		return this.domains;
 	}
