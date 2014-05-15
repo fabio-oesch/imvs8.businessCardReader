@@ -37,7 +37,7 @@ public class FeatureCreatorTest {
 	@Test
 	public void completeTest() {
 		final String tmpFile = "featureCreatorTest.txt";
-		final String validationFile = "test_data/FeatureCreatorValidation.txt";
+		final String validationFile = "unittest_data/FeatureCreatorValidation.txt";
 		
 		BufferedReader expectedReader = null;
 		BufferedReader actualReader =null;

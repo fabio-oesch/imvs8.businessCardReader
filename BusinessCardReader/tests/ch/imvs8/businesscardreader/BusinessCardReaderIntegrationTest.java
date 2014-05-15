@@ -15,7 +15,7 @@ public class BusinessCardReaderIntegrationTest {
 	@Test
 	public void EmptyFolderTest() {
 		try{
-			BusinessCardReader reader = new BusinessCardReader("test_data/EmptyFolderTest");
+			BusinessCardReader reader = new BusinessCardReader("unittest_data/EmptyFolderTest");
 		} catch(Exception e) {
 			
 			assertTrue("Not expected Error", e.getMessage().startsWith("Invalid or missing files in folder:"));
@@ -25,7 +25,7 @@ public class BusinessCardReaderIntegrationTest {
 	@Test
 	public void MissingModelTest() {
 		try{
-			BusinessCardReader reader = new BusinessCardReader("test_data/MissingCRFModelTest");
+			BusinessCardReader reader = new BusinessCardReader("unittest_data/MissingCRFModelTest");
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			assertTrue("Not expected Error", e.getMessage().startsWith("model file not found:"));
@@ -36,9 +36,9 @@ public class BusinessCardReaderIntegrationTest {
 	public void ValidRunTest() {
 		
 		try{ 
-			BusinessCardReader reader = new BusinessCardReader("test_data/ValidTest");
-			Map<String,NamedEntity> entities = reader.readImage("test_data/validimage.jpg");
-			assertSame("didn't find enough or too much", 2, entities.size());
+			BusinessCardReader reader = new BusinessCardReader("unittest_data/ValidTest");
+			Map<String,NamedEntity> entities = reader.readImage("unittest_data/validimage.jpg");
+			assertSame("didn't find enough or too much", 4, entities.size());
 			Iterator<NamedEntity> it = entities.values().iterator();
 			while(it.hasNext()) {
 				NamedEntity e = it.next();
