@@ -1,4 +1,4 @@
-package ch.fhnw.imvs8.businesscardreader.crf.stemming;
+package ch.fhnw.imvs8.businesscardreader.ner.stemming;
 
 /**
  * Strategy Pattern for the stemming

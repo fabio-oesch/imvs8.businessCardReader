@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import ch.fhnw.imvs8.businesscardreader.crf.stemming.StemmingStrategy;
+import ch.fhnw.imvs8.businesscardreader.ner.stemming.StemmingStrategy;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
 /**

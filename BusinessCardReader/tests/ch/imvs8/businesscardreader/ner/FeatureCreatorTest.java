@@ -1,4 +1,4 @@
-package ch.imvs8.businesscardreader.crf;
+package ch.imvs8.businesscardreader.ner;
 
 import static org.junit.Assert.*;
 
@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import ch.fhnw.imvs8.businesscardreader.crf.stemming.GermanStemming;
 import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
+import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
 public class FeatureCreatorTest {

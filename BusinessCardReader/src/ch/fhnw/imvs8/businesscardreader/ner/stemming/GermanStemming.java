@@ -1,4 +1,4 @@
-package ch.fhnw.imvs8.businesscardreader.crf.stemming;
+package ch.fhnw.imvs8.businesscardreader.ner.stemming;
 
 public class GermanStemming implements StemmingStrategy {
 

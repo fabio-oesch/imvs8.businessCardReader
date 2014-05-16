@@ -1,0 +1,14 @@
+Max fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 
+Müller fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 
+Seidenstrasse fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 
+1 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig1 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 
+5200 fp0 lp0 st0 pc1 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig1 nu4plusdig0 em0 we0 
+Brugg fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 
+Mobile fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 
++41 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 
+79 fp0 lp0 st0 pc0 ci0 mw0 mpre1 tw0 fw0 fixpre0 nu1dig0 nu2dig1 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 
+111 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig1 nu4dig0 nu4plusdig0 em0 we0 
+11 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig1 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 
+11 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig1 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 
+max.müller@aha.com fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em1 we1 
+www.aha.com fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we1 
