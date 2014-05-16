@@ -2,6 +2,7 @@ package ch.fhnw.imvs8.businesscardreader.testingframework.crf.createtestdata;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,9 +27,11 @@ public class LookupTableCleaner {
 	}
 	
 	private static void bla(String file, StemmingStrategy strat) throws IOException {
-		BufferedWriter out = new BufferedWriter(new FileWriter(file));
+		
 		TreeSet<String> set= (TreeSet<String>) createSet(file);
 		Iterator<String> it = set.iterator();
+		BufferedWriter out = new BufferedWriter(new FileWriter(file));
+		
 		while(it.hasNext()) {
 			String word = strat.stemWord(it.next());
 			out.write(word);
@@ -36,10 +39,14 @@ public class LookupTableCleaner {
 			if(it.hasNext())
 				out.write("\n");
 		}
+		
+		out.close();
 	}
 	
 	private static Set<String> createSet(String file) throws IOException {
 		TreeSet<String> answer = new TreeSet<>();
+		File f = new File(file);
+		System.out.println(f.exists());
 		BufferedReader r = new BufferedReader(new FileReader(file));
 		String line = null;
 

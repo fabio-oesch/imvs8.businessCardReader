@@ -1,10 +1,10 @@
-m:
-M:
 m
-M
-Mobile
-Mobile:
-Mobil
+m:
 mobil
-Mobil:
+mobil:
+mobile
+mobile:
+m
+m:
+mobil
 mobil:
