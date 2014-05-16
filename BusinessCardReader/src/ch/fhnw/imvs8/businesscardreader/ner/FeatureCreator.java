@@ -1,4 +1,4 @@
-package ch.fhnw.imvs8.businesscardreader.crf;
+package ch.fhnw.imvs8.businesscardreader.ner;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -68,7 +68,7 @@ public class FeatureCreator {
 		String f = "0"; 	//false
 		StringBuilder out = new StringBuilder(word); out.append(e);
 		
-		word = stemWord(word);
+		word = strat.stemWord(word);
 		
 		//is in prename LUT feature
 		out.append("fp"); if(tables.getPrenameSet().contains(word)) out.append(t); else out.append(f);
@@ -160,18 +160,5 @@ public class FeatureCreator {
 
 		
 		return out.toString();
-	}
-	
-	/**
-	 * do stemming for a word
-	 * @param input
-	 * @return
-	 */
-	private static String stemWord(String input) {
-		input = input.toLowerCase();
-		input = input.replace("ä", "ae");
-		input = input.replace("ö", "oe");
-		input = input.replace("ü", "ue");
-		return input.toLowerCase();
 	}
 }

@@ -1,4 +1,4 @@
-package ch.fhnw.imvs8.businesscardreader.crf;
+package ch.fhnw.imvs8.businesscardreader.ner;
 
 /**
  * Represents an Entity labeled by the NEREngine class.

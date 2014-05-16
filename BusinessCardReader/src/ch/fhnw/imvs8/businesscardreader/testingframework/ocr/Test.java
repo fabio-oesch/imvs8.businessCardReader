@@ -1,4 +1,4 @@
-package test;
+package ch.fhnw.imvs8.businesscardreader.testingframework.ocr;
 
 import ij.process.AutoThresholder.Method;
 

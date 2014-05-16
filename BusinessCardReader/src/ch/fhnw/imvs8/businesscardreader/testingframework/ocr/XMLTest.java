@@ -1,4 +1,4 @@
-package test;
+package ch.fhnw.imvs8.businesscardreader.testingframework.ocr;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import test.diff_match_patch.Diff;
-import test.diff_match_patch.Operation;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Diff;
+import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Operation;
 
 /**
  * Tests if the scanner XML and the tesseract HTML file have the same attributes

@@ -8,7 +8,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
-import ch.fhnw.imvs8.businesscardreader.crf.NamedEntity;
+import ch.fhnw.imvs8.businesscardreader.ner.NamedEntity;
 
 public class BusinessCardReaderIntegrationTest {
 

@@ -1,4 +1,4 @@
-package test;
+package ch.fhnw.imvs8.businesscardreader.testingframework.ocr;
 
 /**
  * An attribute of the tesseract HTML.

@@ -1,4 +1,4 @@
-package test.createTestData;
+package ch.fhnw.imvs8.businesscardreader.testingframework.crf.createtestdata;
 
 import java.awt.image.LookupOp;
 import java.io.BufferedReader;
@@ -11,11 +11,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.fhnw.imvs8.businesscardreader.crf.FeatureCreator;
-import ch.fhnw.imvs8.businesscardreader.crf.LookupTables;
-import ch.fhnw.imvs8.businesscardreader.crf.NamedEntity;
-import ch.fhnw.imvs8.businesscardreader.crf.getLogs;
 import ch.fhnw.imvs8.businesscardreader.crf.stemming.GermanStemming;
+import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
+import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
+import ch.fhnw.imvs8.businesscardreader.ner.NamedEntity;
+import ch.fhnw.imvs8.businesscardreader.ner.getLogs;
 
 public class ModelGenerator {
 	private static getLogs logs;

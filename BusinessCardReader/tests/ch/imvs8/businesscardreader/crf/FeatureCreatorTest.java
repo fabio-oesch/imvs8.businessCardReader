@@ -9,8 +9,9 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import ch.fhnw.imvs8.businesscardreader.crf.FeatureCreator;
-import ch.fhnw.imvs8.businesscardreader.crf.LookupTables;
+import ch.fhnw.imvs8.businesscardreader.crf.stemming.GermanStemming;
+import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
+import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
 public class FeatureCreatorTest {
@@ -43,7 +44,7 @@ public class FeatureCreatorTest {
 		BufferedReader actualReader =null;
 		try {
 			LookupTables table = new LookupTables("lookup_tables");
-			FeatureCreator creator = new FeatureCreator(table);
+			FeatureCreator creator = new FeatureCreator(table, new GermanStemming());
 			creator.createFeatures(createValidExample(), tmpFile);
 			
 			//check file

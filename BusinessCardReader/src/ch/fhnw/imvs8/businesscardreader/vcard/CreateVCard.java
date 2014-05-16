@@ -20,8 +20,8 @@ import net.sourceforge.cardme.vcard.types.OrganizationType;
 import net.sourceforge.cardme.vcard.types.TelephoneType;
 import net.sourceforge.cardme.vcard.types.URLType;
 import net.sourceforge.cardme.vcard.types.parameters.TelephoneParameterType;
-import ch.fhnw.imvs8.businesscardreader.crf.NEREngine;
-import ch.fhnw.imvs8.businesscardreader.crf.NamedEntity;
+import ch.fhnw.imvs8.businesscardreader.ner.NEREngine;
+import ch.fhnw.imvs8.businesscardreader.ner.NamedEntity;
 
 /**
  * creates a vcard

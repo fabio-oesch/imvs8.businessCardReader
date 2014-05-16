@@ -1,4 +1,4 @@
-package test;
+package ch.fhnw.imvs8.businesscardreader.testingframework.ocr;
 
 import java.awt.Color;
 import java.awt.Font;

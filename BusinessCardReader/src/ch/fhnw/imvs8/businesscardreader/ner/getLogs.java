@@ -1,4 +1,4 @@
-package ch.fhnw.imvs8.businesscardreader.crf;
+package ch.fhnw.imvs8.businesscardreader.ner;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

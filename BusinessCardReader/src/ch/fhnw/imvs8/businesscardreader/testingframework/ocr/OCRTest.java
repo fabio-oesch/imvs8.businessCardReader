@@ -1,4 +1,4 @@
-package test;
+package ch.fhnw.imvs8.businesscardreader.testingframework.ocr;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,10 +10,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import test.diff_match_patch.Diff;
-import test.diff_match_patch.Operation;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
+import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Diff;
+import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Operation;
 
 public class OCRTest {
 

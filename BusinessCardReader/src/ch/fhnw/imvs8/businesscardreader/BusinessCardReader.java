@@ -4,14 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Map;
 
-import ch.fhnw.imvs8.businesscardreader.crf.FeatureCreator;
-import ch.fhnw.imvs8.businesscardreader.crf.LookupTables;
-import ch.fhnw.imvs8.businesscardreader.crf.NEREngine;
-import ch.fhnw.imvs8.businesscardreader.crf.NamedEntity;
 import ch.fhnw.imvs8.businesscardreader.crf.stemming.GermanStemming;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterProcessor;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Phansalkar;
+import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
+import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
+import ch.fhnw.imvs8.businesscardreader.ner.NEREngine;
+import ch.fhnw.imvs8.businesscardreader.ner.NamedEntity;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
