@@ -18,10 +18,16 @@ public class ModelGenerator {
 	private static getLogs logs;
 	private static String toCRF = "/usr/local/bin";
 	private static String toModel = "model";
+	private static boolean schwambi = false;
 
 	public static void main(String[] args) throws Exception {
-		testModel("/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/testdata.c1.test.csv", toModel);
-		// createModel("/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/testdata.crf.v4_c1.csv","training","/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/template");
+		if (schwambi) {
+			// createModel("/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/testdata.crf.v4_c1.csv","training","/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/template");
+			testModel("/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/testdata.c1.test.csv", toModel);
+		} else {
+			// createModel("/home/olry/Documents/School/Project/svn/testdata/crf-testdata/testdata.crf.v4_c1.csv","training","/home/olry/Documents/School/Project/svn/doc/ip6/CRF/template");
+			testModel("/home/olry/Documents/School/Project/svn/testdata/crf-testdata/testdata.c1.test.csv", toModel);
+		}
 	}
 
 	public static void createModel(String inFile, String trainingFile, String templateFile) throws Exception {
@@ -109,7 +115,7 @@ public class ModelGenerator {
 						double conf = Double.parseDouble(labelAndConfidence.substring(dashIndex + 1));
 						NamedEntity res = new NamedEntity(label, lineArray[0], conf);
 
-						logs.addToLogs(lineArray[lineArray.length - 1], res.getLabel(), res.getConfidence());
+						logs.addToLogs(lineArray[lineArray.length - 2], res.getLabel(), res.getConfidence());
 					}
 				}
 			}
