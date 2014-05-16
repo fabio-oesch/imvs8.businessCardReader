@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Map;
 
+import ch.fhnw.imvs8.businesscardreader.crf.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.crf.LookupTables;
 import ch.fhnw.imvs8.businesscardreader.crf.NEREngine;
 import ch.fhnw.imvs8.businesscardreader.crf.NamedEntity;
+import ch.fhnw.imvs8.businesscardreader.crf.stemming.GermanStemming;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterProcessor;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Phansalkar;
@@ -54,8 +56,9 @@ public class BusinessCardReader {
 		ocr = new OCREngine(filters);
 
 		LookupTables tables = new LookupTables(dataFolder + File.separator + LOOKUP_TABLES_FOLDER);
-	
-		ner = new NEREngine(CRF_LOCATION, dataFolder + File.separator + NER_CONFIGURATION_FOLDER, tables);
+		FeatureCreator creator = new FeatureCreator(tables, new GermanStemming());
+		
+		ner = new NEREngine(CRF_LOCATION, dataFolder + File.separator + NER_CONFIGURATION_FOLDER, creator);
 	}
 
 	/**

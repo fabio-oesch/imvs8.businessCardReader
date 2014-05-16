@@ -15,6 +15,7 @@ import ch.fhnw.imvs8.businesscardreader.crf.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.crf.LookupTables;
 import ch.fhnw.imvs8.businesscardreader.crf.NamedEntity;
 import ch.fhnw.imvs8.businesscardreader.crf.getLogs;
+import ch.fhnw.imvs8.businesscardreader.crf.stemming.GermanStemming;
 
 public class ModelGenerator {
 	private static getLogs logs;
@@ -50,7 +51,7 @@ public class ModelGenerator {
 	public static void createFile(String inFile,String testFile) throws Exception {
 		int lineNumber = 1;
 		LookupTables table = new LookupTables("lookup_tables");
-		FeatureCreator creator = new FeatureCreator(table);
+		FeatureCreator creator = new FeatureCreator(table, new GermanStemming());
 		
 		BufferedReader reader = new BufferedReader(new FileReader(inFile));
 		BufferedWriter out = new BufferedWriter(new FileWriter(testFile));

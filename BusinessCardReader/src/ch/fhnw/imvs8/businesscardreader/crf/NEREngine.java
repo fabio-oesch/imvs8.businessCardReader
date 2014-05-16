@@ -33,19 +33,18 @@ public class NEREngine {
 	 * 
 	 * @param modelFile
 	 *            location to the training files for the NEREngine
-	 * @param tables
+	 * @param creator
 	 *            Lookup Tables to use
 	 * @throws FileNotFoundException 
 	 */
-	public NEREngine(String CRFLocation, String modelFile, LookupTables tables) throws FileNotFoundException {
+	public NEREngine(String CRFLocation, String modelFile, FeatureCreator creator) throws FileNotFoundException {
 		File f = new File(modelFile);
 		if(!f.exists())
 			throw new FileNotFoundException("model file not found: "+modelFile);
 		
-		
 		this.toCRF = CRFLocation;
 		this.toModel = modelFile;
-		this.creator = new FeatureCreator(tables);
+		this.creator = creator;
 		
 		this.concatenationRequired = new HashSet<>();
 		this.concatenationRequired.add("I-TF");

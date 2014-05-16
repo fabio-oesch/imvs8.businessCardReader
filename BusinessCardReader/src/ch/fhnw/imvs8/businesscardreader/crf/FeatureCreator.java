@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import ch.fhnw.imvs8.businesscardreader.crf.stemming.StemmingStrategy;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
 /**
@@ -17,12 +18,13 @@ import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
  */
 public class FeatureCreator {
 	private final LookupTables tables;
-	
+	private final StemmingStrategy strat;
 	/**
 	 * @param t Lookup tables to use in creating the features
 	 */
-	public FeatureCreator(LookupTables t) {
+	public FeatureCreator(LookupTables t, StemmingStrategy strategy) {
 		this.tables = t;
+		this.strat = strategy;
 	}
 	
 	/**
@@ -54,7 +56,7 @@ public class FeatureCreator {
 	
 	/**
 	 * Here is the magic
-	 * Every word gets a list of features attached to it. the output will be
+	 * Every word gets a list of features attached to it and separated by a space. The output will be
 	 * 
 	 * "{word} {feature0} {feature1} {feature2}..."
 	 * @param word
@@ -65,6 +67,8 @@ public class FeatureCreator {
 		String t = "1";		//true
 		String f = "0"; 	//false
 		StringBuilder out = new StringBuilder(word); out.append(e);
+		
+		word = stemWord(word);
 		
 		//is in prename LUT feature
 		out.append("fp"); if(tables.getPrenameSet().contains(word)) out.append(t); else out.append(f);
@@ -156,5 +160,18 @@ public class FeatureCreator {
 
 		
 		return out.toString();
+	}
+	
+	/**
+	 * do stemming for a word
+	 * @param input
+	 * @return
+	 */
+	private static String stemWord(String input) {
+		input = input.toLowerCase();
+		input = input.replace("ä", "ae");
+		input = input.replace("ö", "oe");
+		input = input.replace("ü", "ue");
+		return input.toLowerCase();
 	}
 }
