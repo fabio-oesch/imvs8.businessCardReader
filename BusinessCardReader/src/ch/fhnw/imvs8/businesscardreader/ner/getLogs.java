@@ -16,13 +16,18 @@ public class getLogs {
 	private int cardCount; // Count of business cards which were tested
 	private int cardCorrectCount; // Count of cards which are correct
 
-	private double[] labelPercentage; // percentage per label
+	private double[] correctPerLabel; // percentage per label
 	private int[] countPerLabel; // count per label
-	private HashMap<String, Integer> labelPosition = new HashMap<>(); // position of the labels in
-													// the array
+	private HashMap<String, Integer> labelPosition = new HashMap<>(); // position
+																		// of
+																		// the
+																		// labels
+																		// in
+	// the array
 
 	private boolean[] cardCorrect; // count of cards which are correct
-	private ArrayList<String> cardCorrectLabel = new ArrayList<>(); // String of labels
+	private ArrayList<String> cardCorrectLabel = new ArrayList<>(); // String of
+																	// labels
 
 	/**
 	 * create an object of the logs with all the labels as a String
@@ -32,12 +37,12 @@ public class getLogs {
 	 * @throws IOException
 	 */
 	public getLogs(String[] labels) throws IOException {
-		
+
 		for (int labelPos = 0; labelPos < labels.length; labelPos++) {
 			labelPosition.put(labels[labelPos], labelPos);
 		}
 		countPerLabel = new int[labels.length];
-		labelPercentage = new double[labels.length];
+		correctPerLabel = new double[labels.length];
 
 		// read the labels which define if a card is totally correct
 		String currentLine;
@@ -47,6 +52,7 @@ public class getLogs {
 			cardCorrectLabel.add(currentLine);
 		}
 
+		cardCorrect = new boolean[cardCorrectLabel.size()];
 		addCard();
 	}
 
@@ -58,16 +64,19 @@ public class getLogs {
 	 * @param percentage
 	 *            percentage of how correct the label is
 	 */
-	public void addToLogs(String label, double percentage) {
-		int pos = labelPosition.get(label);
-		labelPercentage[pos] += percentage;
-		countPerLabel[pos]++;
-
-		for (int i = 0; i < cardCorrectLabel.size(); i++) {
-			if (cardCorrectLabel.get(i).equals(label)) {
-				cardCorrect[i] = true;
+	public void addToLogs(String shouldLabel, String isLabel, double percentage) {
+		int pos = labelPosition.get(shouldLabel);
+		if (shouldLabel.equals(isLabel)) {
+			correctPerLabel[pos]++;
+			for (int i = 0; i < cardCorrectLabel.size(); i++) {
+				if (cardCorrectLabel.get(i).equals(isLabel)) {
+					cardCorrect[i] = true;
+				}
 			}
 		}
+		// labelPercentage[pos] += percentage;
+		countPerLabel[pos]++;
+
 	}
 
 	/**
@@ -76,11 +85,11 @@ public class getLogs {
 	 */
 	public void addCard() {
 		boolean hasAllCorrect = true;
-//		for (int i = 0; i < cardCorrect.length && hasAllCorrect; i++) {
-//			if (!cardCorrect[i]) {
-//				hasAllCorrect = false;
-//			}
-//		}
+		for (int i = 0; i < cardCorrect.length && hasAllCorrect; i++) {
+			if (!cardCorrect[i]) {
+				hasAllCorrect = false;
+			}
+		}
 
 		if (hasAllCorrect) {
 			cardCorrectCount++;
@@ -97,9 +106,10 @@ public class getLogs {
 	 * @return a list of all the double values
 	 */
 	public double[] getPercentagePerLabel() {
-		double[] result = new double[labelPercentage.length];
+		double[] result = new double[correctPerLabel.length];
 		for (int i = 0; i < result.length; i++) {
-			result[i] = labelPercentage[i] / countPerLabel[i];
+			System.out.println(correctPerLabel[i] + " " + countPerLabel[i]);
+			result[i] = correctPerLabel[i] / countPerLabel[i];
 		}
 		return result;
 	}
@@ -110,7 +120,8 @@ public class getLogs {
 	 * @return percentage of cards who are all correct
 	 */
 	public double getPercentageCardsCorrect() {
-		return cardCount / (double) cardCorrectCount;
+		System.out.println(cardCorrectCount + " " + cardCount);
+		return cardCorrectCount / (double) cardCount;
 	}
 
 }
