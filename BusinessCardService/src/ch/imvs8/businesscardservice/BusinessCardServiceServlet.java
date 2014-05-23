@@ -1,7 +1,9 @@
 package ch.imvs8.businesscardservice;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,6 +11,7 @@ import java.io.PrintWriter;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -19,14 +22,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
+import ch.fhnw.imvs8.businesscardreader.ner.NamedEntity;
+
 @WebServlet(name = "BusinessCardService", urlPatterns = { "/scanner" })
 @MultipartConfig
 public class BusinessCardServiceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static final String scanResultFile = "scanresults.txt";
+	private static final String actualResultFile = "actualresults.txt";
+	private static final String[] labels = { "FN", "LN", "TIT", "ST", "PLZ", "ORT", "I-MN", "I-TN", "I-FN", "EMA", "WEB", "ORG" };
+	private static final String[] labelNames = { "First Name", "Last Name", "Title", "Street", "Zip Code", "City", "Mobile Number:", "Fixnet Number", "Fax Number", "Email",
+			"Organisation" };
 
-	private static final int maxFileSize = 50 * 1024;
-	private static final int maxMemSize = 4 * 1024;
-
+	private BusinessCardReader reader;
 	private String uploadedFolder;
 
 	public BusinessCardServiceServlet() {
@@ -36,6 +45,11 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
 		this.uploadedFolder = servletConfig.getInitParameter("uploadedFolder");
+		try {
+			this.reader = new BusinessCardReader(servletConfig.getInitParameter("businessCardDataFolder"));
+		} catch (Exception e) {
+			throw new ServletException("unable to create Servlet", e);
+		}
 	}
 
 	@Override
@@ -82,7 +96,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 			out.println("</head>");
 			out.println("<body>");
 
-			this.scanAndPrintResults(image, out);
+			this.scanAndPrintResults(parentFolder, image, out);
 		} catch (Exception e) {
 			out.println("<p>Error while uploading Image.</p>");
 		}
@@ -107,12 +121,34 @@ public class BusinessCardServiceServlet extends HttpServlet {
 		return null;
 	}
 
-	private void scanAndPrintResults(File image, PrintWriter out) {
+	private void scanAndPrintResults(File folder, File image, PrintWriter out) throws IOException {
+		try {
+			Map<String, NamedEntity> result = reader.readImage(image.getAbsolutePath());
+			FileWriter scanOutput = new FileWriter(folder.getAbsoluteFile() + File.separator + scanResultFile);
+			out.println("<form name=\"user-solution\" method=\"post\" action=\"/BusinessCardService/scanner\">");
 
-		out.println("<form name=\"user-solution\" method=\"put\" action=\"/BusinessCardService/scanner\">");
-		//color STYLE="color: #FFFFFF; font-family: Verdana; font-weight: bold; font-size: 12px; background-color: #72A4D2;"
+			for (int i = 0; i < labels.length; i++) {
+				scanOutput.write(labels[i] + ": " + result.get(labels[i]) + "\n");
 
-		out.println("");
-		out.println("<input type=\"submit\" value=\"Submit\">");
+				StringBuilder outputString = new StringBuilder();
+				outputString.append(labelNames[i]);
+				outputString.append(": <input type=\"text\" name=\"");
+				outputString.append(labels[i]);
+				outputString.append("\" id=\"");
+				outputString.append(labels[i]);
+				outputString.append("\" text=\"");
+				outputString.append(result.get(labels[i]));
+				outputString.append("\"><br>");
+
+				out.println(outputString.toString());
+			}
+			//color STYLE="color: #FFFFFF; font-family: Verdana; font-weight: bold; font-size: 12px; background-color: #72A4D2;"
+
+			out.println("<input type=\"submit\" value=\"Submit\">");
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			out.println("Error while reading file: " + e.getMessage());
+		}
 	}
 }
