@@ -108,6 +108,19 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//save user result
+		try {
+			String path = request.getParameter("path");
+			FileWriter out = new FileWriter(path + File.separator + actualResultFile);
+			for (int i = 0; i < labels.length; i++) {
+				String text = request.getParameter(labels[i]);
+				if (text != null) {
+					out.write(labels[i] + ": " + text + "\n");
+				}
+			}
+		} catch (Exception e) {
+
+		}
+
 		request.getRequestDispatcher("BusinessCardService/thankyou.html").forward(request, response);
 	}
 
@@ -125,22 +138,26 @@ public class BusinessCardServiceServlet extends HttpServlet {
 		try {
 			Map<String, NamedEntity> result = reader.readImage(image.getAbsolutePath());
 			FileWriter scanOutput = new FileWriter(folder.getAbsoluteFile() + File.separator + scanResultFile);
-			out.println("<form name=\"user-solution\" method=\"post\" action=\"/BusinessCardService/scanner\">");
+			out.println("<form name=\"user-solution\" method=\"put\" action=\"/BusinessCardService/scanner\">");
+
+			out.println("<input type=\"hidden\" name=\"folder\" value=\"" + folder.getAbsolutePath() + ">");
 
 			for (int i = 0; i < labels.length; i++) {
-				scanOutput.write(labels[i] + ": " + result.get(labels[i]) + "\n");
+				if (result.containsKey(labels[i])) {
+					scanOutput.write(labels[i] + ": " + result.get(labels[i]) + "\n");
 
-				StringBuilder outputString = new StringBuilder();
-				outputString.append(labelNames[i]);
-				outputString.append(": <input type=\"text\" name=\"");
-				outputString.append(labels[i]);
-				outputString.append("\" id=\"");
-				outputString.append(labels[i]);
-				outputString.append("\" text=\"");
-				outputString.append(result.get(labels[i]));
-				outputString.append("\"><br>");
+					StringBuilder outputString = new StringBuilder();
+					outputString.append(labelNames[i]);
+					outputString.append(": <input type=\"text\" name=\"");
+					outputString.append(labels[i]);
+					outputString.append("\" id=\"");
+					outputString.append(labels[i]);
+					outputString.append("\" text=\"");
+					outputString.append(result.get(labels[i]));
+					outputString.append("\"><br>");
 
-				out.println(outputString.toString());
+					out.println(outputString.toString());
+				}
 			}
 			//color STYLE="color: #FFFFFF; font-family: Verdana; font-weight: bold; font-size: 12px; background-color: #72A4D2;"
 
