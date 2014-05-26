@@ -25,7 +25,7 @@ import javax.servlet.http.Part;
 import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
 import ch.fhnw.imvs8.businesscardreader.ner.NamedEntity;
 
-//WebServlet(name = "BusinessCardReader", urlPatterns = { "/scanner" })
+@WebServlet(name = "BusinessCardReader", urlPatterns = { "/reader" })
 @MultipartConfig
 public class BusinessCardServiceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -48,7 +48,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	public void init(ServletConfig servletConfig) throws ServletException {
 		this.uploadedFolder = servletConfig.getInitParameter("uploadedFolder");
 		try {
-			//this.reader = new BusinessCardReader(servletConfig.getInitParameter("businessCardDataFolder"));
+			this.reader = new BusinessCardReader(servletConfig.getInitParameter("businessCardDataFolder"));
 		} catch (Exception e) {
 			throw new ServletException("unable to create Servlet: "+e.getMessage(), e);
 		}
@@ -107,7 +107,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 
 				this.scanAndPrintResults(parentFolder, image, out);
 			} catch (Exception e) {
-				out.println("<p>Error while uploading Image.</p>");
+				out.println("<p>Error while uploading Image: "+e.getMessage()+"</p>");
 			}
 
 			out.println("</body>");
