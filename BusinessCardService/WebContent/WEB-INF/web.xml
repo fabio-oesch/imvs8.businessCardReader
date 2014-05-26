@@ -15,14 +15,18 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     
     <init-param>
         <param-name>uploadedFolder</param-name>
-        <param-value>/home/jon/mytest</param-value>
+        <param-value>/home/user116/uploaded</param-value>
     </init-param>
     
     <init-param>
     	<param-name>businessCardDataFolder</param-name>
-        <param-value>/home/jon/dev/Github/BusinessCardReader/BusinessCardReader</param-value>
+        <param-value>/home/user116/businesscardreader</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
 </servlet>
 
+<servlet-mapping>
+      <servlet-name>BusinessCardReader</servlet-name>
+      <url-pattern>/reader</url-pattern>
+   </servlet-mapping>
 </web-app>

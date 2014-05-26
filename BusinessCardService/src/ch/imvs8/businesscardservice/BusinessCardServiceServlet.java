@@ -25,7 +25,7 @@ import javax.servlet.http.Part;
 import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
 import ch.fhnw.imvs8.businesscardreader.ner.NamedEntity;
 
-@WebServlet(name = "BusinessCardReader", urlPatterns = { "/scanner" })
+//WebServlet(name = "BusinessCardReader", urlPatterns = { "/scanner" })
 @MultipartConfig
 public class BusinessCardServiceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -48,10 +48,9 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	public void init(ServletConfig servletConfig) throws ServletException {
 		this.uploadedFolder = servletConfig.getInitParameter("uploadedFolder");
 		try {
-			this.reader = new BusinessCardReader(
-					servletConfig.getInitParameter("businessCardDataFolder"));
+			//this.reader = new BusinessCardReader(servletConfig.getInitParameter("businessCardDataFolder"));
 		} catch (Exception e) {
-			throw new ServletException("unable to create Servlet", e);
+			throw new ServletException("unable to create Servlet: "+e.getMessage(), e);
 		}
 	}
 
@@ -162,7 +161,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 					.getAbsolutePath());
 			FileWriter scanOutput = new FileWriter(folder.getAbsoluteFile()
 					+ File.separator + scanResultFile);
-			out.println("<form enctype=\"multipart/form-data\" name=\"user-solution\" method=\"post\" action=\"scanner\">");
+			out.println("<form enctype=\"multipart/form-data\" name=\"user-solution\" method=\"post\" action=\"reader\">");
 			out.println("<input type=\"hidden\" name=\"step\" value=\"2\" />");
 			out.println("<input type=\"hidden\" name=\"folder\" value=\""
 					+ folder.getAbsolutePath() + "\">");
