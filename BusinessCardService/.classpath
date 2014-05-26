@@ -2,12 +2,20 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0">
-		<attributes>
-			<attribute name="owner.project.facets" value="jst.web"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/BusinessCardReader.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/cardme-0.3.6.05.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/cardme-javadoc-0.3.6.05.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/diffutils-1.2.1.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ghost4j-0.3.1.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ij.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jai_imageio.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jna.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/metadata-extractor-2.6.4.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/tess4j.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/xmlunit-1.4.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/xmpcore.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

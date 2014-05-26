@@ -18,7 +18,7 @@ public class ModelGenerator {
 	private static getLogs logs;
 	private static String toCRF = "/usr/local/bin";
 	private static String toModel = "model";
-	private static boolean schwambi = false;
+	private static boolean schwambi = true;
 
 	public static void main(String[] args) throws Exception {
 		if (schwambi) {

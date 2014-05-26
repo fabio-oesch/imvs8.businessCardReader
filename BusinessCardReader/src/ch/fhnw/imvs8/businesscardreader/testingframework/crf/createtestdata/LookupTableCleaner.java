@@ -11,6 +11,8 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
 
+import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
+import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
 import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 import ch.fhnw.imvs8.businesscardreader.ner.stemming.StemmingStrategy;
 
@@ -25,7 +27,10 @@ public class LookupTableCleaner {
 		for(String f :files) {
 			bla(path+f,strat);
 		}*/
-		addCH();
+		//addCH();
+		LookupTables table = new LookupTables("lookup_tables");
+		FeatureCreator creator = new FeatureCreator(table, new GermanStemming());
+		System.out.println(creator.createLine("Robert"));
 	}
 	
 	private static void addCH() throws Exception{

@@ -25,15 +25,17 @@ import javax.servlet.http.Part;
 import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
 import ch.fhnw.imvs8.businesscardreader.ner.NamedEntity;
 
-@WebServlet(name = "BusinessCardService", urlPatterns = { "/scanner" })
+@WebServlet(name = "BusinessCardReader", urlPatterns = { "/scanner" })
 @MultipartConfig
 public class BusinessCardServiceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String scanResultFile = "scanresults.txt";
 	private static final String actualResultFile = "actualresults.txt";
-	private static final String[] labels = { "FN", "LN", "TIT", "ST", "PLZ", "ORT", "I-MN", "I-TN", "I-FN", "EMA", "WEB", "ORG" };
-	private static final String[] labelNames = { "First Name", "Last Name", "Title", "Street", "Zip Code", "City", "Mobile Number:", "Fixnet Number", "Fax Number", "Email",
-			"Organisation" };
+	private static final String[] labels = { "FN", "LN", "TIT", "ST", "PLZ",
+			"ORT", "I-MN", "I-TN", "I-FN", "EMA", "WEB", "ORG" };
+	private static final String[] labelNames = { "First Name", "Last Name",
+			"Title", "Street", "Zip Code", "City", "Mobile Number:",
+			"Fixnet Number", "Fax Number", "Email", "Organisation" };
 
 	private BusinessCardReader reader;
 	private String uploadedFolder;
@@ -46,105 +48,129 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	public void init(ServletConfig servletConfig) throws ServletException {
 		this.uploadedFolder = servletConfig.getInitParameter("uploadedFolder");
 		try {
-			this.reader = new BusinessCardReader(servletConfig.getInitParameter("businessCardDataFolder"));
+			this.reader = new BusinessCardReader(
+					servletConfig.getInitParameter("businessCardDataFolder"));
 		} catch (Exception e) {
 			throw new ServletException("unable to create Servlet", e);
 		}
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("BusinessCardService/start.html").forward(request, response);
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		request.getRequestDispatcher("BusinessCardService/start.html").forward(
+				request, response);
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html");
-		PrintWriter out = response.getWriter();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd_HH:mm:ss");
-		Date date = new Date(System.currentTimeMillis());
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		// response.setContentType("text/html");
 
-		OutputStream output = null;
-		InputStream filecontent = null;
+		if (request.getParameter("step").equals("1")) {
+			PrintWriter out = response.getWriter();
+			DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd_HH:mm:ss");
+			Date date = new Date(System.currentTimeMillis());
 
-		try {
-			final Part filePart = request.getPart("file");
-			final String fileName = getFileName(filePart);
+			OutputStream output = null;
+			InputStream filecontent = null;
 
-			//create parent folder
-			File parentFolder = new File(uploadedFolder + File.separator + dateFormat.format(date));
-			if (!parentFolder.exists())
-				parentFolder.mkdirs();
+			try {
+				final Part filePart = request.getPart("file");
+				final String fileName = getFileName(filePart);
 
-			File image = new File(parentFolder.getAbsolutePath() + File.separator + fileName);
-			//write file
-			output = new FileOutputStream(image);
-			filecontent = filePart.getInputStream();
-			int read = 0;
-			final byte[] bytes = new byte[1024];
+				// create parent folder
+				File parentFolder = new File(uploadedFolder + File.separator
+						+ dateFormat.format(date));
+				if (!parentFolder.exists())
+					parentFolder.mkdirs();
 
-			while ((read = filecontent.read(bytes)) != -1) {
-				output.write(bytes, 0, read);
-			}
+				File image = new File(parentFolder.getAbsolutePath()
+						+ File.separator + fileName);
+				// write file
+				output = new FileOutputStream(image);
+				filecontent = filePart.getInputStream();
+				int read = 0;
+				final byte[] bytes = new byte[1024];
 
-			output.close();
-			filecontent.close();
-
-			out.println("<html>");
-			out.println("<head>");
-			out.println("<title>Business Card Service</title>");
-			out.println("</head>");
-			out.println("<body>");
-
-			this.scanAndPrintResults(parentFolder, image, out);
-		} catch (Exception e) {
-			out.println("<p>Error while uploading Image.</p>");
-		}
-
-		out.println("</body>");
-		out.println("</html>");
-	}
-
-	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//save user result
-		try {
-			String path = request.getParameter("path");
-			FileWriter out = new FileWriter(path + File.separator + actualResultFile);
-			for (int i = 0; i < labels.length; i++) {
-				String text = request.getParameter(labels[i]);
-				if (text != null) {
-					out.write(labels[i] + ": " + text + "\n");
+				while ((read = filecontent.read(bytes)) != -1) {
+					output.write(bytes, 0, read);
 				}
+
+				output.close();
+				filecontent.close();
+
+				out.println("<html>");
+				out.println("<head>");
+				out.println("<title>Business Card Service</title>");
+				out.println("</head>");
+				out.println("<body>");
+
+				this.scanAndPrintResults(parentFolder, image, out);
+			} catch (Exception e) {
+				out.println("<p>Error while uploading Image.</p>");
 			}
-		} catch (Exception e) {
+
+			out.println("</body>");
+			out.println("</html>");
+		} else if (request.getParameter("step").equals("2")) {
+			// save user result
+			System.out.println("echo");
+			try {
+				String path = request.getParameter("folder");
+				FileWriter out = new FileWriter(path + File.separator
+						+ actualResultFile);
+				System.out.println("bla");
+				for (int i = 0; i < labels.length; i++) {
+					String text = request.getParameter(labels[i]);
+					if (text != null) {
+						out.write(labels[i] + ": " + text + "\n");
+					}
+				}
+				out.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			request.getRequestDispatcher("BusinessCardService/thankyou.html")
+					.forward(request, response);
 
 		}
+	}
 
-		request.getRequestDispatcher("BusinessCardService/thankyou.html").forward(request, response);
+	@Override
+	protected void doPut(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
 	}
 
 	private String getFileName(final Part part) {
 		final String partHeader = part.getHeader("content-disposition");
 		for (String content : part.getHeader("content-disposition").split(";")) {
 			if (content.trim().startsWith("filename")) {
-				return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+				return content.substring(content.indexOf('=') + 1).trim()
+						.replace("\"", "");
 			}
 		}
 		return null;
 	}
 
-	private void scanAndPrintResults(File folder, File image, PrintWriter out) throws IOException {
+	private void scanAndPrintResults(File folder, File image, PrintWriter out)
+			throws IOException {
 		try {
-			Map<String, NamedEntity> result = reader.readImage(image.getAbsolutePath());
-			FileWriter scanOutput = new FileWriter(folder.getAbsoluteFile() + File.separator + scanResultFile);
-			out.println("<form name=\"user-solution\" method=\"put\" action=\"/BusinessCardService/scanner\">");
-
-			out.println("<input type=\"hidden\" name=\"folder\" value=\"" + folder.getAbsolutePath() + ">");
+			Map<String, NamedEntity> result = reader.readImage(image
+					.getAbsolutePath());
+			FileWriter scanOutput = new FileWriter(folder.getAbsoluteFile()
+					+ File.separator + scanResultFile);
+			out.println("<form enctype=\"multipart/form-data\" name=\"user-solution\" method=\"post\" action=\"scanner\">");
+			out.println("<input type=\"hidden\" name=\"step\" value=\"2\" />");
+			out.println("<input type=\"hidden\" name=\"folder\" value=\""
+					+ folder.getAbsolutePath() + "\">");
 
 			for (int i = 0; i < labels.length; i++) {
 				if (result.containsKey(labels[i])) {
-					scanOutput.write(labels[i] + ": " + result.get(labels[i]) + "\n");
+					scanOutput.write(labels[i] + ": "
+							+ result.get(labels[i]).getEntity() + "\n");
 
 					StringBuilder outputString = new StringBuilder();
 					outputString.append(labelNames[i]);
@@ -152,17 +178,19 @@ public class BusinessCardServiceServlet extends HttpServlet {
 					outputString.append(labels[i]);
 					outputString.append("\" id=\"");
 					outputString.append(labels[i]);
-					outputString.append("\" text=\"");
-					outputString.append(result.get(labels[i]));
+					outputString.append("\" value=\"");
+					outputString.append(result.get(labels[i]).getEntity());
 					outputString.append("\"><br>");
 
 					out.println(outputString.toString());
 				}
 			}
-			//color STYLE="color: #FFFFFF; font-family: Verdana; font-weight: bold; font-size: 12px; background-color: #72A4D2;"
+			scanOutput.close();
+			// color
+			// STYLE="color: #FFFFFF; font-family: Verdana; font-weight: bold; font-size: 12px; background-color: #72A4D2;"
 
 			out.println("<input type=\"submit\" value=\"Submit\">");
-
+			out.println("</form>");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			out.println("Error while reading file: " + e.getMessage());
