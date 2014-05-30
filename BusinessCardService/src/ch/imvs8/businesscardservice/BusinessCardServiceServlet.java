@@ -48,9 +48,11 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	public void init(ServletConfig servletConfig) throws ServletException {
 		this.uploadedFolder = servletConfig.getInitParameter("uploadedFolder");
 		try {
-			this.reader = new BusinessCardReader(servletConfig.getInitParameter("businessCardDataFolder"));
+			this.reader = new BusinessCardReader(
+					servletConfig.getInitParameter("businessCardDataFolder"));
 		} catch (Exception e) {
-			throw new ServletException("unable to create Servlet: "+e.getMessage(), e);
+			throw new ServletException("unable to create Servlet: "
+					+ e.getMessage(), e);
 		}
 	}
 
@@ -86,6 +88,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 
 				File image = new File(parentFolder.getAbsolutePath()
 						+ File.separator + fileName);
+
 				// write file
 				output = new FileOutputStream(image);
 				filecontent = filePart.getInputStream();
@@ -104,10 +107,11 @@ public class BusinessCardServiceServlet extends HttpServlet {
 				out.println("<title>Business Card Service</title>");
 				out.println("</head>");
 				out.println("<body>");
-
 				this.scanAndPrintResults(parentFolder, image, out);
 			} catch (Exception e) {
-				out.println("<p>Error while uploading Image: "+e.getMessage()+"</p>");
+				out.println("<p>Error while uploading Image: " + e.getMessage()
+						+ "</p>");
+				out.println(e.getStackTrace());
 			}
 
 			out.println("</body>");
@@ -155,18 +159,20 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	}
 
 	private void scanAndPrintResults(File folder, File image, PrintWriter out)
-			throws IOException {
-		try {
-			Map<String, NamedEntity> result = reader.readImage(image
-					.getAbsolutePath());
-			FileWriter scanOutput = new FileWriter(folder.getAbsoluteFile()
-					+ File.separator + scanResultFile);
-			out.println("<form enctype=\"multipart/form-data\" name=\"user-solution\" method=\"post\" action=\"reader\">");
-			out.println("<input type=\"hidden\" name=\"step\" value=\"2\" />");
-			out.println("<input type=\"hidden\" name=\"folder\" value=\""
-					+ folder.getAbsolutePath() + "\">");
+			throws Exception {
+		Map<String, NamedEntity> result = reader.readImage(image
+				.getAbsolutePath());
 
+		FileWriter scanOutput = new FileWriter(folder.getAbsoluteFile()
+				+ File.separator + scanResultFile);
+
+		out.println("<form enctype=\"multipart/form-data\" name=\"user-solution\" method=\"post\" action=\"reader\">");
+		out.println("<input type=\"hidden\" name=\"step\" value=\"2\" />");
+		out.println("<input type=\"hidden\" name=\"folder\" value=\""
+				+ folder.getAbsolutePath() + "\">");
+		if (result != null) {
 			for (int i = 0; i < labels.length; i++) {
+
 				if (result.containsKey(labels[i])) {
 					scanOutput.write(labels[i] + ": "
 							+ result.get(labels[i]).getEntity() + "\n");
@@ -185,14 +191,11 @@ public class BusinessCardServiceServlet extends HttpServlet {
 				}
 			}
 			scanOutput.close();
-			// color
-			// STYLE="color: #FFFFFF; font-family: Verdana; font-weight: bold; font-size: 12px; background-color: #72A4D2;"
-
-			out.println("<input type=\"submit\" value=\"Submit\">");
-			out.println("</form>");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			out.println("Error while reading file: " + e.getMessage());
 		}
+		// color
+		// STYLE="color: #FFFFFF; font-family: Verdana; font-weight: bold; font-size: 12px; background-color: #72A4D2;"
+
+		out.println("<input type=\"submit\" value=\"Submit\">");
+		out.println("</form>");
 	}
 }

@@ -52,7 +52,7 @@ public class NEREngine {
 		this.concatenationRequired.add("I-TM");
 		this.concatenationRequired.add("ORG");
 		
-		final String dir = System.getProperty("user.dir");
+		final String dir = System.getProperty("java.io.tmpdir");
 		tmpFileLoc = dir +File.separator+tmpFileName;
 	}
 
