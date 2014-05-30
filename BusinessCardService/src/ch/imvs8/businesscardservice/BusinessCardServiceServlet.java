@@ -35,7 +35,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 			"ORT", "I-MN", "I-TN", "I-FN", "EMA", "WEB", "ORG" };
 	private static final String[] labelNames = { "First Name", "Last Name",
 			"Title", "Street", "Zip Code", "City", "Mobile Number:",
-			"Fixnet Number", "Fax Number", "Email", "Organisation" };
+			"Fixnet Number", "Fax Number", "Email","Web", "Organisation" };
 
 	private BusinessCardReader reader;
 	private String uploadedFolder;
@@ -173,11 +173,12 @@ public class BusinessCardServiceServlet extends HttpServlet {
 		if (result != null) {
 			for (int i = 0; i < labels.length; i++) {
 
+				StringBuilder outputString = new StringBuilder();
 				if (result.containsKey(labels[i])) {
 					scanOutput.write(labels[i] + ": "
 							+ result.get(labels[i]).getEntity() + "\n");
-
-					StringBuilder outputString = new StringBuilder();
+					
+					
 					outputString.append(labelNames[i]);
 					outputString.append(": <input type=\"text\" name=\"");
 					outputString.append(labels[i]);
@@ -187,6 +188,16 @@ public class BusinessCardServiceServlet extends HttpServlet {
 					outputString.append(result.get(labels[i]).getEntity());
 					outputString.append("\"><br>");
 
+					out.println(outputString.toString());
+				} else {
+					scanOutput.write(labels[i] + ": ");
+					outputString.append(labelNames[i]);
+					outputString.append(": <input type=\"text\" name=\"");
+					outputString.append(labels[i]);
+					outputString.append("\" id=\"");
+					outputString.append(labels[i]);
+					outputString.append("\" value=\"");
+					outputString.append("\"><br>");
 					out.println(outputString.toString());
 				}
 			}
