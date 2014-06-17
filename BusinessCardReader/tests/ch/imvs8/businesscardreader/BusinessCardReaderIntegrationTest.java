@@ -8,7 +8,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
-import ch.fhnw.imvs8.businesscardreader.ner.NamedEntity;
+import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 
 public class BusinessCardReaderIntegrationTest {
 
@@ -37,12 +37,12 @@ public class BusinessCardReaderIntegrationTest {
 		
 		try{ 
 			BusinessCardReader reader = new BusinessCardReader("unittest_data/ValidTest");
-			Map<String,NamedEntity> entities = reader.readImage("unittest_data/validimage.jpg");
+			Map<String,LabeledWord> entities = reader.readImage("unittest_data/validimage.jpg");
 			assertSame("didn't find enough or too much", 4, entities.size());
-			Iterator<NamedEntity> it = entities.values().iterator();
+			Iterator<LabeledWord> it = entities.values().iterator();
 			while(it.hasNext()) {
-				NamedEntity e = it.next();
-				System.out.println(e.getLabel() + " " + e.getEntity() + " "+ e.getConfidence());
+				LabeledWord e = it.next();
+				System.out.println(e.getLabel() + " " + e.getWordAsString() + " "+ e.getConfidence());
 			}
 		}
 		catch(Exception e) {

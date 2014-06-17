@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 
 import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
-import ch.fhnw.imvs8.businesscardreader.ner.NamedEntity;
+import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 import ch.fhnw.imvs8.businesscardreader.ner.getLogs;
 import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 
@@ -97,9 +97,10 @@ public class ModelGenerator {
 		InputStream is = process.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
-		logs = new getLogs(NamedEntity.LABELS);
+		logs = new getLogs(LabeledWord.LABELS);
 
 		String line;
+		int position = 0;
 		while ((line = br.readLine()) != null) {
 			if (!line.startsWith("#")) {
 				if (line.length() < 2) {
@@ -113,7 +114,7 @@ public class ModelGenerator {
 
 						String label = labelAndConfidence.substring(0, dashIndex);
 						double conf = Double.parseDouble(labelAndConfidence.substring(dashIndex + 1));
-						NamedEntity res = new NamedEntity(label, lineArray[0], conf);
+						LabeledWord res = new LabeledWord(label, lineArray[0], conf, position++);
 
 						logs.addToLogs(lineArray[lineArray.length - 2], res.getLabel(), res.getConfidence());
 					}
@@ -124,7 +125,7 @@ public class ModelGenerator {
 
 		System.out.println(logs.getPercentageCardsCorrect());
 
-		String[] labels = NamedEntity.LABELS;
+		String[] labels = LabeledWord.LABELS;
 		double[] stuff = logs.getPercentagePerLabel();
 		for (int i = 0; i < labels.length; i++) {
 			System.out.println(labels[i] + " " + stuff[i]);

@@ -10,7 +10,7 @@ import ch.fhnw.imvs8.businesscardreader.imagefilters.Phansalkar;
 import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
 import ch.fhnw.imvs8.businesscardreader.ner.NEREngine;
-import ch.fhnw.imvs8.businesscardreader.ner.NamedEntity;
+import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
@@ -70,7 +70,7 @@ public class BusinessCardReader {
 	 * @return Named entities found in this picture
 	 * @throws FileNotFoundException
 	 */
-	public Map<String, NamedEntity> readImage(String image) throws FileNotFoundException {
+	public Map<String, LabeledWord> readImage(String image) throws FileNotFoundException {
 		AnalysisResult ocrAnalsysis = ocr.analyzeImage(new File(image));
 
 		return ner.analyse(ocrAnalsysis);
