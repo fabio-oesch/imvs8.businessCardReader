@@ -64,11 +64,11 @@ public class NEREngine {
 	 * @return Named Entities.
 	 * 			  Table with the NamedEntities, the Label (for example "email") is the Key and the NamedEntity the value;
 	 */
-	public Map<String, NamedEntity> analyse(AnalysisResult results) {
-		Map<String, NamedEntity> answer = null;
+	public Map<String, LabeledWord> analyse(AnalysisResult results) {
+		Map<String, LabeledWord> answer = null;
 		try {
 			creator.createFeatures(results, tmpFileLoc);
-			List<NamedEntity> crfResult = this.readOutput(tmpFileLoc, results.getResultSize());
+			List<LabeledWord> crfResult = this.readOutput(tmpFileLoc, results.getResultSize());
 			answer = this.concatenateEntitiesSimple(crfResult);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -87,13 +87,14 @@ public class NEREngine {
 	 * @return List of Named Entities. This is the Raw CRF Output.
 	 * @throws IOException
 	 */
-	private List<NamedEntity> readOutput(String toTestData, int size) throws IOException {
+	private List<LabeledWord> readOutput(String toTestData, int size) throws IOException {
 		Process process = new ProcessBuilder(toCRF + "/crf_test", "-v1", "-m", toModel + "/model", toTestData).start();
 		InputStream is = process.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
 		
-		List<NamedEntity> tokens = new ArrayList<>(size);
+		int positionIndex = 0;
+		List<LabeledWord> tokens = new ArrayList<>(size);
 		String line;
 		while ((line = br.readLine()) != null) {
 			String[] lineArray = line.split("\t");
@@ -104,7 +105,7 @@ public class NEREngine {
 				
 				String label = labelAndConfidence.substring(0, dashIndex);
 				double conf = Double.parseDouble(labelAndConfidence.substring(dashIndex+1));
-				NamedEntity res = new NamedEntity(label,lineArray[0],conf);
+				LabeledWord res = new LabeledWord(label,lineArray[0],conf, positionIndex++);
 				
 				tokens.add(res);
 			}
@@ -118,15 +119,13 @@ public class NEREngine {
 	 * @param entities
 	 * @return concatenated entities in a Map, the Key is the tag.
 	 */
-	private Map<String, NamedEntity> concatenateEntitiesSimple(List<NamedEntity> entities) {
-		HashMap<String, NamedEntity> answer = new HashMap<>(entities.size());
+	private Map<String, LabeledWord> concatenateEntitiesSimple(List<LabeledWord> entities) {
+		HashMap<String, LabeledWord> answer = new HashMap<>(entities.size());
 		
-		for(NamedEntity e : entities) {
+		for(LabeledWord e : entities) {
 			if(answer.containsKey(e.getLabel())) {
-				NamedEntity entity = answer.get(e.getLabel());
-				answer.remove(e.getLabel());
-				NamedEntity concatenated = new NamedEntity(e.getLabel(),entity.getEntity()+" "+e.getEntity(),Math.min(entity.getConfidence(),e.getConfidence()));
-				answer.put(e.getLabel(), concatenated);
+				LabeledWord entity = answer.get(e.getLabel());
+				entity.addWordAfter(e);
 			} else {
 				answer.put(e.getLabel(), e);
 			}

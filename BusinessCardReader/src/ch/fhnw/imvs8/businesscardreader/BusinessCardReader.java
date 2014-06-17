@@ -2,6 +2,9 @@ package ch.fhnw.imvs8.businesscardreader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterProcessor;
@@ -10,7 +13,7 @@ import ch.fhnw.imvs8.businesscardreader.imagefilters.Phansalkar;
 import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
 import ch.fhnw.imvs8.businesscardreader.ner.NEREngine;
-import ch.fhnw.imvs8.businesscardreader.ner.NamedEntity;
+import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
@@ -62,17 +65,28 @@ public class BusinessCardReader {
 	}
 
 	/**
-	 * reads an image and returns a list of found entities. The keys are tags
-	 * found for this entity and the values are the entities themselfes.
+	 * reads an image and returns a map of found words.
+	 * The keys are tags found for this entity and the values are the entities themselfes.
 	 * 
 	 * @param image
 	 *            path to image
 	 * @return Named entities found in this picture
 	 * @throws FileNotFoundException
 	 */
-	public Map<String, NamedEntity> readImage(String image) throws FileNotFoundException {
+	public Map<String, Word> readImage(String image) throws FileNotFoundException {
 		AnalysisResult ocrAnalsysis = ocr.analyzeImage(new File(image));
 
-		return ner.analyse(ocrAnalsysis);
+		return translateResultAsMap(ner.analyse(ocrAnalsysis));
+	}
+	
+	private Map<String,Word> translateResultAsMap(Map<String, LabeledWord> words) {
+		Map<String, Word> translated = new HashMap<>(words.size());
+		
+		for(int i = 0; i < LabeledWord.LABELS.length;i++) {
+			LabeledWord w = words.get(LabeledWord.LABELS[i]);
+			translated.put(LabeledWord.LABELS[i],new Word(w,LabeledWord.HUMAN_READABLE_LABELS[i]));
+		}
+		
+		return translated;
 	}
 }
