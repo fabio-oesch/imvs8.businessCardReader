@@ -10,22 +10,23 @@ import java.io.InputStreamReader;
 
 import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
-import ch.fhnw.imvs8.businesscardreader.ner.NamedEntity;
 import ch.fhnw.imvs8.businesscardreader.ner.getLogs;
 import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 
 public class ModelGenerator {
 	private static getLogs logs;
 	private static String toCRF = "/usr/local/bin";
-	private static String toModel = "model";
-	private static boolean schwambi = true;
+	private static String toModel = "crfLogs";
+	private static String modelName = "secondModelBigram";
+	private static boolean schwambi = false;
 
 	public static void main(String[] args) throws Exception {
-		if (schwambi) {
+		if (schwambi)
 			// createModel("/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/testdata.crf.v4_c1.csv","training","/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/template");
 			testModel("/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/testdata.c1.test.csv", toModel);
-		} else {
-			// createModel("/home/olry/Documents/School/Project/svn/testdata/crf-testdata/testdata.crf.v4_c1.csv","training","/home/olry/Documents/School/Project/svn/doc/ip6/CRF/template");
+		else {
+			createModel("/home/olry/Documents/School/Project/svn/testdata/crf-testdata/testdata.crf.v4_c1.csv", "training",
+					"/home/olry/Documents/School/Project/svn/doc/ip6/CRF/template");
 			testModel("/home/olry/Documents/School/Project/svn/testdata/crf-testdata/testdata.c1.test.csv", toModel);
 		}
 	}
@@ -33,7 +34,7 @@ public class ModelGenerator {
 	public static void createModel(String inFile, String trainingFile, String templateFile) throws Exception {
 		createFile(inFile, trainingFile);
 		// Create
-		Process process = new ProcessBuilder(toCRF + "/crf_learn", templateFile, trainingFile, "model").start();
+		Process process = new ProcessBuilder(toCRF + "/crf_learn", templateFile, trainingFile, toModel + "/" + modelName).start();
 		System.out.println("Waiting for learing proccess");
 		process.waitFor();
 		System.out.println("done");
@@ -60,10 +61,10 @@ public class ModelGenerator {
 		BufferedWriter out = new BufferedWriter(new FileWriter(testFile));
 
 		String line = null;
-		while ((line = reader.readLine()) != null) {
-			if (line.equals(",")) {
+		while ((line = reader.readLine()) != null)
+			if (line.equals(","))
 				out.write("\n");
-			} else {
+			else {
 
 				String[] content = line.split(",");
 				/*
@@ -79,7 +80,6 @@ public class ModelGenerator {
 				out.write("\n");
 				lineNumber++;
 			}
-		}
 
 		reader.close();
 		out.close();
@@ -93,42 +93,45 @@ public class ModelGenerator {
 	}
 
 	private static void readOutput(String toTestData) throws IOException {
-		Process process = new ProcessBuilder(toCRF + "/crf_test", "-v1", "-m", "model", toTestData).start();
+		Process process = new ProcessBuilder(toCRF + "/crf_test", "-v1", "-m", toModel + "/" + modelName, toTestData).start();
 		InputStream is = process.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
-		logs = new getLogs(NamedEntity.LABELS);
+		logs = new getLogs(LabeledWord.LABELS);
 
 		String line;
-		while ((line = br.readLine()) != null) {
-			if (!line.startsWith("#")) {
-				if (line.length() < 2) {
+		while ((line = br.readLine()) != null)
+			if (!line.startsWith("#"))
+				if (line.length() < 2)
 					logs.addCard();
-				} else {
+				else {
 					String[] lineArray = line.split("\t");
 					if (lineArray.length > 2) {
-						// only works when -v1 and -v2 is not set
+						// only works when -v1 or -v2 is set
 						String labelAndConfidence = lineArray[lineArray.length - 1];
 						int dashIndex = labelAndConfidence.indexOf('/');
 
 						String label = labelAndConfidence.substring(0, dashIndex);
 						double conf = Double.parseDouble(labelAndConfidence.substring(dashIndex + 1));
-						NamedEntity res = new NamedEntity(label, lineArray[0], conf);
+						LabeledWord res = new LabeledWord(label, lineArray[0], conf, position++);
 
 						logs.addToLogs(lineArray[lineArray.length - 2], res.getLabel(), res.getConfidence());
 					}
 				}
-			}
 
-		}
+		BufferedWriter writer = new BufferedWriter(new FileWriter(toModel + "/Testresult of the model " + modelName));
+		System.out.println("Percentage all correct: " + logs.getHadAllLabelsPerCardCorrect());
 
-		System.out.println(logs.getPercentageCardsCorrect());
+		writer.write("Percentage all correct: " + logs.getHadAllLabelsPerCardCorrect() + "\n");
 
-		String[] labels = NamedEntity.LABELS;
-		double[] stuff = logs.getPercentagePerLabel();
+		String[] labels = LabeledWord.LABELS;
+		double[] stuff = logs.getPercentagePerLabel(writer, labels);
+		writer.append("\nPercentage per Label \n");
 		for (int i = 0; i < labels.length; i++) {
+			writer.append(labels[i] + " " + stuff[i] + "\n");
 			System.out.println(labels[i] + " " + stuff[i]);
 		}
+		writer.close();
 
 	}
 }

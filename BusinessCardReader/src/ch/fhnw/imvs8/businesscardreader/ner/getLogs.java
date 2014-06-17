@@ -1,6 +1,7 @@
 package ch.fhnw.imvs8.businesscardreader.ner;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,9 +39,8 @@ public class getLogs {
 	 */
 	public getLogs(String[] labels) throws IOException {
 
-		for (int labelPos = 0; labelPos < labels.length; labelPos++) {
+		for (int labelPos = 0; labelPos < labels.length; labelPos++)
 			labelPosition.put(labels[labelPos], labelPos);
-		}
 		countPerLabel = new int[labels.length];
 		correctPerLabel = new double[labels.length];
 
@@ -48,9 +48,10 @@ public class getLogs {
 		String currentLine;
 		BufferedReader reader = new BufferedReader(new FileReader("cardCorrectLabels.txt"));
 
-		while ((currentLine = reader.readLine()) != null) {
+		while ((currentLine = reader.readLine()) != null)
 			cardCorrectLabel.add(currentLine);
-		}
+
+		reader.close();
 
 		cardCorrect = new boolean[cardCorrectLabel.size()];
 		addCard();
@@ -68,11 +69,9 @@ public class getLogs {
 		int pos = labelPosition.get(shouldLabel);
 		if (shouldLabel.equals(isLabel)) {
 			correctPerLabel[pos]++;
-			for (int i = 0; i < cardCorrectLabel.size(); i++) {
-				if (cardCorrectLabel.get(i).equals(isLabel)) {
+			for (int i = 0; i < cardCorrectLabel.size(); i++)
+				if (cardCorrectLabel.get(i).equals(isLabel))
 					cardCorrect[i] = true;
-				}
-			}
 		}
 		// labelPercentage[pos] += percentage;
 		countPerLabel[pos]++;
@@ -85,15 +84,12 @@ public class getLogs {
 	 */
 	public void addCard() {
 		boolean hasAllCorrect = true;
-		for (int i = 0; i < cardCorrect.length && hasAllCorrect; i++) {
-			if (!cardCorrect[i]) {
+		for (int i = 0; i < cardCorrect.length && hasAllCorrect; i++)
+			if (!cardCorrect[i])
 				hasAllCorrect = false;
-			}
-		}
 
-		if (hasAllCorrect) {
+		if (hasAllCorrect)
 			cardCorrectCount++;
-		}
 
 		cardCount++;
 		cardCorrect = new boolean[cardCorrectLabel.size()];
@@ -115,12 +111,30 @@ public class getLogs {
 	}
 
 	/**
+	 * returns the percentage of how confident the value is. This percentage
+	 * says nothing about how correct a label is.
+	 * 
+	 * @param writer
+	 *            the file where the logs should be added
+	 * @return a list of all the double values
+	 * @throws IOException
+	 */
+	public double[] getPercentagePerLabel(BufferedWriter writer, String[] labels) throws IOException {
+		double[] result = new double[correctPerLabel.length];
+		writer.append("\nCorrect Count Per Label \n");
+		for (int i = 0; i < result.length; i++) {
+			writer.append(labels[i] + " " + correctPerLabel[i] + " " + countPerLabel[i] + "\n");
+			result[i] = correctPerLabel[i] / countPerLabel[i];
+		}
+		return result;
+	}
+
+	/**
 	 * how many cards had all labels correct which were specified
 	 * 
 	 * @return percentage of cards who are all correct
 	 */
-	public double getPercentageCardsCorrect() {
-		System.out.println(cardCorrectCount + " " + cardCount);
+	public double getHadAllLabelsPerCardCorrect() {
 		return cardCorrectCount / (double) cardCount;
 	}
 
