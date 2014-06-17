@@ -1,7 +1,6 @@
 package ch.imvs8.businesscardservice;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,7 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
-import ch.fhnw.imvs8.businesscardreader.ner.NamedEntity;
+import ch.fhnw.imvs8.businesscardreader.Word;
+
 
 @WebServlet(name = "BusinessCardReader", urlPatterns = { "/reader" })
 @MultipartConfig
@@ -160,7 +160,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 
 	private void scanAndPrintResults(File folder, File image, PrintWriter out)
 			throws Exception {
-		Map<String, NamedEntity> result = reader.readImage(image
+		Map<String, Word> result = reader.readImage(image
 				.getAbsolutePath());
 
 		FileWriter scanOutput = new FileWriter(folder.getAbsoluteFile()
@@ -174,10 +174,11 @@ public class BusinessCardServiceServlet extends HttpServlet {
 			for (int i = 0; i < labels.length; i++) {
 
 				StringBuilder outputString = new StringBuilder();
-				if (result.containsKey(labels[i])) {
-					scanOutput.write(labels[i] + ": "
-							+ result.get(labels[i]).getEntity() + "\n");
-					
+					//write debug output
+					Word word= result.get(labels[i]);
+					for(int j = 0; j < word.getSubwordSize();j++) {
+						scanOutput.write(labels[i] + "; "+ word.getSubwordAndPosition(j) + "\n");
+					}
 					
 					outputString.append(labelNames[i]);
 					outputString.append(": <input type=\"text\" name=\"");
@@ -185,21 +186,10 @@ public class BusinessCardServiceServlet extends HttpServlet {
 					outputString.append("\" id=\"");
 					outputString.append(labels[i]);
 					outputString.append("\" value=\"");
-					outputString.append(result.get(labels[i]).getEntity());
+					outputString.append(word.getWordAsString());
 					outputString.append("\"><br>");
 
 					out.println(outputString.toString());
-				} else {
-					scanOutput.write(labels[i] + ": ");
-					outputString.append(labelNames[i]);
-					outputString.append(": <input type=\"text\" name=\"");
-					outputString.append(labels[i]);
-					outputString.append("\" id=\"");
-					outputString.append(labels[i]);
-					outputString.append("\" value=\"");
-					outputString.append("\"><br>");
-					out.println(outputString.toString());
-				}
 			}
 			scanOutput.close();
 		}
