@@ -56,7 +56,7 @@ public class Word {
 	 * @return
 	 */
 	public String getSubwordAndPosition(int index) {
-		if(word != null || index < 0 || index > word.getSubwordSize())
+		if(word == null || index < 0 || index > word.getSubwordSize())
 			return null;
 		return word.getSubword(index)+";"+word.getSubwordPosition(index);
 	}

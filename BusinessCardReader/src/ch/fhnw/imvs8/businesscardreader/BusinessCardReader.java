@@ -79,7 +79,6 @@ public class BusinessCardReader {
 		return translateResultAsMap(ner.analyse(ocrAnalsysis));
 	}
 	
-	
 	private Map<String,Word> translateResultAsMap(Map<String, LabeledWord> words) {
 		Map<String, Word> translated = new HashMap<>(words.size());
 		
