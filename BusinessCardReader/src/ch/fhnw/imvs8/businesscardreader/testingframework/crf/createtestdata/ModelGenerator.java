@@ -9,8 +9,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
-import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
+import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
 import ch.fhnw.imvs8.businesscardreader.ner.getLogs;
 import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 
@@ -81,7 +81,6 @@ public class ModelGenerator {
 				out.write("\n");
 				lineNumber++;
 			}
-		}
 
 		reader.close();
 		out.close();
@@ -103,11 +102,11 @@ public class ModelGenerator {
 
 		String line;
 		int position = 0;
-		while ((line = br.readLine()) != null) {
-			if (!line.startsWith("#")) {
-				if (line.length() < 2) {
+		while ((line = br.readLine()) != null)
+			if (!line.startsWith("#"))
+				if (line.length() < 2)
 					logs.addCard();
-				} else {
+				else {
 					String[] lineArray = line.split("\t");
 					if (lineArray.length > 2) {
 						// only works when -v1 or -v2 is set
@@ -121,7 +120,6 @@ public class ModelGenerator {
 						logs.addToLogs(lineArray[lineArray.length - 2], res.getLabel(), res.getConfidence());
 					}
 				}
-			}
 
 		BufferedWriter writer = new BufferedWriter(new FileWriter(toModel + "/Testresult of the model " + modelName));
 		System.out.println("Percentage all correct: " + logs.getHadAllLabelsPerCardCorrect());
