@@ -3,11 +3,13 @@ package ch.imvs8.businesscardreader;
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 
 import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
+import ch.fhnw.imvs8.businesscardreader.Word;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 
 public class BusinessCardReaderIntegrationTest {
@@ -37,16 +39,20 @@ public class BusinessCardReaderIntegrationTest {
 		
 		try{ 
 			BusinessCardReader reader = new BusinessCardReader("unittest_data/ValidTest");
-			Map<String,LabeledWord> entities = reader.readImage("unittest_data/validimage.jpg");
-			assertSame("didn't find enough or too much", 4, entities.size());
-			Iterator<LabeledWord> it = entities.values().iterator();
+			Map<String,Word> entities = reader.readImage("unittest_data/validimage.jpg");
+			assertSame("didn't find enough or too much", 16, entities.size());
+			Iterator<String> it = entities.keySet().iterator();
 			while(it.hasNext()) {
-				LabeledWord e = it.next();
-				System.out.println(e.getLabel() + " " + e.getWordAsString() + " "+ e.getConfidence());
+				String lbl = it.next();
+				Word e = entities.get(lbl);
+				if(e != null)
+					System.out.println(e.getLabel() + ": " + e.getWordAsString() + " ");
 			}
 		}
 		catch(Exception e) {
+			e.printStackTrace();
 			fail("Exception was thrown. Exception: "+e.getMessage());
+			
 		}
 	}
 
