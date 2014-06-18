@@ -66,7 +66,6 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		// response.setContentType("text/html");
 
 		if (request.getParameter("step").equals("1")) {
 			PrintWriter out = response.getWriter();
@@ -141,12 +140,6 @@ public class BusinessCardServiceServlet extends HttpServlet {
 		}
 	}
 
-	@Override
-	protected void doPut(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-
-	}
-
 	private String getFileName(final Part part) {
 		final String partHeader = part.getHeader("content-disposition");
 		for (String content : part.getHeader("content-disposition").split(";")) {
@@ -187,6 +180,11 @@ public class BusinessCardServiceServlet extends HttpServlet {
 					outputString.append(labels[i]);
 					outputString.append("\" value=\"");
 					outputString.append(word.getWordAsString());
+					outputString.append("\"");
+					if(word.isUnsure())
+						outputString.append(" STYLE=\"background-color: #FF9933;\"");
+					if(word.isWrong())
+						outputString.append(" STYLE=\"color: #FFFFFF; background-color: #800000;\"");
 					outputString.append("\"><br>");
 
 					out.println(outputString.toString());
@@ -194,6 +192,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 			scanOutput.close();
 		}
 		// color
+		// class="textbox"
 		// STYLE="color: #FFFFFF; font-family: Verdana; font-weight: bold; font-size: 12px; background-color: #72A4D2;"
 
 		out.println("<input type=\"submit\" value=\"Submit\">");
