@@ -1,7 +1,10 @@
 #delete this comment block
 #to use: put this in $TESSDATA_PREFIX$/tessdata/configs
 #put deu.user-words in $TESSDATA_PREFIX$/tessdataa and the deu.user-patterns
-user_patterns_suffix user-patterns
+#user_patterns_suffix user-patterns
 user_words_suffix    user-words
 load_system_dawg     F
 load_freq_dawg       F
+language_model_penalty_non_freq_dict_word    0.1
+language_model_penalty_non_dict_word    0.15
+
