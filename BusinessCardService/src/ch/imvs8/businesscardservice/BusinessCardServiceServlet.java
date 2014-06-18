@@ -116,6 +116,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 
 			out.println("</body>");
 			out.println("</html>");
+		//save the results
 		} else if (request.getParameter("step").equals("2")) {
 			// save user result
 			System.out.println("echo");
