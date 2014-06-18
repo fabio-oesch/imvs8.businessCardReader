@@ -23,6 +23,7 @@ import javax.servlet.http.Part;
 
 import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
 import ch.fhnw.imvs8.businesscardreader.Word;
+import ch.fhnw.imvs8.businesscardreader.vcard.CreateVCard;
 
 
 @WebServlet(name = "BusinessCardReader", urlPatterns = { "/reader" })
@@ -31,11 +32,11 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String scanResultFile = "scanresults.txt";
 	private static final String actualResultFile = "actualresults.txt";
-	private static final String[] labels = { "FN", "LN", "TIT", "ST", "PLZ",
-			"ORT", "I-MN", "I-TN", "I-FN", "EMA", "WEB", "ORG" };
-	private static final String[] labelNames = { "First Name", "Last Name",
-			"Title", "Street", "Zip Code", "City", "Mobile Number:",
-			"Fixnet Number", "Fax Number", "Email","Web", "Organisation" };
+	private static final String[] labels = {"TIT", "FN", "LN", "ST", "PLZ",
+			"ORT", "EMA" , "ORG","I-MN", "I-TN", "I-FN",  "WEB" };
+	private static final String[] labelNames = { "Title", "First Name", "Last Name",
+			"Street", "Zip Code", "City", "Email", "Organisation", "Mobile Number",
+			"Fixnet Number", "Fax Number", "Web"};
 
 	private BusinessCardReader reader;
 	private String uploadedFolder;
@@ -117,12 +118,11 @@ public class BusinessCardServiceServlet extends HttpServlet {
 			out.println("</html>");
 		} else if (request.getParameter("step").equals("2")) {
 			// save user result
-			System.out.println("echo");
 			try {
 				String path = request.getParameter("folder");
 				FileWriter out = new FileWriter(path + File.separator
 						+ actualResultFile);
-				System.out.println("bla");
+				
 				for (int i = 0; i < labels.length; i++) {
 					String text = request.getParameter(labels[i]);
 					if (text != null) {
@@ -130,6 +130,23 @@ public class BusinessCardServiceServlet extends HttpServlet {
 					}
 				}
 				out.close();
+				
+				
+				/*return vCard
+				 * 
+				 * CreateVCard.getVCardString(words)
+				 * OutputStream out = response.getOutputStream();
+FileInputStream in = new FileInputStream(my_file);
+byte[] buffer = new byte[4096];
+int length;
+while ((length = in.read(buffer)) > 0){
+    out.write(buffer, 0, length);
+}
+in.close();
+out.flush();
+				 */
+				
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

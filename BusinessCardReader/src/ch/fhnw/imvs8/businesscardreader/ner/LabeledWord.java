@@ -17,8 +17,8 @@ import java.util.List;
  *
  */
 public class LabeledWord {
-	public static final String[] LABELS = {"FN", "TIT","LN","ST","PLZ","ORT","B-MN","I-MN","B-TN","I-TN","B-FN","I-FN","EMA","WEB","ORG","IDK"};
-	public static final String[] HUMAN_READABLE_LABELS = { "First Name", "Title", "Last Name", "Street", "Zip Code", "City", null," Mobile Number",null,"Fixnet Number", null, "Fax Number", "Email","Web", "Organisation","Unknown"};
+	public static final String[] LABELS = { "TIT","FN","LN","ST","PLZ","ORT","B-MN","I-MN","B-TN","I-TN","B-FN","I-FN","EMA","WEB","ORG","IDK"};
+	public static final String[] HUMAN_READABLE_LABELS = { "Title","First Name", "Last Name", "Street", "Zip Code", "City", null," Mobile Number",null,"Fixnet Number", null, "Fax Number", "Email","Web", "Organisation","Unknown"};
 	private double confidence;
 	private final String label;
 	private final List<String> subWords;

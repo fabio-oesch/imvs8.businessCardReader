@@ -20,6 +20,7 @@ import net.sourceforge.cardme.vcard.types.OrganizationType;
 import net.sourceforge.cardme.vcard.types.TelephoneType;
 import net.sourceforge.cardme.vcard.types.URLType;
 import net.sourceforge.cardme.vcard.types.parameters.TelephoneParameterType;
+import ch.fhnw.imvs8.businesscardreader.Word;
 import ch.fhnw.imvs8.businesscardreader.ner.NEREngine;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 
@@ -29,29 +30,33 @@ import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
  * @author olry
  * 
  */
-public class CreateVCard {
-	private static VCard vcard = new VCardImpl();
+public class VCardCreator {
 
-	public VCard createVCard() throws IOException {
-		HashMap<String, String> br = null;
-		VCardWriter writer = new VCardWriter();
-		writer.setVCard(vcard);
-		String vString = writer.buildVCardString();
-		System.out.println(vString);
-		return vcard;
+	/**
+	 * Greates a vCard String out of the provided words
+	 * @param words
+	 * @return
+	 * @throws MalformedURLException
+	 */
+	public static String getVCardString(HashMap<String, Word> words) throws MalformedURLException {
+		 VCard vcard = new VCardImpl();
+		 addFeatures(vcard,words);
+		 VCardWriter writer = new VCardWriter();
+		 writer.setVCard(vcard);
+		 return writer.buildVCardString();
 	}
-
-	public static void addFeatures(HashMap<String, LabeledWord> tokens) throws MalformedURLException {
-		Iterator<LabeledWord> it = tokens.values().iterator();
+	
+	public static void addFeatures(VCard vcard, HashMap<String, Word> tokens) throws MalformedURLException {
+		Iterator<Word> it = tokens.values().iterator();
 
 		NameType name = new NameType();
 		AddressFeature address = new AddressType();
 		address.setCharset("UTF-8");
 
 		while (it.hasNext()) {
-			LabeledWord entity = it.next();
+			Word entity = it.next();
 			
-			switch (entity.getLabel()) {
+			switch (entity.getNERLabel()) {
 			case "FN":
 				name.setGivenName(entity.getWordAsString());
 				break;
