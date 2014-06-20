@@ -17,6 +17,7 @@ import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
+import ch.fhnw.imvs8.businesscardreader.vcard.VCardCreator;
 
 /**
  * Class which combines everything. It is responsible for reading an image and
@@ -89,4 +90,16 @@ public class BusinessCardReader {
 		
 		return translated;
 	}
+	
+	/**
+	 * Converts the words to a vCard String. If the URL under the label "WEB" is not a valid URL, it will be ignored.
+	 * 
+	 * @param words [label,word] pair, for example: ["FN","James"]
+	 * @return vCard String
+	 */
+	public String getVCardString(Map<String,String> words) {
+		
+		return VCardCreator.getVCardString(words);
+	}
+	
 }

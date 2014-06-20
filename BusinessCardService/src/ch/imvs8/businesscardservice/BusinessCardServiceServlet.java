@@ -1,6 +1,8 @@
 package ch.imvs8.businesscardservice;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,6 +12,7 @@ import java.io.PrintWriter;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
@@ -23,7 +26,6 @@ import javax.servlet.http.Part;
 
 import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
 import ch.fhnw.imvs8.businesscardreader.Word;
-import ch.fhnw.imvs8.businesscardreader.vcard.CreateVCard;
 
 
 @WebServlet(name = "BusinessCardReader", urlPatterns = { "/reader" })
@@ -33,10 +35,10 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	private static final String scanResultFile = "scanresults.txt";
 	private static final String actualResultFile = "actualresults.txt";
 	private static final String[] labels = {"TIT", "FN", "LN", "ST", "PLZ",
-			"ORT", "EMA" , "ORG","I-MN", "I-TN", "I-FN",  "WEB" };
+			"ORT", "EMA" , "ORG","I-MN", "I-TN", "I-FN",  "WEB", "IDK" };
 	private static final String[] labelNames = { "Title", "First Name", "Last Name",
 			"Street", "Zip Code", "City", "Email", "Organisation", "Mobile Number",
-			"Fixnet Number", "Fax Number", "Web"};
+			"Fixnet Number", "Fax Number", "Web","Unknown"};
 
 	private BusinessCardReader reader;
 	private String uploadedFolder;
@@ -116,35 +118,48 @@ public class BusinessCardServiceServlet extends HttpServlet {
 
 			out.println("</body>");
 			out.println("</html>");
+			
 		} else if (request.getParameter("step").equals("2")) {
 			// save user result
+			Map<String,String> corrected = new HashMap<String,String>();
 			try {
 				String path = request.getParameter("folder");
-				FileWriter out = new FileWriter(path + File.separator
+				FileWriter actualResultsFile = new FileWriter(path + File.separator
 						+ actualResultFile);
 				
 				for (int i = 0; i < labels.length; i++) {
 					String text = request.getParameter(labels[i]);
 					if (text != null) {
-						out.write(labels[i] + ": " + text + "\n");
+						corrected.put(labels[i],text);
+						actualResultsFile.write(labels[i] + ": " + text + "\n");
 					}
 				}
-				out.close();
+				actualResultsFile.close();
 				
 				
-				/*return vCard
-				 * 
-				 * CreateVCard.getVCardString(words)
-				 * OutputStream out = response.getOutputStream();
-FileInputStream in = new FileInputStream(my_file);
-byte[] buffer = new byte[4096];
-int length;
-while ((length = in.read(buffer)) > 0){
-    out.write(buffer, 0, length);
-}
-in.close();
-out.flush();
-				 */
+				//return vCard
+				if(corrected.size() > 0) {
+				 String vCard =  reader.getVCardString(corrected);
+				 
+				 FileWriter vCardFile = new FileWriter(path + File.separator+"vCard");
+				 vCardFile.write(vCard);
+				 vCardFile.close();
+				 
+				 //write to local file system
+				 OutputStream clientStream = response.getOutputStream();
+				 InputStream vCardIn = new ByteArrayInputStream(vCard.getBytes());
+				 
+				 byte[] buffer = new byte[4096];
+				 int length;
+				 while ((length = vCardIn.read(buffer)) > 0){
+				     clientStream.write(buffer, 0, length);
+				 }
+				 vCardIn.close();
+				 clientStream.flush();
+				 clientStream.close();
+				}
+				 
+				 
 				
 				
 			} catch (Exception e) {

@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import net.sourceforge.cardme.io.VCardWriter;
 import net.sourceforge.cardme.vcard.VCard;
@@ -34,11 +35,12 @@ public class VCardCreator {
 
 	/**
 	 * Greates a vCard String out of the provided words
+	 * 
+	 * if the web adress cannot be converted to a valid url, it gets ignored.
 	 * @param words
 	 * @return
-	 * @throws MalformedURLException
 	 */
-	public static String getVCardString(HashMap<String, Word> words) throws MalformedURLException {
+	public static String getVCardString(Map<String, String> words) {
 		 VCard vcard = new VCardImpl();
 		 addFeatures(vcard,words);
 		 VCardWriter writer = new VCardWriter();
@@ -46,66 +48,70 @@ public class VCardCreator {
 		 return writer.buildVCardString();
 	}
 	
-	public static void addFeatures(VCard vcard, HashMap<String, Word> tokens) throws MalformedURLException {
-		Iterator<Word> it = tokens.values().iterator();
+	private static void addFeatures(VCard vcard, Map<String, String> words) {
+		Iterator<String> it = words.keySet().iterator();
 
 		NameType name = new NameType();
 		AddressFeature address = new AddressType();
 		address.setCharset("UTF-8");
 
 		while (it.hasNext()) {
-			Word entity = it.next();
+			String label = it.next();
+			String word = words.get(label);
 			
-			switch (entity.getNERLabel()) {
+			switch (label) {
 			case "FN":
-				name.setGivenName(entity.getWordAsString());
+				name.setGivenName(word);
 				break;
 			case "LN":
-				name.setFamilyName(entity.getWordAsString());
+				name.setFamilyName(word);
 				break;
 			case "TIT":
-				name.addHonorificPrefix(entity.getWordAsString());
+				name.addHonorificPrefix(word);
 				break;
 			case "ST":
-				address.setStreetAddress(entity.getWordAsString());
+				address.setStreetAddress(word);
 				break;
 			case "ORT":
-				address.setRegion(entity.getWordAsString());
+				address.setRegion(word);
 				break;
 			case "PLZ":
-				address.setPostalCode(entity.getWordAsString());
+				address.setPostalCode(word);
 				break;
 			case "EMA":
 				EmailFeature email = new EmailType();
-				email.setEmail(entity.getWordAsString());
+				email.setEmail(word);
 				vcard.addEmail(email);
 				break;
 			case "WEB":
-				vcard.addURL(new URLType(new URL(entity.getWordAsString())));
+				try {
+					URLType url = new URLType(new URL(word));
+					vcard.addURL(url);
+				} catch(Exception e) {}
 				break;
 			case "ORG":
 				OrganizationFeature organizations = new OrganizationType();
-				organizations.addOrganization(entity.getWordAsString());
+				organizations.addOrganization(word);
 				vcard.setOrganizations(organizations);
 				break;
 			case "I-TW":
 				TelephoneFeature telephoneWork = new TelephoneType();
 				telephoneWork.setCharset("UTF-8");
-				telephoneWork.setTelephone(entity.getWordAsString());
+				telephoneWork.setTelephone(word);
 				telephoneWork.addTelephoneParameterType(TelephoneParameterType.WORK);
 				vcard.addTelephoneNumber(telephoneWork);
 				break;
 			case "I-TF":
 				TelephoneFeature telephoneFax = new TelephoneType();
 				telephoneFax.setCharset("UTF-8");
-				telephoneFax.setTelephone(entity.getWordAsString());
+				telephoneFax.setTelephone(word);
 				telephoneFax.addTelephoneParameterType(TelephoneParameterType.FAX);
 				vcard.addTelephoneNumber(telephoneFax);
 				break;
 			case "I-TM":
 				TelephoneFeature telephoneMobile = new TelephoneType();
 				telephoneMobile.setCharset("UTF-8");
-				telephoneMobile.setTelephone(entity.getWordAsString());
+				telephoneMobile.setTelephone(word);
 				telephoneMobile.addTelephoneParameterType(TelephoneParameterType.CELL);
 				vcard.addTelephoneNumber(telephoneMobile);
 				break;
