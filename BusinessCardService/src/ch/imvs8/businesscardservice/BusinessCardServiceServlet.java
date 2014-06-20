@@ -15,13 +15,16 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
@@ -57,6 +60,8 @@ public class BusinessCardServiceServlet extends HttpServlet {
 			throw new ServletException("unable to create Servlet: "
 					+ e.getMessage(), e);
 		}
+		
+		super.init(servletConfig);
 	}
 
 	@Override
@@ -121,6 +126,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 			
 		} else if (request.getParameter("step").equals("2")) {
 			// save user result
+			response.setContentType("application/octet-stream");
 			Map<String,String> corrected = new HashMap<String,String>();
 			try {
 				String path = request.getParameter("folder");
@@ -139,35 +145,26 @@ public class BusinessCardServiceServlet extends HttpServlet {
 				
 				//return vCard
 				if(corrected.size() > 0) {
-				 String vCard =  reader.getVCardString(corrected);
-				 
-				 FileWriter vCardFile = new FileWriter(path + File.separator+"vCard");
-				 vCardFile.write(vCard);
-				 vCardFile.close();
-				 
-				 //write to local file system
-				 OutputStream clientStream = response.getOutputStream();
-				 InputStream vCardIn = new ByteArrayInputStream(vCard.getBytes());
-				 
-				 byte[] buffer = new byte[4096];
-				 int length;
-				 while ((length = vCardIn.read(buffer)) > 0){
-				     clientStream.write(buffer, 0, length);
-				 }
-				 vCardIn.close();
-				 clientStream.flush();
-				 clientStream.close();
+					String vCard =  reader.getVCardString(corrected);
+					 
+					 //write to local file system
+					String vCardFileName = "vCard";
+					FileWriter vCardFile = new FileWriter(path + File.separator+vCardFileName);
+					vCardFile.write(vCard);
+					vCardFile.close();
+					
+					HttpSession session = request.getSession();
+					session.setAttribute("vcard", "Hello world");
+
+					response.sendRedirect("download");
+					
 				}
-				 
 				 
 				
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			request.getRequestDispatcher("BusinessCardService/thankyou.html")
-					.forward(request, response);
 
 		}
 	}

@@ -3,23 +3,32 @@ package ch.fhnw.imvs8.businesscardreader.vcard;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.cardme.db.MarkType;
 import net.sourceforge.cardme.io.VCardWriter;
+import net.sourceforge.cardme.vcard.EncodingType;
+import net.sourceforge.cardme.vcard.LanguageType;
 import net.sourceforge.cardme.vcard.VCard;
 import net.sourceforge.cardme.vcard.VCardImpl;
 import net.sourceforge.cardme.vcard.features.AddressFeature;
 import net.sourceforge.cardme.vcard.features.EmailFeature;
+import net.sourceforge.cardme.vcard.features.FormattedNameFeature;
 import net.sourceforge.cardme.vcard.features.OrganizationFeature;
 import net.sourceforge.cardme.vcard.features.TelephoneFeature;
 import net.sourceforge.cardme.vcard.types.AddressType;
 import net.sourceforge.cardme.vcard.types.EmailType;
+import net.sourceforge.cardme.vcard.types.FormattedNameType;
 import net.sourceforge.cardme.vcard.types.NameType;
 import net.sourceforge.cardme.vcard.types.OrganizationType;
 import net.sourceforge.cardme.vcard.types.TelephoneType;
 import net.sourceforge.cardme.vcard.types.URLType;
+import net.sourceforge.cardme.vcard.types.parameters.ExtendedParameterType;
+import net.sourceforge.cardme.vcard.types.parameters.ParameterTypeStyle;
 import net.sourceforge.cardme.vcard.types.parameters.TelephoneParameterType;
 import ch.fhnw.imvs8.businesscardreader.Word;
 import ch.fhnw.imvs8.businesscardreader.ner.NEREngine;
@@ -120,6 +129,9 @@ public class VCardCreator {
 			}
 		}
 		vcard.setName(name);
+		String first = words.get("FN");
+		String last = words.get("LN");
+		vcard.setFormattedName(new FormattedNameType(first + " "+last));
 		vcard.addAddress(address);
 	}
 

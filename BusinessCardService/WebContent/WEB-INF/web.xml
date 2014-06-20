@@ -27,8 +27,18 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     <load-on-startup>1</load-on-startup>
 </servlet>
 
+<servlet>
+  <servlet-name>VCardDownloadServlet</servlet-name>
+    <servlet-class>ch.imvs8.businesscardservice.DownloadServlet</servlet-class>
+</servlet>
+
 <servlet-mapping>
       <servlet-name>BusinessCardReader</servlet-name>
       <url-pattern>/reader</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>VCardDownloadServlet</servlet-name>
+      <url-pattern>/download</url-pattern>
    </servlet-mapping>
 </web-app>
