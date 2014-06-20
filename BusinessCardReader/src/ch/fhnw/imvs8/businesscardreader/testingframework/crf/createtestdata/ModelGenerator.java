@@ -1,12 +1,20 @@
 package ch.fhnw.imvs8.businesscardreader.testingframework.crf.createtestdata;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
@@ -17,25 +25,64 @@ import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 public class ModelGenerator {
 	private static getLogs logs;
 	private static String toCRF = "/usr/local/bin";
-	private static String toModel = "crfLogs";
-	private static String modelName = "secondModelBigram";
+	private static String toModel = "/testdata/CRF/crfModels";
+	private static String toLogs = "/testdata/CRF/crfLogs";
+	private static String modelPref = "ModelBi";
+	private static String tmpFiles = "tmp";
 	private static boolean schwambi = false;
 
+	private static String toSVN = schwambi ? "" : "/home/olry/Documents/School/Project/businesscardreader";
+
 	public static void main(String[] args) throws Exception {
-		if (schwambi)
-			// createModel("/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/testdata.crf.v4_c1.csv","training","/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/template");
-			testModel("/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/testdata.c1.test.csv", toModel);
-		else {
-			createModel("/home/olry/Documents/School/Project/svn/testdata/crf-testdata/testdata.crf.v4_c1.csv", "training",
-					"/home/olry/Documents/School/Project/svn/doc/ip6/CRF/template");
-			testModel("/home/olry/Documents/School/Project/svn/testdata/crf-testdata/testdata.c1.test.csv", toModel);
+		crossValidate();
+
+		// if (schwambi)
+		// //
+		// createModel("/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/testdata.crf.v4_c1.csv","training","/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/template");
+		// testModel("/home/jon/dev/fuckingsvn/svn/testdata/crf-testdata/testdata.c1.test.csv",
+		// toModel);
+		// else
+		// crossValidate();
+		// createModel("/home/olry/Documents/School/Project/svn/testdata/crf-testdata/testdata.crf.v4_c1.csv",
+		// "training",
+		// "/home/olry/Documents/School/Project/svn/doc/ip6/CRF/template");
+		// testModel("/home/olry/Documents/School/Project/svn/testdata/crf-testdata/testdata.c1.test.csv",
+		// toModel);
+	}
+
+	public static void crossValidate() {
+		File[] files = new File(toSVN + "/testdata/CRF/crf-testdata/crossValidationFiles").listFiles();
+		for (File file : files) {
+
+			// does not create a new file
+			File temp = new File(toSVN + "/testdata/CRF/crf-testdata/temp.txt");
+			if (temp.exists())
+				temp.delete();
+			File[] removedFile = new File[files.length - 1];
+			boolean found = false;
+			for (int i = 0; i < files.length; i++)
+				if (file.equals(files[i]))
+					found = true;
+				else
+					removedFile[found ? i - 1 : i] = files[i];
+			try {
+				IOCopier.joinFiles(temp, removedFile);
+
+				String modelName = file.getName() + modelPref;
+				createModel(temp.getAbsolutePath(), tmpFiles + "/training", toSVN + "/testdata/CRF/configfiles/template", modelName);
+				testModel(file.getAbsolutePath(), toModel, modelName);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			temp.delete();
 		}
 	}
 
-	public static void createModel(String inFile, String trainingFile, String templateFile) throws Exception {
+	public static void createModel(String inFile, String trainingFile, String templateFile, String modelName) throws Exception {
 		createFile(inFile, trainingFile);
 		// Create
-		Process process = new ProcessBuilder(toCRF + "/crf_learn", templateFile, trainingFile, toModel + "/" + modelName).start();
+		Process process = new ProcessBuilder(toCRF + "/crf_learn", templateFile, trainingFile, toSVN + toModel + "/" + modelName).start();
 		System.out.println("Waiting for learing proccess");
 		process.waitFor();
 		System.out.println("done");
@@ -65,7 +112,7 @@ public class ModelGenerator {
 		while ((line = reader.readLine()) != null)
 			if (line.equals(","))
 				out.write("\n");
-			else {
+			else if (!line.equals("")) {
 
 				String[] content = line.split(",");
 				/*
@@ -87,14 +134,13 @@ public class ModelGenerator {
 
 	}
 
-	public static void testModel(String testFile, String toModel) throws Exception {
-		createFile(testFile, "testdata");
-		readOutput("testdata");
-
+	public static void testModel(String testFile, String toModel, String modelName) throws Exception {
+		createFile(testFile, tmpFiles + "/testdata");
+		readOutput(tmpFiles + "/testdata", modelName);
 	}
 
-	private static void readOutput(String toTestData) throws IOException {
-		Process process = new ProcessBuilder(toCRF + "/crf_test", "-v1", "-m", toModel + "/" + modelName, toTestData).start();
+	private static void readOutput(String toTestData, String modelName) throws IOException, InterruptedException {
+		Process process = new ProcessBuilder(toCRF + "/crf_test", "-v1", "-m", toSVN + toModel + "/" + modelName, toTestData).start();
 		InputStream is = process.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
@@ -117,11 +163,17 @@ public class ModelGenerator {
 						double conf = Double.parseDouble(labelAndConfidence.substring(dashIndex + 1));
 						LabeledWord res = new LabeledWord(label, lineArray[0], conf, position++);
 
-						logs.addToLogs(lineArray[lineArray.length - 2], res.getLabel(), res.getConfidence());
+						try {
+							logs.addToLogs(lineArray[lineArray.length - 2], res.getLabel(), res.getConfidence());
+						} catch (Exception e) {
+							System.out.println(lineArray[lineArray.length - 2] + " " + res.getLabel() + " " + res.getConfidence());
+							e.printStackTrace();
+						}
 					}
 				}
 
-		BufferedWriter writer = new BufferedWriter(new FileWriter(toModel + "/Testresult of the model " + modelName));
+		System.out.println(toSVN + toLogs + "/Testresult of the model " + modelName);
+		BufferedWriter writer = new BufferedWriter(new FileWriter(toSVN + toLogs + "/Testresult of the model " + modelName));
 		System.out.println("Percentage all correct: " + logs.getHadAllLabelsPerCardCorrect());
 
 		writer.write("Percentage all correct: " + logs.getHadAllLabelsPerCardCorrect() + "\n");
@@ -135,5 +187,57 @@ public class ModelGenerator {
 		}
 		writer.close();
 
+	}
+
+}
+
+class IOCopier {
+	public static void joinFiles(File destination, File[] sources) throws IOException {
+		OutputStream output = null;
+		try {
+			output = createAppendableStream(destination);
+			for (File source : sources)
+				appendFile(output, source);
+		} finally {
+			IOUtils.closeQuietly(output);
+		}
+	}
+
+	private static BufferedOutputStream createAppendableStream(File destination) throws FileNotFoundException {
+		return new BufferedOutputStream(new FileOutputStream(destination, true));
+	}
+
+	private static void appendFile(OutputStream output, File source) throws IOException {
+		InputStream input = null;
+		try {
+			input = new BufferedInputStream(new FileInputStream(source));
+			IOUtils.copy(input, output);
+		} finally {
+			IOUtils.closeQuietly(input);
+		}
+	}
+}
+
+class IOUtils {
+	private static final int BUFFER_SIZE = 1024 * 4;
+
+	public static long copy(InputStream input, OutputStream output) throws IOException {
+		byte[] buffer = new byte[BUFFER_SIZE];
+		long count = 0;
+		int n = 0;
+		while (-1 != (n = input.read(buffer))) {
+			output.write(buffer, 0, n);
+			count += n;
+		}
+		return count;
+	}
+
+	public static void closeQuietly(Closeable output) {
+		try {
+			if (output != null)
+				output.close();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
 	}
 }

@@ -65,7 +65,7 @@ public class getLogs {
 	 * @param percentage
 	 *            percentage of how correct the label is
 	 */
-	public void addToLogs(String shouldLabel, String isLabel, double percentage) {
+	public synchronized void addToLogs(String shouldLabel, String isLabel, double percentage) {
 		int pos = labelPosition.get(shouldLabel);
 		if (shouldLabel.equals(isLabel)) {
 			correctPerLabel[pos]++;
