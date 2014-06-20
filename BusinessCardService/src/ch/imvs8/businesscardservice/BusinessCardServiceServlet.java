@@ -154,13 +154,10 @@ public class BusinessCardServiceServlet extends HttpServlet {
 					vCardFile.close();
 					
 					HttpSession session = request.getSession();
-					session.setAttribute("vcard", "Hello world");
+					session.setAttribute("vcard", vCard);
 
-					response.sendRedirect("download");
-					
+					response.sendRedirect("download");	
 				}
-				 
-				
 				
 			} catch (Exception e) {
 				e.printStackTrace();

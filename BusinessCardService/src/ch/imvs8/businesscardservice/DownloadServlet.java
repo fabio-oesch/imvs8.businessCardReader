@@ -36,10 +36,6 @@ public class DownloadServlet extends HttpServlet {
 			
 			Enumeration<String> en = session.getAttributeNames();
 			InputStream vCardIn = new ByteArrayInputStream(vcardString.getBytes());
-			System.out.println("hasmore download:"+en.hasMoreElements());
-			
-			System.out.println("ran through");
-			
 			
 			String headerKey = "Content-Disposition";
 		    String headerValue = String.format("attachment; filename=\"%s\"", vCardFileName);
@@ -52,8 +48,6 @@ public class DownloadServlet extends HttpServlet {
 			}
 			vCardIn.close();
 			clientStream.flush();
-			
-			System.out.println("done download");
 	}
 
 }
