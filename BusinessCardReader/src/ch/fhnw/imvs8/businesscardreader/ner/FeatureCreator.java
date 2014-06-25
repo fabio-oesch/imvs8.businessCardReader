@@ -68,51 +68,51 @@ public class FeatureCreator {
 		String f = "0"; 	//false
 		StringBuilder out = new StringBuilder(word); out.append(e);
 		
-		word = strat.stemWord(word);
+		String stemmedWord = strat.stemWord(word);
 		
 		//is in prename LUT feature
-		out.append("fp"); if(tables.getPrenameSet().contains(word)) out.append(t); else out.append(f);
+		out.append("fp"); if(tables.getPrenameSet().contains(stemmedWord)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//is in lastname LUT feature
-		out.append("lp"); if(tables.getLastnameSet().contains(word)) out.append(t); else out.append(f);
+		out.append("lp"); if(tables.getLastnameSet().contains(stemmedWord)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//is in roadname LUT feature
-		out.append("st"); if(tables.getRoadnameSet().contains(word)) out.append(t); else out.append(f);
+		out.append("st"); if(tables.getRoadnameSet().contains(stemmedWord)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//is in zip LUT feature
-		out.append("pc"); if(tables.getZipSet().contains(word)) out.append(t); else out.append(f);
+		out.append("pc"); if(tables.getZipSet().contains(stemmedWord)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//is in places LUT feature
-		out.append("ci"); if(tables.getPlacesSet().contains(word)) out.append(t); else out.append(f);
+		out.append("ci"); if(tables.getPlacesSet().contains(stemmedWord)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//is a word a typical leading a mobile telephone number
-		out.append("mw");if(tables.getMobileWordSet().contains(word)) out.append(t); else out.append(f);
+		out.append("mw");if(tables.getMobileWordSet().contains(stemmedWord)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//is word a typical mobile number prefix (for example 079)
-		out.append("mpre");if(tables.getMobilePrefixSet().contains(word)) out.append(t); else out.append(f);
+		out.append("mpre");if(tables.getMobilePrefixSet().contains(stemmedWord)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//is a word typically leading a fixnet telephone number
-		out.append("tw");if(tables.getTelWordSet().contains(word)) out.append(t); else out.append(f);
+		out.append("tw");if(tables.getTelWordSet().contains(stemmedWord)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//is a word typically leading a fixnet telephone number
-		out.append("fw");if(tables.getFaxWordSet().contains(word)) out.append(t); else out.append(f);
+		out.append("fw");if(tables.getFaxWordSet().contains(stemmedWord)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//is word a typical fixnet number prefix (for example 055)
-		out.append("fixpre");if(tables.getFixnetPrefixSet().contains(word)) out.append(t); else out.append(f);
+		out.append("fixpre");if(tables.getFixnetPrefixSet().contains(stemmedWord)) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//sets the numbers feature. There are currently 5 features dedicated to numbers. Each feature says if this word is a number and how many digits it has.
-		if(word.matches("-?\\d+")) {
-			int length = word.length();
+		if(stemmedWord.matches("-?\\d+")) {
+			int length = stemmedWord.length();
 			
 			for(int i = 0; i < 4;i++) {
 				out.append("nu");
@@ -127,7 +127,7 @@ public class FeatureCreator {
 			}
 			
 			//handle case if it is longer than 4
-			if(word.length() > 4) {
+			if(stemmedWord.length() > 4) {
 				out.append("nu4plusdig1 ");
 			}
 			else {
@@ -140,24 +140,46 @@ public class FeatureCreator {
 		}
 		
 		//contains an @
-		out.append("em"); if(word.contains("@")) out.append(t); else out.append(f);
+		out.append("em"); if(stemmedWord.contains("@")) out.append(t); else out.append(f);
 		out.append(e);
 		
-		//title, not used atm
-		//out.append("ti0 ");
-		
-		//word contains a domain like ".com"
+		//word contains a domain like ".com" or starts with "www"
 		out.append("we");
 		List<String> domains = tables.getDomainsList();
 		String found = f;
 		for(String s : domains)
+			if(stemmedWord.contains(s)) {
+				found = t;
+				break;
+			}
+		if(stemmedWord.startsWith("www"))
+			found = t;
+		out.append(found);
+		out.append(e);
+		
+		//word contains known street identifiers
+		out.append("stid");
+		List<String> roadIdentifiers = tables.getRoadIdentifiers();
+		found = f;
+		for(String s : roadIdentifiers)
+			if(stemmedWord.contains(s)) {
+				found = t;
+				break;
+			}
+		out.append(found);
+		out.append(e);
+		
+		//word starts with country
+		out.append("pcid");
+		List<String> zipIdentifiers = tables.getZipIdentifiers();
+		found = f;
+		for(String s : zipIdentifiers)
 			if(word.contains(s)) {
 				found = t;
 				break;
 			}
 		out.append(found);
 		out.append(e);
-
 		
 		return out.toString();
 	}

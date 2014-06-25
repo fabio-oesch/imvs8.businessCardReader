@@ -23,7 +23,7 @@ public class FeatureCreatorTest {
 		words.add("Müller");
 		words.add("Seidenstrasse");
 		words.add("1");
-		words.add("5200");
+		words.add("CH-5200");
 		words.add("Brugg");
 		words.add("Mobile");
 		words.add("+41");
