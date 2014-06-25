@@ -17,7 +17,10 @@ public class getLogs {
 	private int cardCount; // Count of business cards which were tested
 	private int cardCorrectCount; // Count of cards which are correct
 
-	private double[] correctPerLabel; // percentage per label
+	private int[] falsePositivesPerLabel;
+	private int[] falseNegativesPerLabel;
+	
+	private int[] correctPerLabel; // percentage per label
 	private int[] countPerLabel; // count per label
 	private HashMap<String, Integer> labelPosition = new HashMap<>(); // position
 																		// of
@@ -42,8 +45,11 @@ public class getLogs {
 		for (int labelPos = 0; labelPos < labels.length; labelPos++)
 			labelPosition.put(labels[labelPos], labelPos);
 		countPerLabel = new int[labels.length];
-		correctPerLabel = new double[labels.length];
+		correctPerLabel = new int[labels.length];
 
+		falsePositivesPerLabel = new int[labels.length];
+		falseNegativesPerLabel = new int[labels.length];
+		
 		// read the labels which define if a card is totally correct
 		String currentLine;
 		BufferedReader reader = new BufferedReader(new FileReader("cardCorrectLabels.txt"));
@@ -67,13 +73,17 @@ public class getLogs {
 	 */
 	public synchronized boolean addToLogs(String shouldLabel, String isLabel, double percentage) {
 		int pos = labelPosition.get(shouldLabel);
-		if (shouldLabel.equals(isLabel)) {
+		if (shouldLabel.equals(actualLabel)) {
 			correctPerLabel[pos]++;
 			for (int i = 0; i < cardCorrectLabel.size(); i++)
-				if (cardCorrectLabel.get(i).equals(isLabel))
+				if (cardCorrectLabel.get(i).equals(actualLabel))
 					cardCorrect[i] = true;
 			countPerLabel[pos]++;
 			return true;
+		} else {
+			falseNegativesPerLabel[pos]++;
+			int actualPos = labelPosition.get(actualLabel);
+			falsePositivesPerLabel[actualPos]++;
 		}
 		// labelPercentage[pos] += percentage;
 		countPerLabel[pos]++;
@@ -127,7 +137,7 @@ public class getLogs {
 		writer.append("\nCorrect Count Per Label \n");
 		for (int i = 0; i < result.length; i++) {
 			writer.append(labels[i] + " " + correctPerLabel[i] + " " + countPerLabel[i] + "\n");
-			result[i] = correctPerLabel[i] / countPerLabel[i];
+			result[i] = correctPerLabel[i] /(double)( countPerLabel[i]);
 		}
 		return result;
 	}
@@ -139,6 +149,30 @@ public class getLogs {
 	 */
 	public double getHadAllLabelsPerCardCorrect() {
 		return cardCorrectCount / (double) cardCount;
+	}
+	
+	public double[] getPrecisionPerLabel(BufferedWriter writer, String[] labels) throws IOException {
+		double[] result = new double[correctPerLabel.length];
+		
+		for(int i = 0; i< result.length;i++)
+		{
+			result[i] = correctPerLabel[i] /(double)(correctPerLabel[i]+falsePositivesPerLabel[i]);
+			writer.append(labels[i]+" "+result[i]+"\n");
+		}
+		
+		return result;
+	}
+	
+	public double[] getRecallPerLabel(BufferedWriter writer, String[] labels) throws IOException {
+		double[] result = new double[correctPerLabel.length];
+		
+		for(int i = 0; i< result.length;i++)
+		{
+			result[i] = correctPerLabel[i] /(double)(correctPerLabel[i]+falseNegativesPerLabel[i]);
+			writer.append(labels[i]+" "+result[i]+"\n");
+		}
+		
+		return result;
 	}
 
 }
