@@ -182,14 +182,13 @@ public class ModelGenerator {
 				}
 		incorrectWriter.close();
 
-		System.out.println(toSVN + toLogs + "/Testresult of the model " + modelName);
 		BufferedWriter writer = new BufferedWriter(new FileWriter(toSVN + toLogs + "/Testresult of the model " + modelName));
 		System.out.println("Percentage all correct: " + logs.getHadAllLabelsPerCardCorrect());
 
 		writer.write("Percentage all correct: " + logs.getHadAllLabelsPerCardCorrect() + "\n");
 
 		String[] labels = LabeledWord.LABELS;
-		double[] stuff = logs.getPercentagePerLabel(writer, labels);
+		double[] stuff = logs.getFMeasurePerLabel(writer, labels);
 		writer.append("\nPercentage per Label \n");
 		for (int i = 0; i < labels.length; i++) {
 			writer.append(labels[i] + " " + stuff[i] + "\n");
