@@ -211,7 +211,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 						outputString.append(" STYLE=\"background-color: #FF9933;\"");
 					if(word.isWrong())
 						outputString.append(" STYLE=\"color: #FFFFFF; background-color: #800000;\"");
-					outputString.append("\"><br>");
+					outputString.append("/><br>");
 
 					out.println(outputString.toString());
 			}

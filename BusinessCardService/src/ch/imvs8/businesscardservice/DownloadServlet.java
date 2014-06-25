@@ -31,7 +31,7 @@ public class DownloadServlet extends HttpServlet {
 			
 			String vcardString = (String)session.getAttribute("vcard");
 			
-			String vCardFileName = "vCard";
+			String vCardFileName = "vCard.vcard";
 			OutputStream clientStream = response.getOutputStream();
 			
 			Enumeration<String> en = session.getAttributeNames();
