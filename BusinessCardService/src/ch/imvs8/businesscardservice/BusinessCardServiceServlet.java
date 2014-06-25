@@ -37,12 +37,11 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String scanResultFile = "scanresults.txt";
 	private static final String actualResultFile = "actualresults.txt";
-	private static final String[] labels = {"TIT", "FN", "LN", "ST", "PLZ",
-			"ORT", "EMA" , "ORG","I-MN", "I-TN", "I-FN",  "WEB", "IDK" };
-	private static final String[] labelNames = { "Title", "First Name", "Last Name",
-			"Street", "Zip Code", "City", "Email", "Organisation", "Mobile Number",
-			"Fixnet Number", "Fax Number", "Web","Unknown"};
-
+	private static final String[] labels = {"TIT", "FN", "LN", "EMA" ,"ORG","I-MN", "I-TN", "I-FN","ST", "PLZ",
+			"ORT", "WEB", "IDK" };
+	private static final String[] labelNames = { "Title", "First Name", "Last Name","Organisation", "Mobile Number",
+		"Fixnet Number", "Fax Number","Street", "Zip Code", "City","Web","Unknown"};
+	
 	private BusinessCardReader reader;
 	private String uploadedFolder;
 
