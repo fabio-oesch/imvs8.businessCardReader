@@ -169,8 +169,7 @@ public class LookupTables {
 		
 		String line = null;
 		while ((line = r.readLine()) != null)
-			list.add(line);
-		
+			list.add(line.trim());
 		
 		return new ArrayList<String>(list);
 	}

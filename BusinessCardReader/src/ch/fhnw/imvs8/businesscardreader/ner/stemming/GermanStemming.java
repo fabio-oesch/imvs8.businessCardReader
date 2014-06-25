@@ -8,6 +8,6 @@ public class GermanStemming implements StemmingStrategy {
 		input = input.replace("ä", "ae");
 		input = input.replace("ö", "oe");
 		input = input.replace("ü", "ue");
-		return input;
+		return input.trim();
 	}
 }

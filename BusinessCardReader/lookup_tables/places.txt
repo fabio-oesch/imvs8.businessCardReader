@@ -1434,6 +1434,7 @@ zillis-reischen
 zizers
 zofingen
 zuchwil
+zuerich
 zufikon
 zumikon
 zunzgen
@@ -1441,3 +1442,5 @@ zuoz
 zuzgen
 zuzwil (sg)
 zwingen
+winterthur
+stilli

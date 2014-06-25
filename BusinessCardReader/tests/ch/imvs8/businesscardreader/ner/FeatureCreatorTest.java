@@ -15,7 +15,8 @@ import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
 public class FeatureCreatorTest {
-
+	final String tmpFile = "featureCreatorTest.txt";
+	
 	private static AnalysisResult createValidExample() {
 		ArrayList<String> words = new ArrayList<>(14);
 		words.add("Max");
@@ -37,7 +38,6 @@ public class FeatureCreatorTest {
 	}
 	@Test
 	public void completeTest() {
-		final String tmpFile = "featureCreatorTest.txt";
 		final String validationFile = "unittest_data/FeatureCreatorValidation.txt";
 		
 		BufferedReader expectedReader = null;
@@ -73,6 +73,18 @@ public class FeatureCreatorTest {
 		File f = new File(tmpFile);
 		if(f.exists())
 			f.delete();
+	}
+	
+	@Test
+	public void TestSingleFeature() {
+		try {
+			LookupTables table = new LookupTables("lookup_tables");
+			FeatureCreator creator = new FeatureCreator(table, new GermanStemming());
+			System.out.println(creator.createLine("direkt"));
+			
+		} catch (Exception e) {
+			fail("Exception thrown: "+e.getMessage());
+		}
 	}
 
 }
