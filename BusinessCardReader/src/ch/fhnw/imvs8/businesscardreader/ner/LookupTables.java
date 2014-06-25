@@ -30,6 +30,8 @@ public class LookupTables {
 	public final static String FAXWORDS_FILE="faxwords.txt";
 	public final static String MOBILEPREFIX_FILE ="mobileprefix.txt";
 	public final static String FIXNETPREFIX_FILE="fixnetprefix.txt";
+	public final static String ROADIDENTIFIER_FILE="streetidentifiers.txt";
+	public final static String ZIPIDENTIFIER_FILE="zipidentifiers.txt";
 	
 	private final String folder;
 	private final Set<String> firstNames;
@@ -44,7 +46,9 @@ public class LookupTables {
 	private final Set<String> fixnetPrefix;
 	
 	private final List<String> domains;
-
+	private final List<String> roadIdentifiers;
+	private final List<String> zipIdentifiers;
+	
 	public LookupTables(String folder) throws Exception {
 		this.folder = folder;
 
@@ -61,7 +65,8 @@ public class LookupTables {
 			fixnetPrefix = createSet(this.folder + File.separator + FIXNETPREFIX_FILE);
 			
 			this.domains = createList(this.folder + File.separator + DOMAIN_FILE);
-			
+			this.roadIdentifiers = createList(this.folder + File.separator + ROADIDENTIFIER_FILE);
+			this.zipIdentifiers = createList(this.folder + File.separator + ZIPIDENTIFIER_FILE);
 		} catch (Exception e) {
 			StringBuilder b = new StringBuilder("Invalid or missing files in folder: ");
 			b.append(folder);
@@ -90,6 +95,10 @@ public class LookupTables {
 			b.append(MOBILEPREFIX_FILE);
 			b.append("\n");
 			b.append(FIXNETPREFIX_FILE);
+			b.append("\n");
+			b.append(ROADIDENTIFIER_FILE);
+			b.append("\n");
+			b.append(ZIPIDENTIFIER_FILE);
 
 			throw new Exception(b.toString());
 		}
@@ -161,6 +170,22 @@ public class LookupTables {
 	 */
 	public List<String> getDomainsList() {
 		return this.domains;
+	}
+	
+	/**
+	 * List of identifiers in a typical road name
+	 * @return
+	 */
+	public List<String> getRoadIdentifiers() {
+		return this.roadIdentifiers;
+	}
+	
+	/**
+	 * List of identifiers which can be found in a zip code.
+	 * @return
+	 */
+	public List<String> getZipIdentifiers() {
+		return this.zipIdentifiers;
 	}
 
 	private static List<String> createList(String file) throws IOException {
