@@ -27,7 +27,7 @@ public class ModelGenerator {
 	private static String toCRF = "/usr/local/bin";
 	private static String toModel = "/testdata/CRF/crfModels";
 	private static String toLogs = "/testdata/CRF/crfLogs";
-	private static String modelPref = "ModelBi";
+	private static String modelPref = "ModelNewF";
 	private static String tmpFiles = "tmp";
 	private static boolean schwambi = false;
 
@@ -90,7 +90,7 @@ public class ModelGenerator {
 
 	public static void countFuckingWords(int lineNumber, String line) {
 		String[] lineArr = line.split(" ");
-		int should = 19;
+		int should = 21;
 
 		lineArr = line.split(" ");
 		if (should != lineArr.length) {
@@ -146,13 +146,16 @@ public class ModelGenerator {
 		BufferedReader br = new BufferedReader(isr);
 		logs = new getLogs(LabeledWord.LABELS);
 
+		BufferedWriter incorrectWriter = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/incorrect " + modelName)));
+		boolean isCorrect;
 		String line;
 		int position = 0;
 		while ((line = br.readLine()) != null)
 			if (!line.startsWith("#"))
-				if (line.length() < 2)
+				if (line.length() < 2) {
 					logs.addCard();
-				else {
+					incorrectWriter.append("\n");
+				} else {
 					String[] lineArray = line.split("\t");
 					if (lineArray.length > 2) {
 						// only works when -v1 or -v2 is set
@@ -163,14 +166,21 @@ public class ModelGenerator {
 						double conf = Double.parseDouble(labelAndConfidence.substring(dashIndex + 1));
 						LabeledWord res = new LabeledWord(label, lineArray[0], conf, position++);
 
-						try {
-							logs.addToLogs(lineArray[lineArray.length - 2], res.getLabel(), res.getConfidence());
-						} catch (Exception e) {
-							System.out.println(lineArray[lineArray.length - 2] + " " + res.getLabel() + " " + res.getConfidence());
-							e.printStackTrace();
+						isCorrect = logs.addToLogs(lineArray[lineArray.length - 2], res.getLabel(), res.getConfidence());
+						if (!isCorrect) {
+							StringBuilder builder = new StringBuilder();
+							for (int i = 0; i < lineArray.length; i++) {
+								if (i == 0) {
+									builder.append(lineArray[i] + "\t\t");
+									i++;
+								}
+								builder.append(lineArray[i] + " ");
+							}
+							incorrectWriter.append(builder + "\n");
 						}
 					}
 				}
+		incorrectWriter.close();
 
 		System.out.println(toSVN + toLogs + "/Testresult of the model " + modelName);
 		BufferedWriter writer = new BufferedWriter(new FileWriter(toSVN + toLogs + "/Testresult of the model " + modelName));

@@ -65,16 +65,19 @@ public class getLogs {
 	 * @param percentage
 	 *            percentage of how correct the label is
 	 */
-	public synchronized void addToLogs(String shouldLabel, String isLabel, double percentage) {
+	public synchronized boolean addToLogs(String shouldLabel, String isLabel, double percentage) {
 		int pos = labelPosition.get(shouldLabel);
 		if (shouldLabel.equals(isLabel)) {
 			correctPerLabel[pos]++;
 			for (int i = 0; i < cardCorrectLabel.size(); i++)
 				if (cardCorrectLabel.get(i).equals(isLabel))
 					cardCorrect[i] = true;
+			countPerLabel[pos]++;
+			return true;
 		}
 		// labelPercentage[pos] += percentage;
 		countPerLabel[pos]++;
+		return false;
 
 	}
 
