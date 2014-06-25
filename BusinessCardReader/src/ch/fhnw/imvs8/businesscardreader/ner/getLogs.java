@@ -19,6 +19,9 @@ public class getLogs {
 
 	private int[] falsePositivesPerLabel;
 	private int[] falseNegativesPerLabel;
+	
+	private int[] falsePositivesPerLabelPerCard;
+	private int[] falseNegativesPerLabelPerCard;
 
 	private int[] correctPerLabel; // percentage per label
 	private int[] countPerLabel; // count per label
@@ -28,8 +31,6 @@ public class getLogs {
 																		// labels
 																		// in
 	// the array
-
-	private boolean[] cardCorrect; // count of cards which are correct
 	private ArrayList<String> cardCorrectLabel = new ArrayList<>(); // String of
 																	// labels
 
@@ -49,6 +50,8 @@ public class getLogs {
 
 		falsePositivesPerLabel = new int[labels.length];
 		falseNegativesPerLabel = new int[labels.length];
+		falsePositivesPerLabelPerCard = new int[labels.length];
+		falseNegativesPerLabelPerCard = new int[labels.length];
 
 		// read the labels which define if a card is totally correct
 		String currentLine;
@@ -59,7 +62,6 @@ public class getLogs {
 
 		reader.close();
 
-		cardCorrect = new boolean[cardCorrectLabel.size()];
 		addCard();
 	}
 
@@ -75,14 +77,18 @@ public class getLogs {
 		int pos = labelPosition.get(shouldLabel);
 		if (actualLabel.equals(shouldLabel)) {
 			correctPerLabel[pos]++;
-			;
 			countPerLabel[pos]++;
+			
 			return true;
 		} else {
 			falseNegativesPerLabel[pos]++;
 			int actualPos = labelPosition.get(actualLabel);
 			falsePositivesPerLabel[actualPos]++;
 			countPerLabel[pos]++;
+			
+			//for card correct stuff
+			falseNegativesPerLabelPerCard[pos]++;
+			falsePositivesPerLabelPerCard[actualPos]++;
 			return false;
 		}
 
@@ -96,7 +102,7 @@ public class getLogs {
 		boolean hasAllCorrect = true;
 		for (int i = 0; i < cardCorrectLabel.size() && hasAllCorrect; i++) {
 			int pos = labelPosition.get(cardCorrectLabel.get(i));
-			if (falsePositivesPerLabel[pos] != 0 || falseNegativesPerLabel[pos] != 0)
+			if (falsePositivesPerLabelPerCard[pos] != 0 || falseNegativesPerLabelPerCard[pos] != 0)
 				hasAllCorrect = false;
 		}
 
@@ -104,7 +110,8 @@ public class getLogs {
 			cardCorrectCount++;
 
 		cardCount++;
-		cardCorrect = new boolean[cardCorrectLabel.size()];
+		falseNegativesPerLabelPerCard = new int[falseNegativesPerLabelPerCard.length];
+		falsePositivesPerLabelPerCard = new int[falseNegativesPerLabelPerCard.length];
 	}
 
 	/**
