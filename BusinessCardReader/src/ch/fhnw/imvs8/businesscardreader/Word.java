@@ -14,6 +14,7 @@ public class Word {
 	public Word(LabeledWord w, String humanReadableLabel) {
 		word = w;
 		label = humanReadableLabel;
+		//only make important fields isWrong if they are empty
 	}
 	
 	public boolean isWrong() {
