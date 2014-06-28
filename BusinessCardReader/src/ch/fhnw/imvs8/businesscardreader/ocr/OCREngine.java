@@ -119,21 +119,21 @@ public class OCREngine {
 		LinkedList<String> words = new LinkedList<>();
 
 		do {
-			Pointer ptr = TessAPI1.TessResultIteratorGetUTF8Text(ri, TessPageIteratorLevel.RIL_WORD);
+			Pointer ptr = TessAPI1.TessResultIteratorGetUTF8Text(ri, TessPageIteratorLevel.RIL_TEXTLINE);
 
 			// tesseract can return a null string, so if it did that, don't add
 			// it
 			if (ptr != null) {
 				String word = ptr.getString(0);
 				words.add(word);
-				float conf = TessAPI1.TessResultIteratorConfidence(ri, TessPageIteratorLevel.RIL_WORD);
+				float conf = TessAPI1.TessResultIteratorConfidence(ri, TessPageIteratorLevel.RIL_TEXTLINE);
 				confidences.add(conf);
 
 				IntBuffer leftB = IntBuffer.allocate(1);
 				IntBuffer topB = IntBuffer.allocate(1);
 				IntBuffer rightB = IntBuffer.allocate(1);
 				IntBuffer bottomB = IntBuffer.allocate(1);
-				TessAPI1.TessPageIteratorBoundingBox(pi, TessPageIteratorLevel.RIL_WORD, leftB, topB, rightB, bottomB);
+				TessAPI1.TessPageIteratorBoundingBox(pi, TessPageIteratorLevel.RIL_TEXTLINE, leftB, topB, rightB, bottomB);
 				int left = leftB.get();
 				int top = topB.get();
 				int right = rightB.get();
@@ -144,7 +144,7 @@ public class OCREngine {
 				TessAPI1.TessDeleteText(ptr);
 			}
 
-		} while (TessAPI1.TessPageIteratorNext(pi, TessAPI1.TessPageIteratorLevel.RIL_WORD) == TessAPI1.TRUE);
+		} while (TessAPI1.TessPageIteratorNext(pi, TessAPI1.TessPageIteratorLevel.RIL_TEXTLINE) == TessAPI1.TRUE);
 
 		return new AnalysisResult(im, new ArrayList<String>(words), new ArrayList<Rectangle>(bBoxes), new ArrayList<Float>(confidences));
 	}
