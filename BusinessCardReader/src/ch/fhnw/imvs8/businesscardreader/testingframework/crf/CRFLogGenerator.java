@@ -1,4 +1,4 @@
-package ch.fhnw.imvs8.businesscardreader.ner;
+package ch.fhnw.imvs8.businesscardreader.testingframework.crf;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,7 +13,7 @@ import java.util.HashMap;
  * @author O Lry
  * 
  */
-public class getLogs {
+public class CRFLogGenerator {
 	private int cardCount; // Count of business cards which were tested
 	private int cardCorrectCount; // Count of cards which are correct
 
@@ -41,7 +41,7 @@ public class getLogs {
 	 *            name of all the labels
 	 * @throws IOException
 	 */
-	public getLogs(String[] labels) throws IOException {
+	public CRFLogGenerator(String[] labels) throws IOException {
 
 		for (int labelPos = 0; labelPos < labels.length; labelPos++)
 			labelPosition.put(labels[labelPos], labelPos);

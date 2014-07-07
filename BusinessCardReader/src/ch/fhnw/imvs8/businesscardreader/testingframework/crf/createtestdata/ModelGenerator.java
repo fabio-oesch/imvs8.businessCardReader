@@ -19,11 +19,11 @@ import java.io.OutputStream;
 import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
-import ch.fhnw.imvs8.businesscardreader.ner.getLogs;
 import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
+import ch.fhnw.imvs8.businesscardreader.testingframework.crf.CRFLogGenerator;
 
 public class ModelGenerator {
-	private static getLogs logs;
+	private static CRFLogGenerator logs;
 	private static String toCRF = "/usr/local/bin";
 	private static String toModel = "/testdata/CRF/crfModels";
 	private static String toLogs = "/testdata/CRF/crfLogs";
@@ -164,7 +164,7 @@ public class ModelGenerator {
 		InputStream is = process.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
-		logs = new getLogs(LabeledWord.LABELS);
+		logs = new CRFLogGenerator(LabeledWord.LABELS);
 
 		BufferedWriter incorrectWriter = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/incorrect " + modelName)));
 		System.out.println(toSVN + toLogs + "/incorrect " + modelName);
