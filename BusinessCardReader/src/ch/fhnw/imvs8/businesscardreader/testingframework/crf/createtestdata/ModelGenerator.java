@@ -68,7 +68,7 @@ public class ModelGenerator {
 	public static void crossValidate() {
 		File[] files = new File(toSVN + "/testdata/CRF/crf-testdata/crossValidationFiles").listFiles();
 		try {
-			logs = new getLogs(LabeledWord.LABELS);
+			logs = new CRFLogGenerator(LabeledWord.LABELS);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
