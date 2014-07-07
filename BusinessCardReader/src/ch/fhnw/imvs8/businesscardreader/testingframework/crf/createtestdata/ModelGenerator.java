@@ -30,11 +30,26 @@ public class ModelGenerator {
 	private static String modelPref = "ModelNewF";
 	private static String tmpFiles = "tmp";
 	private static boolean schwambi = false;
+	private static boolean isTest = false;
 
 	private static String toSVN = schwambi ? "" : "/home/olry/Documents/School/Project/businesscardreader";
 
 	public static void main(String[] args) throws Exception {
-		crossValidate();
+		if (isTest)
+			crossValidate();
+		else {
+			File[] files = new File(toSVN + "/testdata/CRF/crf-testdata/crossValidationFiles").listFiles();
+			File temp = new File(toSVN + "/testdata/CRF/crf-testdata/temp.txt");
+			if (temp.exists())
+				temp.delete();
+			try {
+				IOCopier.joinFiles(temp, files);
+
+				createModel(temp.getAbsolutePath(), tmpFiles + "/training", toSVN + "/testdata/CRF/configfiles/template", "allFilesModel");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
 		// if (schwambi)
 		// //
@@ -52,6 +67,11 @@ public class ModelGenerator {
 
 	public static void crossValidate() {
 		File[] files = new File(toSVN + "/testdata/CRF/crf-testdata/crossValidationFiles").listFiles();
+		try {
+			logs = new getLogs(LabeledWord.LABELS);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		for (File file : files) {
 
 			// does not create a new file
@@ -147,6 +167,7 @@ public class ModelGenerator {
 		logs = new getLogs(LabeledWord.LABELS);
 
 		BufferedWriter incorrectWriter = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/incorrect " + modelName)));
+		System.out.println(toSVN + toLogs + "/incorrect " + modelName);
 		boolean isCorrect;
 		String line;
 		int position = 0;
@@ -190,14 +211,12 @@ public class ModelGenerator {
 		String[] labels = LabeledWord.LABELS;
 		double[] stuff = logs.getFMeasurePerLabel(writer, labels);
 		writer.append("\nPercentage per Label \n");
-		for (int i = 0; i < labels.length; i++) {
+		for (int i = 0; i < labels.length; i++)
 			writer.append(labels[i] + " " + stuff[i] + "\n");
-			System.out.println(labels[i] + " " + stuff[i]);
-		}
+		// System.out.println(labels[i] + " " + stuff[i]);
 		writer.close();
 
 	}
-
 }
 
 class IOCopier {

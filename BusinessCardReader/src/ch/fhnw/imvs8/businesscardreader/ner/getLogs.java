@@ -19,7 +19,7 @@ public class getLogs {
 
 	private int[] falsePositivesPerLabel;
 	private int[] falseNegativesPerLabel;
-	
+
 	private int[] falsePositivesPerLabelPerCard;
 	private int[] falseNegativesPerLabelPerCard;
 
@@ -78,15 +78,15 @@ public class getLogs {
 		if (actualLabel.equals(shouldLabel)) {
 			correctPerLabel[pos]++;
 			countPerLabel[pos]++;
-			
+
 			return true;
 		} else {
 			falseNegativesPerLabel[pos]++;
 			int actualPos = labelPosition.get(actualLabel);
 			falsePositivesPerLabel[actualPos]++;
 			countPerLabel[pos]++;
-			
-			//for card correct stuff
+
+			// for card correct stuff
 			falseNegativesPerLabelPerCard[pos]++;
 			falsePositivesPerLabelPerCard[actualPos]++;
 			return false;
@@ -185,6 +185,7 @@ public class getLogs {
 		double[] result = new double[correctPerLabel.length];
 
 		for (int i = 0; i < result.length; i++) {
+			System.out.println(countPerLabel[i] + " / " + correctPerLabel[i]);
 			precision = correctPerLabel[i] / (double) (correctPerLabel[i] + falsePositivesPerLabel[i]);
 			recall = correctPerLabel[i] / (double) (correctPerLabel[i] + falseNegativesPerLabel[i]);
 			result[i] = 2 * (precision * recall) / (precision + recall);
