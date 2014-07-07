@@ -34,7 +34,7 @@ public class FeatureCreatorTest {
 		words.add("max.müller@aha.com");
 		words.add("www.aha.com");
 		
-		return new AnalysisResult(null,words,null,null);
+		return new AnalysisResult(null,words,null,null,null);
 	}
 	@Test
 	public void completeTest() {
