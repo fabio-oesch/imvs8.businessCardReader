@@ -13,6 +13,7 @@ import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
 import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.ocr.TesseractLine;
 
 public class FeatureCreatorTest {
 	final String tmpFile = "featureCreatorTest.txt";
@@ -33,6 +34,7 @@ public class FeatureCreatorTest {
 		words.add("11");
 		words.add("max.müller@aha.com");
 		words.add("www.aha.com");
+		TesseractLine line = new TesseractLine();
 		
 		return new AnalysisResult(null,words,null,null,null);
 	}

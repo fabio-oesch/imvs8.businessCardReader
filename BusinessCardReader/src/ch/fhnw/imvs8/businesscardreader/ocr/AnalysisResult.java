@@ -38,8 +38,6 @@ public class AnalysisResult {
 		totWordInLine = new ArrayList<>(words.size());
 		totLines = lines.textLines.size();
 		initLineNumbering(lines);
-		System.out.println(lineIndices.size() == columnIndices.size() &&  columnIndices.size() == totWordInLine.size());
-		System.out.println(lineIndices.size());
 		//this.cleanResults();
 	}
 	
