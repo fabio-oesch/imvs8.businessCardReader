@@ -32,6 +32,7 @@ public class LookupTables {
 	public final static String FIXNETPREFIX_FILE="fixnetprefix.txt";
 	public final static String ROADIDENTIFIER_FILE="streetidentifiers.txt";
 	public final static String ZIPIDENTIFIER_FILE="zipidentifiers.txt";
+	public final static String ORGIDENTIFIER_FILE="orgidentifiers.txt";
 	
 	private final String folder;
 	private final Set<String> firstNames;
@@ -44,6 +45,7 @@ public class LookupTables {
 	private final Set<String> faxWords;
 	private final Set<String> mobilePrefix;
 	private final Set<String> fixnetPrefix;
+	private final Set<String> orgIdentifiers;
 	
 	private final List<String> domains;
 	private final List<String> roadIdentifiers;
@@ -99,7 +101,8 @@ public class LookupTables {
 			b.append(ROADIDENTIFIER_FILE);
 			b.append("\n");
 			b.append(ZIPIDENTIFIER_FILE);
-
+			b.append("\n");
+			b.append(ORGIDENTIFIER_FILE);
 			throw new Exception(b.toString());
 		}
 	}
