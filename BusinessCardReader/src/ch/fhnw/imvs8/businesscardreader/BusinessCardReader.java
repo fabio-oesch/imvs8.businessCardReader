@@ -101,40 +101,4 @@ public class BusinessCardReader {
 		
 		return VCardCreator.getVCardString(words);
 	}
-	
-	@Deprecated
-	public StringBuilder getCardWithTessdata(String image) throws FileNotFoundException {
-		StringBuilder builder = new StringBuilder();
-		AnalysisResult ocrAnalysis = ocr.analyzeImage(new File(image));
-		
-		Map<String,LabeledWord> labels = ner.analyse(ocrAnalysis);
-		
-		Map<Integer,String> inverseLabels = new HashMap<>();
-		for(LabeledWord w: labels.values()) {
-			String label = w.getLabel();
-			for(int i = 0; i < w.getSubwordSize();i++) {
-				inverseLabels.put(w.getSubwordPosition(i), label);
-			}
-		}
-		
-		//decode
-		for(int i = 0; i < ocrAnalysis.getResultSize();i++) {
-			builder.append(ocrAnalysis.getWord(i));
-			builder.append(",");
-			builder.append(ocrAnalysis.getLineIndex(i));
-			builder.append(",");
-			builder.append(ocrAnalysis.getColumnIndex(i));
-			builder.append(",");
-			builder.append(ocrAnalysis.getTotalNumberOfWordsInLine(i));
-			builder.append(",");
-			builder.append(ocrAnalysis.getConfidence(i));
-			builder.append(",");
-			builder.append(inverseLabels.get(i));
-			
-			builder.append("\n");
-		}
-		
-		return builder;
-	}
-	
 }

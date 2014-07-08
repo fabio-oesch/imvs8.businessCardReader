@@ -24,7 +24,8 @@ public class CRFDataGenerator {
 					return arg1.endsWith("-image-raw.png");
 				}
 			});
-			StringBuilder b = reader.getCardWithTessdata(files[0].getAbsolutePath());
+			//StringBuilder b = reader.getCardWithTessdata(files[0].getAbsolutePath());
+			StringBuilder b = null;
 			b.append(",,,,,\n");
 			writer.append(b.toString());
 			writer.flush();
