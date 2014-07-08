@@ -30,11 +30,26 @@ public class ModelGenerator {
 	private static String modelPref = "ModelNewF";
 	private static String tmpFiles = "tmp";
 	private static boolean schwambi = false;
+	private static boolean isTest = true;
 
 	private static String toSVN = schwambi ? "" : "/home/olry/Documents/School/Project/businesscardreader";
 
 	public static void main(String[] args) throws Exception {
-		crossValidate();
+		if (isTest)
+			crossValidate();
+		else {
+			File[] files = new File(toSVN + "/testdata/CRF/crf-testdata/crossValidationFiles").listFiles();
+			File temp = new File(toSVN + "/testdata/CRF/crf-testdata/temp.txt");
+			if (temp.exists())
+				temp.delete();
+			try {
+				IOCopier.joinFiles(temp, files);
+
+				createModel(temp.getAbsolutePath(), tmpFiles + "/training", toSVN + "/testdata/CRF/configfiles/template", "allFilesModel");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
 		// if (schwambi)
 		// //
@@ -52,6 +67,11 @@ public class ModelGenerator {
 
 	public static void crossValidate() {
 		File[] files = new File(toSVN + "/testdata/CRF/crf-testdata/crossValidationFiles").listFiles();
+		try {
+			logs = new CRFLogGenerator(LabeledWord.LABELS);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		for (File file : files) {
 
 			// does not create a new file
@@ -147,14 +167,18 @@ public class ModelGenerator {
 		logs = new CRFLogGenerator(LabeledWord.LABELS);
 
 		BufferedWriter incorrectWriter = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/incorrect " + modelName)));
+		System.out.println(toSVN + toLogs + "/incorrect " + modelName);
 		boolean isCorrect;
 		String line;
+		int mistakes = 0;
 		int position = 0;
 		while ((line = br.readLine()) != null)
 			if (!line.startsWith("#"))
 				if (line.length() < 2) {
 					logs.addCard();
-					incorrectWriter.append("\n");
+					incorrectWriter.append("Mistakes :" + mistakes);
+					incorrectWriter.append("\n\n");
+					mistakes = 0;
 				} else {
 					String[] lineArray = line.split("\t");
 					if (lineArray.length > 2) {
@@ -168,6 +192,7 @@ public class ModelGenerator {
 
 						isCorrect = logs.addToLogs(lineArray[lineArray.length - 2], res.getLabel(), res.getConfidence());
 						if (!isCorrect) {
+							mistakes++;
 							StringBuilder builder = new StringBuilder();
 							for (int i = 0; i < lineArray.length; i++) {
 								if (i == 0) {
@@ -188,16 +213,15 @@ public class ModelGenerator {
 		writer.write("Percentage all correct: " + logs.getHadAllLabelsPerCardCorrect() + "\n");
 
 		String[] labels = LabeledWord.LABELS;
+		writer.append("\nFMeasure per Label \n");
 		double[] stuff = logs.getFMeasurePerLabel(writer, labels);
-		writer.append("\nPercentage per Label \n");
-		for (int i = 0; i < labels.length; i++) {
-			writer.append(labels[i] + " " + stuff[i] + "\n");
-			System.out.println(labels[i] + " " + stuff[i]);
-		}
+		// writer.append("\nFMeasure per Label \n");
+		// for (int i = 0; i < labels.length; i++)
+		// writer.append(labels[i] + " " + stuff[i] + "\n");
+		// System.out.println(labels[i] + " " + stuff[i]);
 		writer.close();
 
 	}
-
 }
 
 class IOCopier {
