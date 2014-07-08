@@ -78,22 +78,15 @@ public class ocrAndCrfTest {
 	private static void testPicture(String fileName, String folderName, HashMap<String, String> solution) {
 		try {
 			AnalysisResult result = engine.analyzeImage(new File(toSVN + "testdata/business-cards/" + folderName + "/testimages/" + fileName));
-			File tmp = new File("tmp/testfile");
-			tmp.createNewFile();
-			BufferedWriter writer = new BufferedWriter(new FileWriter(tmp));
-			for (int i = 0; i < result.getResultSize(); i++)
-				writer.append(result.getWord(i) + "\n");
-			writer.close();
 
 			LookupTables tables = new LookupTables("." + File.separator + LOOKUP_TABLES_FOLDER);
 			FeatureCreator creator = new FeatureCreator(tables, new GermanStemming());
 
-			ner = new NEREngine(CRF_LOCATION, toSVN + toModel + "crossval0.txtModel", creator);
+			ner = new NEREngine(CRF_LOCATION, toSVN + toModel + "crossval0.txtModelNewF", creator);
 			Map<String, LabeledWord> pictureResult = ner.analyse(result);
 
 			readOutput(pictureResult, fileName);
 
-			tmp.delete();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -116,6 +109,7 @@ public class ocrAndCrfTest {
 		Iterator it = pictureResult.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
+			System.out.println(pairs.getKey() + " " + pairs.getValue());
 			it.remove(); // avoids a ConcurrentModificationException
 			correctWord = inHashMap(pairs.getKey().toString());
 

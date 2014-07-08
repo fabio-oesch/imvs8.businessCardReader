@@ -125,21 +125,24 @@ public class OCREngine {
 			// it
 			if (ptr != null) {
 				String word = ptr.getString(0);
-				words.add(word);
-				float conf = TessAPI1.TessResultIteratorConfidence(ri, TessPageIteratorLevel.RIL_WORD);
-				confidences.add(conf);
-
-				IntBuffer leftB = IntBuffer.allocate(1);
-				IntBuffer topB = IntBuffer.allocate(1);
-				IntBuffer rightB = IntBuffer.allocate(1);
-				IntBuffer bottomB = IntBuffer.allocate(1);
-				TessAPI1.TessPageIteratorBoundingBox(pi, TessPageIteratorLevel.RIL_WORD, leftB, topB, rightB, bottomB);
-				int left = leftB.get();
-				int top = topB.get();
-				int right = rightB.get();
-				int bottom = bottomB.get();
-				Rectangle r = new Rectangle(left, top, right - left, bottom - top);
-				bBoxes.add(r);
+				if (word!=null && !word.trim().isEmpty()) {
+						
+					words.add(word);
+					float conf = TessAPI1.TessResultIteratorConfidence(ri, TessPageIteratorLevel.RIL_WORD);
+					confidences.add(conf);
+	
+					IntBuffer leftB = IntBuffer.allocate(1);
+					IntBuffer topB = IntBuffer.allocate(1);
+					IntBuffer rightB = IntBuffer.allocate(1);
+					IntBuffer bottomB = IntBuffer.allocate(1);
+					TessAPI1.TessPageIteratorBoundingBox(pi, TessPageIteratorLevel.RIL_WORD, leftB, topB, rightB, bottomB);
+					int left = leftB.get();
+					int top = topB.get();
+					int right = rightB.get();
+					int bottom = bottomB.get();
+					Rectangle r = new Rectangle(left, top, right - left, bottom - top);
+					bBoxes.add(r);
+				}
 
 				TessAPI1.TessDeleteText(ptr);
 			}
