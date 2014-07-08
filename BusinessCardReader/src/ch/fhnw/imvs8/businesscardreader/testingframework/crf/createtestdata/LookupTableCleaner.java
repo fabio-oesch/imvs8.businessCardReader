@@ -30,7 +30,7 @@ public class LookupTableCleaner {
 		//addCH();
 		LookupTables table = new LookupTables("lookup_tables");
 		FeatureCreator creator = new FeatureCreator(table, new GermanStemming());
-		System.out.println(creator.createLine("Robert"));
+		//System.out.println(creator.createLine("Robert"));
 	}
 	
 	private static void addCH() throws Exception{

@@ -1,4 +1,4 @@
-package ch.fhnw.imvs8.businesscardreader.testingframework.crf;
+package ch.fhnw.imvs8.businesscardreader.testingframework.crf.createtestdata;
 
 import java.io.File;
 import java.io.FileWriter;

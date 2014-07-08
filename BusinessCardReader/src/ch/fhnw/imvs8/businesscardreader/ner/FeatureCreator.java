@@ -211,7 +211,7 @@ public class FeatureCreator {
 		out.append(colIndex);
 		out.append(e);
 		
-		//!!!!! tesseract- Confidence features
+		//!!!!! tesseract - Confidence features
 		out.append("clow"); if(confidence < 40.0) out.append(t); else out.append(f);
 		out.append(e);
 		out.append("c50"); if(confidence >= 40.0 && confidence < 50.0) out.append(t); else out.append(f);

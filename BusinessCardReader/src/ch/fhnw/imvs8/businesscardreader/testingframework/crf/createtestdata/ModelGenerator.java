@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
@@ -23,6 +24,7 @@ import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 import ch.fhnw.imvs8.businesscardreader.testingframework.crf.CRFLogGenerator;
 
 public class ModelGenerator {
+	private static final int csvColumns = 6;
 	private static CRFLogGenerator logs;
 	private static String toCRF = "/usr/local/bin";
 	private static String toModel = "/testdata/CRF/crfModels";
@@ -122,6 +124,7 @@ public class ModelGenerator {
 
 	public static void createFile(String inFile, String testFile) throws Exception {
 		int lineNumber = 1;
+		
 		LookupTables table = new LookupTables("lookup_tables");
 		FeatureCreator creator = new FeatureCreator(table, new GermanStemming());
 
@@ -129,23 +132,30 @@ public class ModelGenerator {
 		BufferedWriter out = new BufferedWriter(new FileWriter(testFile));
 
 		String line = null;
+		ArrayList<String> lines = new ArrayList<>(100);
 		while ((line = reader.readLine()) != null)
-			if (line.equals(","))
+			if (line.equals(",,,,,")) {
+				//terribly inefficient string operations, but nobody cares about the performance of this code passage
+				for(int i = 0; i < lines.size();i++) {
+					String[] data = new String[csvColumns];
+					String l = lines.get(i);
+					for(int j = csvColumns-1;j > 0;j--) {
+						int lastCol = l.lastIndexOf(',');
+						data[i] = (l.substring(lastCol+1)).trim();
+						l = l.substring(0, lastCol);
+					}
+					data[0] = l;
+					
+					String features = creator.createLine(data[0], Integer.parseInt(data[1]), lines.size(),  Integer.parseInt(data[2]),  Integer.parseInt(data[3]),  Integer.parseInt(data[4]));
+					String output = features.trim() + " " + data[5];
+					countFuckingWords(lineNumber,output);
+					out.write(output);
+				}
+				lines.clear();
 				out.write("\n");
-			else if (!line.equals("")) {
-
-				String[] content = line.split(",");
-				/*
-				 * if (content.length > 2)
-				 * System.out.println("fuck, more than 2 commas in: "+line);
-				 */
-
-				String word = content[0];
-
-				String features = creator.createLine(word);
-				out.write(features.trim() + " " + content[1].trim());
-				countFuckingWords(lineNumber, features.trim() + " " + content[1].trim());
-				out.write("\n");
+				
+			}else if (!line.equals("")) {
+				lines.add(line);
 				lineNumber++;
 			}
 
