@@ -1,14 +1,16 @@
-Max fp1 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 
-Müller fp0 lp1 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 
-Seidenstrasse fp0 lp0 st1 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid1 pcid0 
-1 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig1 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 
-CH-5200 fp0 lp0 st0 pc1 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid1 
-Brugg fp0 lp0 st0 pc0 ci1 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 
-Mobile fp0 lp0 st0 pc0 ci0 mw1 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 
-+41 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 
-79 fp0 lp0 st0 pc0 ci0 mw0 mpre1 tw0 fw0 fixpre0 nu1dig0 nu2dig1 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 
-111 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig1 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 
-11 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig1 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 
-11 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig1 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 
-max.müller@aha.com fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em1 we1 stid0 pcid0 
-www.aha.com fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we1 stid0 pcid0 
+Meisterfirma fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 orgid0 fline1 lline0 0 fcol1 lcol0 0 clow1 c50.0 c60.0 c70.0 c80.0 chigh0 
+AG fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 orgid1 fline1 lline0 0 fcol0 lcol1 1 clow1 c50.0 c60.0 c70.0 c80.0 chigh0 
+Max fp1 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 orgid0 fline0 lline0 1 fcol1 lcol0 0 clow0 c50.1 c60.0 c70.0 c80.0 chigh0 
+Müller fp0 lp1 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 orgid0 fline0 lline0 1 fcol0 lcol1 1 clow0 c50.0 c60.1 c70.0 c80.0 chigh0 
+Seidenstrasse fp0 lp0 st1 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid1 pcid0 orgid0 fline0 lline0 2 fcol1 lcol0 0 clow0 c50.0 c60.0 c70.1 c80.0 chigh0 
+1 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig1 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 orgid0 fline0 lline0 2 fcol0 lcol1 1 clow0 c50.0 c60.0 c70.0 c80.1 chigh0 
+CH-5200 fp0 lp0 st0 pc1 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid1 orgid0 fline0 lline0 3 fcol1 lcol0 0 clow0 c50.0 c60.0 c70.0 c80.0 chigh1 
+Brugg fp0 lp0 st0 pc0 ci1 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 orgid0 fline0 lline0 3 fcol0 lcol1 1 clow0 c50.0 c60.0 c70.0 c80.0 chigh1 
+Mobile fp0 lp0 st0 pc0 ci0 mw1 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 orgid0 fline0 lline0 4 fcol1 lcol0 0 clow0 c50.0 c60.0 c70.0 c80.0 chigh1 
++41 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 orgid0 fline0 lline0 4 fcol0 lcol0 1 clow0 c50.0 c60.0 c70.0 c80.0 chigh1 
+79 fp0 lp0 st0 pc0 ci0 mw0 mpre1 tw0 fw0 fixpre0 nu1dig0 nu2dig1 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 orgid0 fline0 lline0 4 fcol0 lcol0 2 clow0 c50.0 c60.0 c70.0 c80.0 chigh1 
+111 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig1 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 orgid0 fline0 lline0 4 fcol0 lcol0 3 clow0 c50.0 c60.0 c70.0 c80.0 chigh1 
+11 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig1 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 orgid0 fline0 lline0 4 fcol0 lcol0 4 clow0 c50.0 c60.0 c70.0 c80.0 chigh1 
+11 fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig1 nu3dig0 nu4dig0 nu4plusdig0 em0 we0 stid0 pcid0 orgid0 fline0 lline0 4 fcol0 lcol1 5 clow0 c50.0 c60.0 c70.0 c80.0 chigh1 
+max.müller@aha.com fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em1 we1 stid0 pcid0 orgid0 fline0 lline0 5 fcol1 lcol1 0 clow0 c50.0 c60.0 c70.0 c80.0 chigh1 
+www.aha.com fp0 lp0 st0 pc0 ci0 mw0 mpre0 tw0 fw0 fixpre0 nu1dig0 nu2dig0 nu3dig0 nu4dig0 nu4plusdig0 em0 we1 stid0 pcid0 orgid0 fline0 lline1 6 fcol1 lcol1 0 clow0 c50.0 c60.0 c70.0 c80.0 chigh1 

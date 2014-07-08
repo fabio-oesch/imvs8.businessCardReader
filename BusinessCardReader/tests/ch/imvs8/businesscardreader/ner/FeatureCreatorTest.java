@@ -19,7 +19,9 @@ public class FeatureCreatorTest {
 	final String tmpFile = "featureCreatorTest.txt";
 	
 	private static AnalysisResult createValidExample() {
-		ArrayList<String> words = new ArrayList<>(14);
+		ArrayList<String> words = new ArrayList<>(16);
+		words.add("Meisterfirma");
+		words.add("AG");
 		words.add("Max");
 		words.add("Müller");
 		words.add("Seidenstrasse");
@@ -34,9 +36,78 @@ public class FeatureCreatorTest {
 		words.add("11");
 		words.add("max.müller@aha.com");
 		words.add("www.aha.com");
-		TesseractLine line = new TesseractLine();
+		ArrayList<Integer> lineIndex = new ArrayList<>(16);
+		lineIndex.add(0);
+		lineIndex.add(0);
+		lineIndex.add(1);
+		lineIndex.add(1);
+		lineIndex.add(2);
+		lineIndex.add(2);
+		lineIndex.add(3);
+		lineIndex.add(3);
+		lineIndex.add(4);
+		lineIndex.add(4);
+		lineIndex.add(4);
+		lineIndex.add(4);
+		lineIndex.add(4);
+		lineIndex.add(4);
+		lineIndex.add(5);
+		lineIndex.add(6);
+		ArrayList<Integer> colIndex = new ArrayList<>(16);
+		colIndex.add(0);
+		colIndex.add(1);
+		colIndex.add(0);
+		colIndex.add(1);
+		colIndex.add(0);
+		colIndex.add(1);
+		colIndex.add(0);
+		colIndex.add(1);
+		colIndex.add(0);
+		colIndex.add(1);
+		colIndex.add(2);
+		colIndex.add(3);
+		colIndex.add(4);
+		colIndex.add(5);
+		colIndex.add(0);
+		colIndex.add(0);
 		
-		return new AnalysisResult(null,words,null,null,null);
+		ArrayList<Integer> totalColumns = new ArrayList<>(16);
+		totalColumns.add(2);
+		totalColumns.add(2);
+		totalColumns.add(2);
+		totalColumns.add(2);
+		totalColumns.add(2);
+		totalColumns.add(2);
+		totalColumns.add(2);
+		totalColumns.add(2);
+		totalColumns.add(6);
+		totalColumns.add(6);
+		totalColumns.add(6);
+		totalColumns.add(6);
+		totalColumns.add(6);
+		totalColumns.add(6);
+		totalColumns.add(1);
+		totalColumns.add(1);
+		
+		ArrayList<Float> confidences = new ArrayList<>(16);
+		confidences.add(20.0f);
+		confidences.add(30.0f);
+		confidences.add(40.0f);
+		confidences.add(50.0f);
+		confidences.add(60.0f);
+		confidences.add(70.0f);
+		confidences.add(80.0f);
+		confidences.add(90.0f);
+		confidences.add(80.0f);
+		confidences.add(80.0f);
+		confidences.add(80.0f);
+		confidences.add(80.0f);
+		confidences.add(80.0f);
+		confidences.add(80.0f);
+		confidences.add(80.0f);
+		confidences.add(80.0f);
+		
+		return new AnalysisResult(null,words,null,confidences,7,lineIndex,colIndex,totalColumns);
 	}
 	@Test
 	public void completeTest() {
@@ -73,6 +144,7 @@ public class FeatureCreatorTest {
 		
 		//cleanup
 		File f = new File(tmpFile);
+		System.out.println(f.getAbsolutePath());
 		if(f.exists())
 			f.delete();
 	}
@@ -82,7 +154,7 @@ public class FeatureCreatorTest {
 		try {
 			LookupTables table = new LookupTables("lookup_tables");
 			FeatureCreator creator = new FeatureCreator(table, new GermanStemming());
-			System.out.println(creator.createLine("direkt"));
+			System.out.println(creator.createLine("direkt",0,1,0,1,90.0));
 			
 		} catch (Exception e) {
 			fail("Exception thrown: "+e.getMessage());

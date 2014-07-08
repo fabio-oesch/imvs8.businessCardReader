@@ -43,9 +43,9 @@ public class FeatureCreator {
 			f.createNewFile();
 		
 		BufferedWriter w = new BufferedWriter(new FileWriter(tmpFile));
-		int lines = res.getTotalNumberOfWords();
+		int lines = res.getTotalNumberOfLines();
 		for(int i = 0; i < res.getResultSize();i++) {
-			w.write(this.createLine(res.getWord(i),res.getLineIndex(i),lines, res.getColumnIndex(i),res.getTotalNumberOfWordsInLine(i),res.getConfidence(i)));
+			w.write(this.createLine(res.getWord(i),res.getLineIndex(i),lines, res.getColumnIndex(i),res.getTotalNumberOfColumnsInLine(i),res.getConfidence(i)));
 			w.write("\n");
 		}
 		
@@ -204,7 +204,7 @@ public class FeatureCreator {
 		out.append(e);
 		
 		//is word in the last column
-		out.append("fline");if(colIndex +1 == totColumns) out.append(t); else out.append(f);
+		out.append("lcol");if(colIndex +1 == totColumns) out.append(t); else out.append(f);
 		out.append(e);
 		
 		//column index
@@ -214,13 +214,13 @@ public class FeatureCreator {
 		//!!!!! tesseract - Confidence features
 		out.append("clow"); if(confidence < 40.0) out.append(t); else out.append(f);
 		out.append(e);
-		out.append("c50"); if(confidence >= 40.0 && confidence < 50.0) out.append(t); else out.append(f);
+		out.append("c50."); if(confidence >= 40.0 && confidence < 50.0) out.append(t); else out.append(f);
 		out.append(e);
-		out.append("c60"); if(confidence >= 50.0 && confidence < 60.0) out.append(t); else out.append(f);
+		out.append("c60."); if(confidence >= 50.0 && confidence < 60.0) out.append(t); else out.append(f);
 		out.append(e);
-		out.append("c70"); if(confidence >= 60.0 && confidence < 70.0) out.append(t); else out.append(f);
+		out.append("c70."); if(confidence >= 60.0 && confidence < 70.0) out.append(t); else out.append(f);
 		out.append(e);
-		out.append("c80"); if(confidence >= 70.0 && confidence < 80.0) out.append(t); else out.append(f);
+		out.append("c80."); if(confidence >= 70.0 && confidence < 80.0) out.append(t); else out.append(f);
 		out.append(e);
 		out.append("chigh"); if(confidence >= 80.0) out.append(t); else out.append(f);
 		out.append(e);

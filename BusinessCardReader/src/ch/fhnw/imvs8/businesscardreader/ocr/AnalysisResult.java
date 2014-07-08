@@ -20,6 +20,15 @@ public class AnalysisResult {
 	private final ArrayList<Integer> totWordInLine;
 	private final int totLines;
 	
+	public AnalysisResult(File image,ArrayList<String> words, ArrayList<Rectangle> bBoxes, ArrayList<Float> conf,int totLines, ArrayList<Integer> lineIndices,ArrayList<Integer> columnIndices,ArrayList<Integer> totWordInLine) {
+		this.totLines = totLines;
+		this.words = words;
+		this.boundingBoxes = bBoxes;
+		this.confidences = conf;
+		this.lineIndices = lineIndices;
+		this.columnIndices = columnIndices;
+		this.totWordInLine = totWordInLine;
+	}
 	/**
 	 * @param image
 	 *          Image 
@@ -31,9 +40,9 @@ public class AnalysisResult {
 	 * 			List of confidence values per word
 	 */
 	public AnalysisResult(File image, ArrayList<String> words, ArrayList<Rectangle> bBoxes, ArrayList<Float> conf, TesseractLine lines) {
-		this.words = words;
-		this.boundingBoxes = bBoxes;
-		this.confidences = conf;
+		this.words = new ArrayList<>(words);
+		this.boundingBoxes = new ArrayList<>(bBoxes);
+		this.confidences = new ArrayList<>(conf);
 		lineIndices = new ArrayList<>(words.size());
 		columnIndices = new ArrayList<>(words.size());
 		totWordInLine = new ArrayList<>(words.size());
@@ -99,11 +108,11 @@ public class AnalysisResult {
 		return columnIndices.get(index);
 	}
 	
-	public Integer getTotalNumberOfWordsInLine(int index) {
+	public Integer getTotalNumberOfColumnsInLine(int index) {
 		return totWordInLine.get(index);
 	}
 	
-	public Integer getTotalNumberOfWords() {
+	public Integer getTotalNumberOfLines() {
 		return this.totLines;
 	}
 }
