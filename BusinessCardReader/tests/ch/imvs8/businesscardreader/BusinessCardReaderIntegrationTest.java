@@ -9,7 +9,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
-import ch.fhnw.imvs8.businesscardreader.Word;
+import ch.fhnw.imvs8.businesscardreader.BusinessCardField;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 
 public class BusinessCardReaderIntegrationTest {
@@ -39,12 +39,12 @@ public class BusinessCardReaderIntegrationTest {
 		
 		try{ 
 			BusinessCardReader reader = new BusinessCardReader("unittest_data/ValidTest");
-			Map<String,Word> entities = reader.readImage("unittest_data/validimage.jpg");
+			Map<String,BusinessCardField> entities = reader.readImage("unittest_data/validimage.jpg");
 			assertSame("didn't find enough or too much", 16, entities.size());
 			Iterator<String> it = entities.keySet().iterator();
 			while(it.hasNext()) {
 				String lbl = it.next();
-				Word e = entities.get(lbl);
+				BusinessCardField e = entities.get(lbl);
 				if(e != null)
 					System.out.println(e.getLabel() + ": " + e.getWordAsString() + " ");
 			}

@@ -74,18 +74,18 @@ public class BusinessCardReader {
 	 * @return Named entities found in this picture
 	 * @throws FileNotFoundException
 	 */
-	public Map<String, Word> readImage(String image) throws FileNotFoundException {
+	public Map<String, BusinessCardField> readImage(String image) throws FileNotFoundException {
 		AnalysisResult ocrAnalsysis = ocr.analyzeImage(new File(image));
 
 		return translateResultAsMap(ner.analyse(ocrAnalsysis));
 	}
 	
-	private Map<String,Word> translateResultAsMap(Map<String, LabeledWord> words) {
-		Map<String, Word> translated = new HashMap<>(words.size());
+	private Map<String,BusinessCardField> translateResultAsMap(Map<String, LabeledWord> words) {
+		Map<String, BusinessCardField> translated = new HashMap<>(words.size());
 		
 		for(int i = 0; i < LabeledWord.LABELS.length;i++) {
 			LabeledWord w = words.get(LabeledWord.LABELS[i]);
-			translated.put(LabeledWord.LABELS[i],new Word(w,LabeledWord.HUMAN_READABLE_LABELS[i]));
+			translated.put(LabeledWord.LABELS[i],new BusinessCardField(w,LabeledWord.HUMAN_READABLE_LABELS[i]));
 		}
 		
 		return translated;
@@ -94,11 +94,22 @@ public class BusinessCardReader {
 	/**
 	 * Converts the words to a vCard String. If the URL under the label "WEB" is not a valid URL, it will be ignored.
 	 * 
-	 * @param words [label,word] pair, for example: ["FN","James"]
+	 * @param words [label,word] pair, for example: ["First Name","James"]
 	 * @return vCard String
 	 */
 	public String getVCardString(Map<String,String> words) {
-		
 		return VCardCreator.getVCardString(words);
+	}
+	
+	/**
+	 * Converts the Business Card in a VCard
+	 * 
+	 * this method is equivalent to getVCardString(card.getWordsAsMap())
+	 * 
+	 * @param card Business Card to convert.
+	 * @return vCard String
+	 */
+	public String getVCardString(BusinessCard card) {
+		return VCardCreator.getVCardString(card.getFieldsAsStringMap());
 	}
 }

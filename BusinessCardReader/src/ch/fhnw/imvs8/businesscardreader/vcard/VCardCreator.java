@@ -30,7 +30,8 @@ import net.sourceforge.cardme.vcard.types.URLType;
 import net.sourceforge.cardme.vcard.types.parameters.ExtendedParameterType;
 import net.sourceforge.cardme.vcard.types.parameters.ParameterTypeStyle;
 import net.sourceforge.cardme.vcard.types.parameters.TelephoneParameterType;
-import ch.fhnw.imvs8.businesscardreader.Word;
+import ch.fhnw.imvs8.businesscardreader.BusinessCard;
+import ch.fhnw.imvs8.businesscardreader.BusinessCardField;
 import ch.fhnw.imvs8.businesscardreader.ner.NEREngine;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 
@@ -55,6 +56,18 @@ public class VCardCreator {
 		 VCardWriter writer = new VCardWriter();
 		 writer.setVCard(vcard);
 		 return writer.buildVCardString();
+	}
+	
+	/**
+	 * Converts the Business Card in a VCard
+	 * 
+	 * this method is equivalent to getVCardString(card.getWordsAsMap())
+	 * 
+	 * @param card Business Card to convert.
+	 * @return vCard String
+	 */
+	public static String getVCardString(BusinessCard card) {
+		return VCardCreator.getVCardString(card.getFieldsAsStringMap());
 	}
 	
 	private static void addFeatures(VCard vcard, Map<String, String> words) {

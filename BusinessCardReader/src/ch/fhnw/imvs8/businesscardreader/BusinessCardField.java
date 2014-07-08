@@ -5,13 +5,13 @@ import java.util.List;
 
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 
-public class Word {
+public class BusinessCardField {
 	private final String label;
 	private final LabeledWord word;
 	private boolean isWrong;
 	private boolean isUnsure;
 	
-	public Word(LabeledWord w, String humanReadableLabel) {
+	public BusinessCardField(LabeledWord w, String humanReadableLabel) {
 		word = w;
 		label = humanReadableLabel;
 		//only make important fields isWrong if they are empty
@@ -26,7 +26,7 @@ public class Word {
 	}
 	
 	/**
-	 * Puts all Subwords in a single String
+	 * Puts all Subwords in a single String, can be deleted?
 	 * @return
 	 */
 	public String getWordAsString() {
