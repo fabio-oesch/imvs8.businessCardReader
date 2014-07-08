@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,11 +18,17 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterProcessor;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.LaplaceSharpenFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Phansalkar;
+import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
+import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
+import ch.fhnw.imvs8.businesscardreader.ner.NEREngine;
+import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 import ch.fhnw.imvs8.businesscardreader.testingframework.crf.createtestdata.ModelGenerator;
@@ -34,14 +41,19 @@ public class ocrAndCrfTest {
 	private static OCREngine engine;
 	private static HashMap<String, String> xmlAtts;
 	private static String toCRF = "/usr/local/bin";
-	private static String toSVN = "/home/olry/Documents/School/Project/businesscardreader/";
+	private static String toSVN = "/home/jon/dev/fuckingsvn/svn/";
+	
 	private static String toModel = "testdata/CRF/crfModels";
 	private static String toLogs = "/testdata/CRF/crfLogs";
+	
+	private static final String LOOKUP_TABLES_FOLDER = "lookup_tables";
+	private static final String NER_CONFIGURATION_FOLDER = "crfdata";
+	private static final String CRF_LOCATION = "/usr/local/bin";
+	private static NEREngine ner;
 
 	public static void main(String[] args) {
 		GenericFilterProcessor filters = new GenericFilterProcessor();
 		filters.appendFilter(new GrayScaleFilter());
-		filters.appendFilter(new LaplaceSharpenFilter());
 		filters.appendFilter(new Phansalkar());
 
 		engine = new OCREngine(filters);
@@ -50,6 +62,7 @@ public class ocrAndCrfTest {
 
 	public static void readBusinessCards() {
 		String[] folderList = new File(toSVN + "testdata/business-cards/").list();
+		Arrays.sort(folderList);
 		int i = 0;
 		while (!folderList[i++].equals("edgar.gmuer@noser.com")) {
 			String[] solutionfiles = new File(toSVN + "testdata/business-cards/" + folderList[i] + "/cardscan_raw/").list();
@@ -76,6 +89,13 @@ public class ocrAndCrfTest {
 				writer.append(result.getWord(i) + "\n");
 			writer.close();
 
+
+			LookupTables tables = new LookupTables("." + File.separator + LOOKUP_TABLES_FOLDER);
+			FeatureCreator creator = new FeatureCreator(tables, new GermanStemming());
+			
+			ner = new NEREngine(CRF_LOCATION, "." + File.separator + NER_CONFIGURATION_FOLDER, creator);
+			ner.analyse(result);
+			
 			ModelGenerator.createFile("tmp/testfile", "tmp/testFeaturesSet");
 			readOutput("tmp/testFeaturesSet", "crossval0.txtModelNewF");
 
