@@ -29,18 +29,18 @@ public class ModelGenerator {
 	private static String toCRF = "/usr/local/bin";
 	private static String toModel = "/testdata/CRF/crfModels";
 	private static String toLogs = "/testdata/CRF/crfLogs";
-	private static String modelPref = "ModelNewF";
+	private static String modelPref = "ModelWithConfidence";
 	private static String tmpFiles = "tmp";
-	private static boolean schwambi = false;
+	private static boolean schwambi = true;
 	private static boolean isTest = true;
 
-	private static String toSVN = schwambi ? "" : "/home/olry/Documents/School/Project/businesscardreader";
+	private static String toSVN = schwambi ? "/home/jon/dev/fuckingsvn/svn" : "/home/olry/Documents/School/Project/businesscardreader";
 
 	public static void main(String[] args) throws Exception {
 		if (isTest)
 			crossValidate();
 		else {
-			File[] files = new File(toSVN + "/testdata/CRF/crf-testdata/crossValidationFiles").listFiles();
+			File[] files = new File(toSVN + "/testdata/CRF/crf-testdata/crossValConfidence").listFiles();
 			File temp = new File(toSVN + "/testdata/CRF/crf-testdata/temp.txt");
 			if (temp.exists())
 				temp.delete();
@@ -68,7 +68,7 @@ public class ModelGenerator {
 	}
 
 	public static void crossValidate() {
-		File[] files = new File(toSVN + "/testdata/CRF/crf-testdata/crossValidationFiles").listFiles();
+		File[] files = new File(toSVN + "/testdata/CRF/crf-testdata/crossValConfidence").listFiles();
 		try {
 			logs = new CRFLogGenerator(LabeledWord.LABELS);
 		} catch (IOException e1) {
@@ -112,7 +112,7 @@ public class ModelGenerator {
 
 	public static void countFuckingWords(int lineNumber, String line) {
 		String[] lineArr = line.split(" ");
-		int should = 21;
+		int should = 34;
 
 		lineArr = line.split(" ");
 		if (should != lineArr.length) {
@@ -135,24 +135,34 @@ public class ModelGenerator {
 		ArrayList<String> lines = new ArrayList<>(100);
 		while ((line = reader.readLine()) != null)
 			if (line.equals(",,,,,")) {
+				
 				//terribly inefficient string operations, but nobody cares about the performance of this code passage
 				for(int i = 0; i < lines.size();i++) {
 					String[] data = new String[csvColumns];
 					String l = lines.get(i);
+					try{
 					for(int j = csvColumns-1;j > 0;j--) {
 						int lastCol = l.lastIndexOf(',');
-						data[i] = (l.substring(lastCol+1)).trim();
+						data[j] = (l.substring(lastCol+1)).trim();
 						l = l.substring(0, lastCol);
 					}
 					data[0] = l;
 					
-					String features = creator.createLine(data[0], Integer.parseInt(data[1]), lines.size(),  Integer.parseInt(data[2]),  Integer.parseInt(data[3]),  Integer.parseInt(data[4]));
-					String output = features.trim() + " " + data[5];
+					String features = creator.createLine(data[0], Integer.parseInt(data[1]), lines.size(),  Integer.parseInt(data[2]),  Integer.parseInt(data[3]),  Double.parseDouble(data[4]));
+					
+					String output = features.trim() + " " + data[5]+"\n";
 					countFuckingWords(lineNumber,output);
 					out.write(output);
+					}
+					catch(Exception e) {
+						System.out.println(l);
+						e.printStackTrace();
+					}
+					
 				}
 				lines.clear();
 				out.write("\n");
+				
 				
 			}else if (!line.equals("")) {
 				lines.add(line);
@@ -194,13 +204,14 @@ public class ModelGenerator {
 					if (lineArray.length > 2) {
 						// only works when -v1 or -v2 is set
 						String labelAndConfidence = lineArray[lineArray.length - 1];
-						int dashIndex = labelAndConfidence.indexOf('/');
+						int dashIndex = labelAndConfidence.lastIndexOf('/');
 
 						String label = labelAndConfidence.substring(0, dashIndex);
 						double conf = Double.parseDouble(labelAndConfidence.substring(dashIndex + 1));
 						LabeledWord res = new LabeledWord(label, lineArray[0], conf, position++);
 
 						isCorrect = logs.addToLogs(lineArray[lineArray.length - 2], res.getLabel(), res.getConfidence());
+
 						if (!isCorrect) {
 							mistakes++;
 							StringBuilder builder = new StringBuilder();

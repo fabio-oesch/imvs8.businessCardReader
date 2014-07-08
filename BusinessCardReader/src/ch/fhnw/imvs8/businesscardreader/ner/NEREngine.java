@@ -101,7 +101,7 @@ public class NEREngine {
 			if (lineArray.length > 2) {
 				// only works when -v1 and -v2 is not set
 				String labelAndConfidence = lineArray[lineArray.length - 1];
-				int dashIndex = labelAndConfidence.indexOf('/');
+				int dashIndex = labelAndConfidence.lastIndexOf('/');
 				
 				String label = labelAndConfidence.substring(0, dashIndex);
 				double conf = Double.parseDouble(labelAndConfidence.substring(dashIndex+1));
