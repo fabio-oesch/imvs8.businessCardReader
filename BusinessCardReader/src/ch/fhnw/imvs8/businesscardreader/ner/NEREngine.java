@@ -11,23 +11,25 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.testingframework.crf.createtestdata.ModelGenerator;
 
 /**
- * Represents a Named Entity Recognition Engine. It takes the Input of the OCREngine and runs
- * them through CRF++.
+ * Represents a Named Entity Recognition Engine. It takes the Input of the
+ * OCREngine and runs them through CRF++.
  * 
  * @author jon
  */
 public class NEREngine {
 	private final String tmpFileName = "test.data";
-	
+
 	private FeatureCreator creator;
 	private final String toCRF;
 	private final String toModel;
 	private final String tmpFileLoc;
 	private final HashSet<String> concatenationRequired;
-	
+
 	/**
 	 * Generates
 	 * 
@@ -35,25 +37,25 @@ public class NEREngine {
 	 *            location to the training files for the NEREngine
 	 * @param creator
 	 *            Lookup Tables to use
-	 * @throws FileNotFoundException 
+	 * @throws FileNotFoundException
 	 */
 	public NEREngine(String CRFLocation, String modelFile, FeatureCreator creator) throws FileNotFoundException {
 		File f = new File(modelFile);
-		if(!f.exists())
-			throw new FileNotFoundException("model file not found: "+modelFile);
-		
-		this.toCRF = CRFLocation;
-		this.toModel = modelFile;
+		if (!f.exists())
+			throw new FileNotFoundException("model file not found: " + modelFile);
+
+		toCRF = CRFLocation;
+		toModel = modelFile;
 		this.creator = creator;
-		
-		this.concatenationRequired = new HashSet<>();
-		this.concatenationRequired.add("I-TF");
-		this.concatenationRequired.add("I-TW");
-		this.concatenationRequired.add("I-TM");
-		this.concatenationRequired.add("ORG");
-		
+
+		concatenationRequired = new HashSet<>();
+		concatenationRequired.add("I-TF");
+		concatenationRequired.add("I-TW");
+		concatenationRequired.add("I-TM");
+		concatenationRequired.add("ORG");
+
 		final String dir = System.getProperty("java.io.tmpdir");
-		tmpFileLoc = dir +File.separator+tmpFileName;
+		tmpFileLoc = dir + File.separator + tmpFileName;
 	}
 
 	/**
@@ -61,15 +63,15 @@ public class NEREngine {
 	 * 
 	 * @param results
 	 *            of the OCREngine
-	 * @return Named Entities.
-	 * 			  Table with the NamedEntities, the Label (for example "email") is the Key and the NamedEntity the value;
+	 * @return Named Entities. Table with the NamedEntities, the Label (for
+	 *         example "email") is the Key and the NamedEntity the value;
 	 */
 	public Map<String, LabeledWord> analyse(AnalysisResult results) {
 		Map<String, LabeledWord> answer = null;
 		try {
 			creator.createFeatures(results, tmpFileLoc);
-			List<LabeledWord> crfResult = this.readOutput(tmpFileLoc, results.getResultSize());
-			answer = this.concatenateEntitiesSimple(crfResult);
+			List<LabeledWord> crfResult = readOutput(tmpFileLoc, results.getResultSize());
+			answer = concatenateEntitiesSimple(crfResult);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -92,7 +94,7 @@ public class NEREngine {
 		InputStream is = process.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
-		
+
 		int positionIndex = 0;
 		List<LabeledWord> tokens = new ArrayList<>(size);
 		String line;
@@ -102,11 +104,12 @@ public class NEREngine {
 				// only works when -v1 and -v2 is not set
 				String labelAndConfidence = lineArray[lineArray.length - 1];
 				int dashIndex = labelAndConfidence.indexOf('/');
-				
+
+				ModelGenerator.countFuckingWords(positionIndex, line);
 				String label = labelAndConfidence.substring(0, dashIndex);
-				double conf = Double.parseDouble(labelAndConfidence.substring(dashIndex+1));
-				LabeledWord res = new LabeledWord(label,lineArray[0],conf, positionIndex++);
-				
+				double conf = Double.parseDouble(labelAndConfidence.substring(dashIndex + 1));
+				LabeledWord res = new LabeledWord(label, lineArray[0], conf, positionIndex++);
+
 				tokens.add(res);
 			}
 		}
@@ -116,21 +119,20 @@ public class NEREngine {
 
 	/**
 	 * Simply concatenate entities with the same tag.
+	 * 
 	 * @param entities
 	 * @return concatenated entities in a Map, the Key is the tag.
 	 */
 	private Map<String, LabeledWord> concatenateEntitiesSimple(List<LabeledWord> entities) {
 		HashMap<String, LabeledWord> answer = new HashMap<>(entities.size());
-		
-		for(LabeledWord e : entities) {
-			if(answer.containsKey(e.getLabel())) {
+
+		for (LabeledWord e : entities)
+			if (answer.containsKey(e.getLabel())) {
 				LabeledWord entity = answer.get(e.getLabel());
 				entity.addWordAfter(e);
-			} else {
+			} else
 				answer.put(e.getLabel(), e);
-			}
-		}
-		
+
 		return answer;
 	}
 }
