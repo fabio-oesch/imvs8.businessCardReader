@@ -19,6 +19,7 @@ public class AnalysisResult {
 	private final ArrayList<Integer> columnIndices;
 	private final ArrayList<Integer> totWordInLine;
 	private final int totLines;
+	
 	/**
 	 * @param image
 	 *          Image 
@@ -100,5 +101,9 @@ public class AnalysisResult {
 	
 	public Integer getTotalNumberOfWordsInLine(int index) {
 		return totWordInLine.get(index);
+	}
+	
+	public Integer getTotalNumberOfWords() {
+		return this.totLines;
 	}
 }

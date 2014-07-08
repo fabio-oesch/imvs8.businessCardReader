@@ -121,6 +121,14 @@ public class BusinessCardReader {
 		for(int i = 0; i < ocrAnalysis.getResultSize();i++) {
 			builder.append(ocrAnalysis.getWord(i));
 			builder.append(",");
+			builder.append(ocrAnalysis.getLineIndex(i));
+			builder.append(",");
+			builder.append(ocrAnalysis.getColumnIndex(i));
+			builder.append(",");
+			builder.append(ocrAnalysis.getTotalNumberOfWordsInLine(i));
+			builder.append(",");
+			builder.append(ocrAnalysis.getConfidence(i));
+			builder.append(",");
 			builder.append(inverseLabels.get(i));
 			
 			builder.append("\n");
