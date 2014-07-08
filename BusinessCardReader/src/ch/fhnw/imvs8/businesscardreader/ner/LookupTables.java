@@ -65,10 +65,12 @@ public class LookupTables {
 			faxWords = createSet(this.folder + File.separator + FAXWORDS_FILE);
 			mobilePrefix = createSet(this.folder + File.separator + MOBILEPREFIX_FILE);
 			fixnetPrefix = createSet(this.folder + File.separator + FIXNETPREFIX_FILE);
+			this.orgIdentifiers = createSet(this.folder + File.separator + ORGIDENTIFIER_FILE);
 			
 			this.domains = createList(this.folder + File.separator + DOMAIN_FILE);
 			this.roadIdentifiers = createList(this.folder + File.separator + ROADIDENTIFIER_FILE);
 			this.zipIdentifiers = createList(this.folder + File.separator + ZIPIDENTIFIER_FILE);
+			
 		} catch (Exception e) {
 			StringBuilder b = new StringBuilder("Invalid or missing files in folder: ");
 			b.append(folder);
@@ -167,6 +169,10 @@ public class LookupTables {
 		return this.fixnetPrefix;
 	}
 	
+	public Set<String> getORGIdentifierSet() {
+		return this.orgIdentifiers;
+	}
+	
 	/**
 	 * Set of telephone number prefixes (as string) found in fixnet numbers
 	 * @return
@@ -190,6 +196,7 @@ public class LookupTables {
 	public List<String> getZipIdentifiers() {
 		return this.zipIdentifiers;
 	}
+	
 
 	private static List<String> createList(String file) throws IOException {
 		LinkedList<String> list = new LinkedList<>();

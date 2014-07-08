@@ -43,9 +43,9 @@ public class FeatureCreator {
 			f.createNewFile();
 		
 		BufferedWriter w = new BufferedWriter(new FileWriter(tmpFile));
-		
+		int lines = res.getTotalNumberOfWords();
 		for(int i = 0; i < res.getResultSize();i++) {
-			w.write(this.createLine(res.getWord(i)));
+			w.write(this.createLine(res.getWord(i),res.getLineIndex(i),lines, res.getColumnIndex(i),res.getTotalNumberOfWordsInLine(i),res.getConfidence(i)));
 			w.write("\n");
 		}
 		
@@ -62,7 +62,7 @@ public class FeatureCreator {
 	 * @param word
 	 * @return String word with line of features for CRF++
 	 */
-	public String createLine(String word) {
+	public String createLine(String word,int lineIndex,int totLines,int colIndex,int totColumns, double confidence) {
 		String e = " ";
 		String t = "1";		//true
 		String f = "0"; 	//false
@@ -181,7 +181,49 @@ public class FeatureCreator {
 		out.append(found);
 		out.append(e);
 		
+		//word is an org identifier like ltd.
+		out.append("orgid");if(tables.getORGIdentifierSet().contains(stemmedWord)) out.append(t); else out.append(f);
+		out.append(e);
 		
+		//!!!!!! META Features
+		
+		//is word on the first line
+		out.append("fline");if(lineIndex == 0) out.append(t); else out.append(f);
+		out.append(e);
+		
+		//is word on the last line
+		out.append("lline");if(lineIndex +1 == totLines) out.append(t); else out.append(f);
+		out.append(e);
+		
+		//line index
+		out.append(lineIndex);
+		out.append(e);
+		
+		//is word in the first column
+		out.append("fcol");if(colIndex  == 0) out.append(t); else out.append(f);
+		out.append(e);
+		
+		//is word in the last column
+		out.append("fline");if(colIndex +1 == totColumns) out.append(t); else out.append(f);
+		out.append(e);
+		
+		//column index
+		out.append(colIndex);
+		out.append(e);
+		
+		//!!!!! tesseract- Confidence features
+		out.append("clow"); if(confidence < 40.0) out.append(t); else out.append(f);
+		out.append(e);
+		out.append("c50"); if(confidence >= 40.0 && confidence < 50.0) out.append(t); else out.append(f);
+		out.append(e);
+		out.append("c60"); if(confidence >= 50.0 && confidence < 60.0) out.append(t); else out.append(f);
+		out.append(e);
+		out.append("c70"); if(confidence >= 60.0 && confidence < 70.0) out.append(t); else out.append(f);
+		out.append(e);
+		out.append("c80"); if(confidence >= 70.0 && confidence < 80.0) out.append(t); else out.append(f);
+		out.append(e);
+		out.append("chigh"); if(confidence >= 80.0) out.append(t); else out.append(f);
+		out.append(e);
 		
 		return out.toString();
 	}
