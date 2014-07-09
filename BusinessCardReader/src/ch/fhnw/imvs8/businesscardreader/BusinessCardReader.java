@@ -17,6 +17,8 @@ import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
+import ch.fhnw.imvs8.businesscardreader.postprocessing.Processor;
+import ch.fhnw.imvs8.businesscardreader.postprocessing.StandardProcessor;
 import ch.fhnw.imvs8.businesscardreader.vcard.VCardCreator;
 
 /**
@@ -36,6 +38,7 @@ public class BusinessCardReader {
 	private static final String CRF_LOCATION = "/usr/local/bin";
 	private final OCREngine ocr;
 	private final NEREngine ner;
+	private final Processor proc;
 
 	/**
 	 * Creates a Business Card Reader Object
@@ -63,6 +66,8 @@ public class BusinessCardReader {
 		FeatureCreator creator = new FeatureCreator(tables, new GermanStemming());
 		
 		ner = new NEREngine(CRF_LOCATION, dataFolder + File.separator + NER_CONFIGURATION_FOLDER +File.separator + "model", creator);
+		
+		proc = new StandardProcessor();
 	}
 
 	/**
@@ -74,21 +79,13 @@ public class BusinessCardReader {
 	 * @return Named entities found in this picture
 	 * @throws FileNotFoundException
 	 */
-	public Map<String, BusinessCardField> readImage(String image) throws FileNotFoundException {
-		AnalysisResult ocrAnalsysis = ocr.analyzeImage(new File(image));
+	public BusinessCard readImage(String image) throws FileNotFoundException {
+		AnalysisResult ocrResult = ocr.analyzeImage(new File(image));
+		Map<String, LabeledWord> nerResult = ner.analyse(ocrResult);
+		Map<String, BusinessCardField> fields = proc.process(ocrResult, nerResult);
+			
+		return new BusinessCard(fields,ocrResult,nerResult);
 
-		return translateResultAsMap(ner.analyse(ocrAnalsysis));
-	}
-	
-	private Map<String,BusinessCardField> translateResultAsMap(Map<String, LabeledWord> words) {
-		Map<String, BusinessCardField> translated = new HashMap<>(words.size());
-		
-		for(int i = 0; i < LabeledWord.LABELS.length;i++) {
-			LabeledWord w = words.get(LabeledWord.LABELS[i]);
-			translated.put(LabeledWord.LABELS[i],new BusinessCardField(w,LabeledWord.HUMAN_READABLE_LABELS[i]));
-		}
-		
-		return translated;
 	}
 
 }
