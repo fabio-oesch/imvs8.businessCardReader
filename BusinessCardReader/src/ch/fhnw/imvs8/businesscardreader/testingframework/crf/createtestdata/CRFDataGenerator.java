@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.util.Arrays;
+import java.util.Comparator;
 
 import ch.fhnw.imvs8.businesscardreader.BusinessCard;
 import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
@@ -18,7 +19,9 @@ public class CRFDataGenerator {
 		File[] dirs = dir.listFiles();
 		
 		Arrays.sort(dirs);
-		for(File f : dir.listFiles()) {
+		
+		for(File f :dirs) {
+			System.out.println(f.getAbsolutePath());
 			File solFolder = new File(f.getAbsolutePath()+solution);
 			File[] files = solFolder.listFiles(new FilenameFilter() {
 	
@@ -30,7 +33,7 @@ public class CRFDataGenerator {
 			});
 			
 			BusinessCard card = reader.readImage(files[0].getAbsolutePath());
-			StringBuilder b = null;
+			StringBuilder b = new StringBuilder(card.writeDebugOutput());
 			b.append(",,,,,\n");
 			writer.append(b.toString());
 			writer.flush();
