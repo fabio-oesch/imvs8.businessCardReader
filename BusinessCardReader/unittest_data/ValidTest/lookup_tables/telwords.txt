@@ -1,18 +1,11 @@
- d
- d:
- direct
- direct:
- direkt
- direkt:
- t
- t:
- tel
- tel:
- d
- d:
- direct
- direct:
- direkt
- direkt:
- t
- t:
+d
+d:
+direct
+direct:
+direkt
+direkt:
+direktwahl
+t
+t:
+tel
+tel:

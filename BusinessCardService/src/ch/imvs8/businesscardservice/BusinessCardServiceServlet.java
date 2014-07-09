@@ -28,7 +28,9 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
-import ch.fhnw.imvs8.businesscardreader.Word;
+import ch.fhnw.imvs8.businesscardreader.BusinessCard;
+import ch.fhnw.imvs8.businesscardreader.BusinessCardField;
+import ch.fhnw.imvs8.businesscardreader.vcard.VCardCreator;
 
 
 @WebServlet(name = "BusinessCardReader", urlPatterns = { "/reader" })
@@ -144,7 +146,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 				
 				//return vCard
 				if(corrected.size() > 0) {
-					String vCard =  reader.getVCardString(corrected);
+					String vCard =  VCardCreator.getVCardString(corrected);
 					 
 					 //write to local file system
 					String vCardFileName = "vCard";
@@ -178,8 +180,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 
 	private void scanAndPrintResults(File folder, File image, PrintWriter out)
 			throws Exception {
-		Map<String, Word> result = reader.readImage(image
-				.getAbsolutePath());
+		BusinessCard card = reader.readImage(image);
 
 		FileWriter scanOutput = new FileWriter(folder.getAbsoluteFile()
 				+ File.separator + scanResultFile);
@@ -188,15 +189,13 @@ public class BusinessCardServiceServlet extends HttpServlet {
 		out.println("<input type=\"hidden\" name=\"step\" value=\"2\" />");
 		out.println("<input type=\"hidden\" name=\"folder\" value=\""
 				+ folder.getAbsolutePath() + "\">");
-		if (result != null) {
+		if (card != null) {
+			scanOutput.write(card.writeDebugOutput());
 			for (int i = 0; i < labels.length; i++) {
 
 				StringBuilder outputString = new StringBuilder();
 					//write debug output
-					Word word= result.get(labels[i]);
-					for(int j = 0; j < word.getSubwordSize();j++) {
-						scanOutput.write(labels[i] + "; "+ word.getSubwordAndPosition(j) + "\n");
-					}
+					BusinessCardField word= card.getField(labelNames[i]);
 					
 					outputString.append(labelNames[i]);
 					outputString.append(": <input type=\"text\" name=\"");
@@ -204,7 +203,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 					outputString.append("\" id=\"");
 					outputString.append(labels[i]);
 					outputString.append("\" value=\"");
-					outputString.append(word.getWordAsString());
+					outputString.append(word.getField());
 					outputString.append("\"");
 					if(word.isUnsure())
 						outputString.append(" STYLE=\"background-color: #FF9933;\"");

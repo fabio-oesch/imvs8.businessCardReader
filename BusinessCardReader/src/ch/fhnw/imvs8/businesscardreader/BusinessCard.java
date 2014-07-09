@@ -10,7 +10,7 @@ import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
 public class BusinessCard {
-	public static final String[] FIELD_NAMES = { "Title","First Name", "Last Name", "Street", "Zip Code", "City", " Mobile Number","Fixnet Number", "Fax Number", "Email","Web", "Organisation","Unknown"};
+	public static final String[] FIELD_LABELS = { "Title","First Name", "Last Name", "Street", "Zip Code", "City", " Mobile Number","Fixnet Number", "Fax Number", "Email","Web", "Organisation","Unknown"};
 	private final Map<String,LabeledWord> nerResult;
 	private final AnalysisResult ocrResult;
 	private final Map<String,BusinessCardField> fields;
@@ -21,8 +21,8 @@ public class BusinessCard {
 		this.fields = fields;
 	}
 	
-	public BusinessCardField getField(String fieldName) {
-		return fields.get(fieldName);
+	public BusinessCardField getField(String fieldLabel) {
+		return fields.get(fieldLabel);
 	}
 	
 	public List<BusinessCardField> getAllFields() {
@@ -32,7 +32,7 @@ public class BusinessCard {
 	public Map<String,String> getFieldsAsStringMap() {
 		HashMap<String,String> answer = new HashMap<>();
 		for(Entry<String, BusinessCardField> entry : fields.entrySet())
-			answer.put(entry.getKey(), entry.getValue().getWordAsString());
+			answer.put(entry.getKey(), entry.getValue().getField());
 		
 		return answer;
 	}

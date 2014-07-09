@@ -7,12 +7,22 @@ import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 
 public class BusinessCardField {
 	private final String label;
+	@Deprecated
 	private final LabeledWord word;
+	private final String field;
 	private boolean isWrong;
 	private boolean isUnsure;
 	
-	public BusinessCardField(LabeledWord w, String humanReadableLabel) {
-		word = w;
+	
+	public BusinessCardField(String humanReadableLabel) {
+		this.word = null;
+		this.field = null;
+		label = humanReadableLabel;
+	}
+	
+	public BusinessCardField(String field, LabeledWord w, String humanReadableLabel) {
+		this.word = w;
+		this.field = field;
 		label = humanReadableLabel;
 		//only make important fields isWrong if they are empty
 	}
@@ -29,9 +39,9 @@ public class BusinessCardField {
 	 * Puts all Subwords in a single String, can be deleted?
 	 * @return
 	 */
-	public String getWordAsString() {
-		if(word != null)
-			return word.getWordAsString();
+	public String getField() {
+		if(field != null)
+			return field;
 		return "";
 	}
 	
