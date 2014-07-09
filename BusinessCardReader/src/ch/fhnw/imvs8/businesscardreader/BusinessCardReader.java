@@ -90,26 +90,5 @@ public class BusinessCardReader {
 		
 		return translated;
 	}
-	
-	/**
-	 * Converts the words to a vCard String. If the URL under the label "WEB" is not a valid URL, it will be ignored.
-	 * 
-	 * @param words [label,word] pair, for example: ["First Name","James"]
-	 * @return vCard String
-	 */
-	public String getVCardString(Map<String,String> words) {
-		return VCardCreator.getVCardString(words);
-	}
-	
-	/**
-	 * Converts the Business Card in a VCard
-	 * 
-	 * this method is equivalent to getVCardString(card.getWordsAsMap())
-	 * 
-	 * @param card Business Card to convert.
-	 * @return vCard String
-	 */
-	public String getVCardString(BusinessCard card) {
-		return VCardCreator.getVCardString(card.getFieldsAsStringMap());
-	}
+
 }
