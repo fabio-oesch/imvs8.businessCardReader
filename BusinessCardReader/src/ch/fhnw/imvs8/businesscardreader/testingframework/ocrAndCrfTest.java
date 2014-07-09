@@ -36,9 +36,9 @@ public class ocrAndCrfTest {
 
 	private static OCREngine engine;
 	private static HashMap<String, String> xmlAtts;
-	private static HashMap<String, Double> fMeasurePerLabel;
-	private static HashMap<String, Integer> CountPerLabel;
-	private static HashMap<String, Integer> CountFMeasureOne;
+	private static HashMap<String, Double> fMeasurePerLabel = new HashMap<>();
+	private static HashMap<String, Integer> CountPerLabel = new HashMap<>();
+	private static HashMap<String, Integer> CountFMeasureOne = new HashMap<>();
 	private static String[] xmlAttName = { "FN", "LN", "ST", "PLZ", "ORT", "I-TN", "I-FN", "I-MN", "EMA", "ORG", "TIT" };
 	private static boolean[] xmlAttUsed = new boolean[11];
 
@@ -74,14 +74,14 @@ public class ocrAndCrfTest {
 				writer.append(label + "\t " + fMeasurePerLabel.get(label) / CountPerLabel.get(label) + "\n");
 			}
 
-			writer.append("\n Count of F-Measures = 1 per label");
+			writer.append("\nCount of F-Measures = 1 per label\n");
 			Iterator<String> it2 = CountFMeasureOne.keySet().iterator();
 			while (it2.hasNext()) {
 				String label = it2.next();
 				writer.append(label + "\t " + CountFMeasureOne.get(label) + " / " + CountPerLabel.get(label) + "\t" + CountFMeasureOne.get(label)
-						/ CountPerLabel.get(label) * 100 + "%\n");
+						/ (double)CountPerLabel.get(label) * 100 + "%\n");
 			}
-
+			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -130,13 +130,14 @@ public class ocrAndCrfTest {
 		}
 	}
 
+
 	private static void xmlAttsNotUsed(BufferedWriter writer) {
 		try {
 			writer.append("\n ---------------------------------------------------------------- \n");
 			writer.append("XMLAttributes which have not been used\n");
 			for (int i = 0; i < xmlAttUsed.length; i++)
 				if (!xmlAttUsed[i])
-					writer.append(xmlAttName[i] + " " + xmlAtts.get(xmlAttName[i]));
+					writer.append(xmlAttName[i] + " " + inHashMap(xmlAttName[i]) + "\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -174,11 +175,15 @@ public class ocrAndCrfTest {
 				double precision = correct / (double) (correct + inserted);
 				double recall = correct / (double) (correct + deleted);
 				double fmeasure = 2 * precision * recall / (precision + recall);
-				fMeasurePerLabel.put(pairs.getKey(), fMeasurePerLabel.get(pairs.getKey()) + fmeasure);
-				CountPerLabel.put(pairs.getKey(), CountPerLabel.get(pairs.getKey()));
+				if (Double.isNaN(fmeasure)) {
+					fmeasure = 0;
+				}
+				
+				fMeasurePerLabel.put(pairs.getKey(), fMeasurePerLabel.containsKey(pairs.getKey()) ? fMeasurePerLabel.get(pairs.getKey()) + fmeasure : fmeasure);
+				CountPerLabel.put(pairs.getKey(), CountPerLabel.containsKey(pairs.getKey()) ? CountPerLabel.get(pairs.getKey()) + 1 : 1);
 
 				if (fmeasure == 1)
-					CountFMeasureOne.put(pairs.getKey(), CountFMeasureOne.get(pairs.getKey()));
+					CountFMeasureOne.put(pairs.getKey(), CountFMeasureOne.containsKey(pairs.getKey()) ? CountFMeasureOne.get(pairs.getKey()) + 1 : 1);
 
 				incorrectWriter.append(correctWord + "\t" + pairs.getValue().getWordAsString() + "\t" + pairs.getKey() + "\t" + precision + "\t" + recall
 						+ "\t" + fmeasure + "\n");
