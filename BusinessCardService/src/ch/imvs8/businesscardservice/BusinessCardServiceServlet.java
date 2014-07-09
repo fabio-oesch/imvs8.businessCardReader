@@ -190,14 +190,12 @@ public class BusinessCardServiceServlet extends HttpServlet {
 		out.println("<input type=\"hidden\" name=\"folder\" value=\""
 				+ folder.getAbsolutePath() + "\">");
 		if (card != null) {
+			scanOutput.write(card.writeDebugOutput());
 			for (int i = 0; i < labels.length; i++) {
 
 				StringBuilder outputString = new StringBuilder();
 					//write debug output
-					Word word= card.get(labels[i]);
-					for(int j = 0; j < word.getSubwordSize();j++) {
-						scanOutput.write(labels[i] + "; "+ word.getSubwordAndPosition(j) + "\n");
-					}
+					BusinessCardField word= card.getField(labelNames[i]);
 					
 					outputString.append(labelNames[i]);
 					outputString.append(": <input type=\"text\" name=\"");
@@ -205,7 +203,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 					outputString.append("\" id=\"");
 					outputString.append(labels[i]);
 					outputString.append("\" value=\"");
-					outputString.append(word.getWordAsString());
+					outputString.append(word.getField());
 					outputString.append("\"");
 					if(word.isUnsure())
 						outputString.append(" STYLE=\"background-color: #FF9933;\"");
