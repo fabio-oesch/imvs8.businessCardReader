@@ -40,6 +40,11 @@ public class ocrAndCrfTest {
 	private static HashMap<String, Integer> CountPerLabel = new HashMap<>();
 	private static HashMap<String, Integer> CountFMeasureOne = new HashMap<>();
 	private static String[] xmlAttName = { "FN", "LN", "ST", "PLZ", "ORT", "I-TN", "I-FN", "I-MN", "EMA", "ORG", "TIT" };
+	private static String[] xmlStuff = { "First Name", "Last Name", "Street Address", "Postal Code", "City", "Phone", "Phone.Fax", "Phone.Mobile", "E-mail",
+			"Company", "Title" };
+	private static double[] prec = new double[11];
+	private static double[] reca = new double[11];
+	private static double[] fmeas = new double[11];
 	private static boolean[] xmlAttUsed = new boolean[11];
 
 	private static String toCRF = "/usr/local/bin";
@@ -137,27 +142,14 @@ public class ocrAndCrfTest {
 		}
 	}
 
-	private static void xmlAttsNotUsed(BufferedWriter writer) {
-		try {
-			writer.append("\n ---------------------------------------------------------------- \n");
-			writer.append("XMLAttributes which have not been used\n");
-			for (int i = 0; i < xmlAttUsed.length; i++)
-				if (!xmlAttUsed[i])
-					writer.append(xmlAttName[i] + " " + inHashMap(xmlAttName[i]) + "\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	private static void readOutput(Map<String, LabeledWord> pictureResult, String fileName, String folderName) throws IOException, InterruptedException {
 
-		BufferedWriter incorrectWriter = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/" + folderName + " pipeline " + fileName + ".txt")));
 		String correctWord;
 		String line;
 		diff_match_patch diffEngine = new diff_match_patch();
+		HashMap<String, String> saveCRFOutput = new HashMap<>();
 
 		Iterator<Map.Entry<String, LabeledWord>> it = pictureResult.entrySet().iterator();
-		incorrectWriter.append("XMLFile\t Tesseract\t crf Label \t precision\t recall\t f-measure\n");
 		while (it.hasNext()) {
 			int inserted = 0;
 			int deleted = 0;
@@ -189,16 +181,29 @@ public class ocrAndCrfTest {
 
 				if (fmeasure == 1)
 					CountFMeasureOne.put(pairs.getKey(), CountFMeasureOne.containsKey(pairs.getKey()) ? CountFMeasureOne.get(pairs.getKey()) + 1 : 1);
+				prec[Arrays.asList(xmlStuff).indexOf(pairs.getKey())] = precision;
+				reca[Arrays.asList(xmlStuff).indexOf(pairs.getKey())] = recall;
+				fmeas[Arrays.asList(xmlStuff).indexOf(pairs.getKey())] = fmeasure;
 
-				incorrectWriter.append(correctWord + "\t" + pairs.getValue().getWordAsString() + "\t" + pairs.getKey() + "\t" + precision + "\t" + recall
-						+ "\t" + fmeasure + "\n");
-			} else
-				incorrectWriter.append("label not found\t" + pairs.getValue().getWordAsString() + "\t" + pairs.getKey() + "\n");
-
+			}
+			saveCRFOutput.put(pairs.getKey(), pairs.getValue().getWordAsString());
 		}
-		xmlAttsNotUsed(incorrectWriter);
+
+		BufferedWriter incorrectWriter = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/" + folderName + " pipeline " + fileName + ".txt")));
+		writeOutputIntoFile(incorrectWriter, saveCRFOutput);
 		incorrectWriter.close();
 
+	}
+
+	private static void writeOutputIntoFile(BufferedWriter incorrectWriter, HashMap<String, String> crfOutput) {
+		try {
+			incorrectWriter.append("XMLAttribute\tTessAtt\tprec\treca\tfmeas\txmlText\tTesseractText\n");
+			for (int i = 0; i < xmlAttName.length; i++)
+				incorrectWriter.append(xmlStuff[i] + (xmlStuff[i].length() > 8 ? "\t" : "\t\t") + xmlAttName[i] + "\t" + prec[i] + "\t" + reca[i] + "\t"
+						+ prec[i] + "\t" + xmlAtts.get(xmlStuff[i]) + "\t" + crfOutput.get(xmlAttName[i]) + "\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static String inHashMap(String label) {
