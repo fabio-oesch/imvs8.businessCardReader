@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,9 +63,9 @@ public class ocrAndCrfTest {
 	private static final String CRF_LOCATION = "/usr/local/bin";
 	private static NEREngine ner;
 
-	private static final String[] LAST_EMAIL_PERSON = { "a.mathur@axes-systems.com", "edgar.gmuer@noser.com", "edgar.gmuer@noser.com", "edgar.gmuer@noser.com",
-			"edgar.gmuer@noser.com" };
-	private static final String[] MODELS = {};
+	private static final String[] LAST_EMAIL_PERSON = { "a.mathur@axes-systems.com", "edgar.gmuer@noser.com","markus.berner@scs.ch", "peter.brandt@ergon.ch", "simon.stamm@actelion.com",
+			"zeno.staemmer@albistechnologies.com" };
+	private static final String[] MODELS = {"crossval0.txtModelWithConfidence","crossval1.txtModelWithConfidence","crossval2.txtModelWithConfidence","crossval3.txtModelWithConfidence","crossval4.txtModelWithConfidence"};
 
 	public static void main(String[] args) {
 		GenericFilterProcessor filters = new GenericFilterProcessor();
@@ -100,9 +101,9 @@ public class ocrAndCrfTest {
 			Iterator<String> it3 = truePositive.keySet().iterator();
 			while (it3.hasNext()) {
 				String label = it3.next();
-				double precision = truePositive.get(label) / (truePositive.get(label) + falsePositive.get(label));
-				double recall = truePositive.get(label) / (truePositive.get(label) + falseNegative.get(label));
-				double fmeasure = 2 * precision * recall / (precision + recall);
+				double precision = truePositive.get(label) / (double)(truePositive.get(label) + (falsePositive.containsKey(label) ? falsePositive.get(label) : 0));
+				double recall = truePositive.get(label) / (double)(truePositive.get(label) + (falseNegative.containsKey(label) ? falseNegative.get(label):0));
+				double fmeasure = 2 * precision * recall / (double)(precision + recall);
 				writer.append(label + "\t" + precision + "\t" + recall + "\t" + fmeasure + "\n");
 			}
 			writer.close();
@@ -118,6 +119,9 @@ public class ocrAndCrfTest {
 		int i = 0;
 		while (!folderList[i].equals(firstEmail))
 			i++;
+		if (index != 0) {
+			i++;
+		}
 		while (!folderList[i++].equals(lastEmail)) {
 			String[] solutionfiles = new File(toSVN + "testdata/business-cards/" + folderList[i] + "/cardscan_raw/").list();
 			int j = 0;
@@ -163,6 +167,9 @@ public class ocrAndCrfTest {
 		diff_match_patch diffEngine = new diff_match_patch();
 		HashMap<String, String> saveCRFOutput = new HashMap<>();
 
+		Arrays.fill(prec, 0);
+		Arrays.fill(reca, 0);
+		Arrays.fill(fmeas, 0);
 		Iterator<Map.Entry<String, LabeledWord>> it = pictureResult.entrySet().iterator();
 		while (it.hasNext()) {
 			int inserted = 0;
@@ -195,9 +202,9 @@ public class ocrAndCrfTest {
 
 				if (fmeasure == 1)
 					CountFMeasureOne.put(pairs.getKey(), CountFMeasureOne.containsKey(pairs.getKey()) ? CountFMeasureOne.get(pairs.getKey()) + 1 : 1);
-				prec[Arrays.asList(xmlStuff).indexOf(pairs.getKey())] = precision;
-				reca[Arrays.asList(xmlStuff).indexOf(pairs.getKey())] = recall;
-				fmeas[Arrays.asList(xmlStuff).indexOf(pairs.getKey())] = fmeasure;
+				prec[Arrays.asList(xmlAttName).indexOf(pairs.getKey())] = precision;
+				reca[Arrays.asList(xmlAttName).indexOf(pairs.getKey())] = recall;
+				fmeas[Arrays.asList(xmlAttName).indexOf(pairs.getKey())] = fmeasure;
 
 				if (precision > 0.6)
 					truePositive.put(pairs.getKey(), truePositive.containsKey(pairs.getKey()) ? truePositive.get(pairs.getKey()) + 1 : 1);
@@ -217,9 +224,11 @@ public class ocrAndCrfTest {
 	private static void writeOutputIntoFile(BufferedWriter incorrectWriter, HashMap<String, String> crfOutput) {
 		try {
 			incorrectWriter.append("XMLAttribute\tTessAtt\tprec\treca\tfmeas\txmlText\tTesseractText\n");
-			for (int i = 0; i < xmlAttName.length; i++)
-				incorrectWriter.append(xmlStuff[i] + (xmlStuff[i].length() > 8 ? "\t" : "\t\t") + xmlAttName[i] + "\t" + prec[i] + "\t" + reca[i] + "\t"
-						+ prec[i] + "\t" + xmlAtts.get(xmlStuff[i]) + "\t" + crfOutput.get(xmlAttName[i]) + "\n");
+			DecimalFormat df = new DecimalFormat("#.##");
+			for (int i = 0; i < xmlAttName.length; i++) {
+				incorrectWriter.append(xmlStuff[i] + (xmlStuff[i].length() > 8 ? "\t" : "\t\t") + xmlAttName[i] + "\t" + df.format(prec[i]) + "\t" + df.format(reca[i]) + "\t"
+						+ df.format(prec[i]) + "\t" + xmlAtts.get(xmlStuff[i]) + "\t" + crfOutput.get(xmlAttName[i]) + "\n");
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

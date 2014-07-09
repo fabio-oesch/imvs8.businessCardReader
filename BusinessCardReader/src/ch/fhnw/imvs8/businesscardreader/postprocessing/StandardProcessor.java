@@ -13,6 +13,9 @@ import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
  * @author jon
  */
 public class StandardProcessor implements Processor {
+	private final String[] importantFields = {"FN", "LN","I-TN","EMA","ORG"};
+	private final double nerConfidenceThreshold = 0.0;
+	private final double ocrConfidenceThreshold = 60.0;
 	
 	public StandardProcessor() {
 		
@@ -24,6 +27,14 @@ public class StandardProcessor implements Processor {
 		WordContainsErrors
 	}
 
+	private void isFalse() {
+		
+	}
+	
+	private void isUnsure() {
+		
+	}
+	
 	@Override
 	public Map<String, BusinessCardField> process(AnalysisResult ocrResult,Map<String, LabeledWord> nerResult) {
 		HashMap<String,BusinessCardField> answer = new HashMap<>();

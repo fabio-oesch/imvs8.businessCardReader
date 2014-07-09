@@ -41,8 +41,6 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	private static final String actualResultFile = "actualresults.txt";
 	private static final String[] labels = {"TIT", "FN", "LN", "EMA" ,"ORG","I-MN", "I-TN", "I-FN","ST", "PLZ",
 			"ORT", "WEB", "IDK" };
-	private static final String[] labelNames = { "Title", "First Name", "Last Name","Organisation", "Mobile Number",
-		"Fixnet Number", "Fax Number","Street", "Zip Code", "City","Web","Unknown"};
 	
 	private BusinessCardReader reader;
 	private String uploadedFolder;
@@ -143,7 +141,6 @@ public class BusinessCardServiceServlet extends HttpServlet {
 				}
 				actualResultsFile.close();
 				
-				
 				//return vCard
 				if(corrected.size() > 0) {
 					String vCard =  VCardCreator.getVCardString(corrected);
@@ -199,9 +196,9 @@ public class BusinessCardServiceServlet extends HttpServlet {
 					
 					outputString.append(BusinessCard.FIELD_LABELS[i]);
 					outputString.append(": <input type=\"text\" name=\"");
-					outputString.append(labels[i]);
+					outputString.append(word.getNERLabel());
 					outputString.append("\" id=\"");
-					outputString.append(labels[i]);
+					outputString.append(word.getNERLabel());
 					outputString.append("\" value=\"");
 					outputString.append(word.getField());
 					outputString.append("\"");
