@@ -80,7 +80,20 @@ public class BusinessCardReader {
 	 * @throws FileNotFoundException
 	 */
 	public BusinessCard readImage(String image) throws FileNotFoundException {
-		AnalysisResult ocrResult = ocr.analyzeImage(new File(image));
+		return this.readImage(new File(image));
+	}
+	
+	/**
+	 * reads an image and returns a map of found words.
+	 * The keys are tags found for this entity and the values are the entities themselfes.
+	 * 
+	 * @param image
+	 *            path to image
+	 * @return Named entities found in this picture
+	 * @throws FileNotFoundException
+	 */
+	public BusinessCard readImage(File image) throws FileNotFoundException {
+		AnalysisResult ocrResult = ocr.analyzeImage(image);
 		Map<String, LabeledWord> nerResult = ner.analyse(ocrResult);
 		Map<String, BusinessCardField> fields = proc.process(ocrResult, nerResult);
 			
