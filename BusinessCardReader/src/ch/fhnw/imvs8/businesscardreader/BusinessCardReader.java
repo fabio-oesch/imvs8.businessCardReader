@@ -62,7 +62,7 @@ public class BusinessCardReader {
 		LookupTables tables = new LookupTables(dataFolder + File.separator + LOOKUP_TABLES_FOLDER);
 		FeatureCreator creator = new FeatureCreator(tables, new GermanStemming());
 		
-		ner = new NEREngine(CRF_LOCATION, dataFolder + File.separator + NER_CONFIGURATION_FOLDER, creator);
+		ner = new NEREngine(CRF_LOCATION, dataFolder + File.separator + NER_CONFIGURATION_FOLDER +File.separator + "model", creator);
 	}
 
 	/**

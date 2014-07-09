@@ -1,28 +1,25 @@
 package ch.fhnw.imvs8.businesscardreader.testingframework;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterProcessor;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
-import ch.fhnw.imvs8.businesscardreader.imagefilters.LaplaceSharpenFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Phansalkar;
 import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
@@ -31,7 +28,6 @@ import ch.fhnw.imvs8.businesscardreader.ner.NEREngine;
 import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
-import ch.fhnw.imvs8.businesscardreader.testingframework.crf.createtestdata.ModelGenerator;
 import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch;
 import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Diff;
 import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Operation;
@@ -42,10 +38,10 @@ public class ocrAndCrfTest {
 	private static HashMap<String, String> xmlAtts;
 	private static String toCRF = "/usr/local/bin";
 	private static String toSVN = "/home/jon/dev/fuckingsvn/svn/";
-	
-	private static String toModel = "testdata/CRF/crfModels";
-	private static String toLogs = "/testdata/CRF/crfLogs";
-	
+
+	private static String toModel = "testdata/CRF/crfModels/";
+	private static String toLogs = "/testdata/CRF/pipelineLogs/";
+
 	private static final String LOOKUP_TABLES_FOLDER = "lookup_tables";
 	private static final String NER_CONFIGURATION_FOLDER = "crfdata";
 	private static final String CRF_LOCATION = "/usr/local/bin";
@@ -74,32 +70,24 @@ public class ocrAndCrfTest {
 
 			String[] testFiles = new File(toSVN + "testdata/business-cards/" + folderList[i] + "/testimages/").list();
 			for (String fileName : testFiles)
-				if (!fileName.contains("debug") || !fileName.contains("scale"))
+				if (!(fileName.contains("debug") || fileName.contains("scale")))
 					testPicture(fileName, folderList[i], solution);
 		}
 	}
 
 	private static void testPicture(String fileName, String folderName, HashMap<String, String> solution) {
 		try {
+			System.out.println(toSVN + "testdata/business-cards/" + folderName + "/testimages/" + fileName);
 			AnalysisResult result = engine.analyzeImage(new File(toSVN + "testdata/business-cards/" + folderName + "/testimages/" + fileName));
-			File tmp = new File("tmp/testfile");
-			tmp.createNewFile();
-			BufferedWriter writer = new BufferedWriter(new FileWriter(tmp));
-			for (int i = 0; i < result.getResultSize(); i++)
-				writer.append(result.getWord(i) + "\n");
-			writer.close();
-
 
 			LookupTables tables = new LookupTables("." + File.separator + LOOKUP_TABLES_FOLDER);
 			FeatureCreator creator = new FeatureCreator(tables, new GermanStemming());
-			
-			ner = new NEREngine(CRF_LOCATION, "." + File.separator + NER_CONFIGURATION_FOLDER, creator);
-			ner.analyse(result);
-			
-			ModelGenerator.createFile("tmp/testfile", "tmp/testFeaturesSet");
-			readOutput("tmp/testFeaturesSet", "crossval0.txtModelNewF");
 
-			tmp.delete();
+			ner = new NEREngine(CRF_LOCATION, toSVN + toModel + "crossval0.txtModelNewF", creator);
+			Map<String, LabeledWord> pictureResult = ner.analyse(result);
+
+			readOutput(pictureResult, fileName);
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -109,63 +97,44 @@ public class ocrAndCrfTest {
 		}
 	}
 
-	private static void readOutput(String toTestData, String modelName) throws IOException, InterruptedException {
-		Process process = new ProcessBuilder(toCRF + "/crf_test", "-v1", "-m", toSVN + toModel + "/" + modelName, toTestData).start();
-		InputStream is = process.getInputStream();
-		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader br = new BufferedReader(isr);
+	private static void readOutput(Map<String, LabeledWord> pictureResult, String fileName) throws IOException, InterruptedException {
 
-		BufferedWriter incorrectWriter = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/pipeline " + modelName)));
-		System.out.println(toSVN + toLogs + "/pipeline " + modelName);
+		BufferedWriter incorrectWriter = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/pipeline " + fileName +".txt")));
 		String correctWord;
 		String line;
 		diff_match_patch diffEngine = new diff_match_patch();
-		int inserted = 0;
-		int deleted = 0;
-		int correct = 0;
-		int position = 0;
-		while ((line = br.readLine()) != null)
-			if (!line.startsWith("#"))
-				if (line.length() < 2) {
-					inserted = 0;
-					deleted = 0;
-					correct = 0;
-					incorrectWriter.append("\n");
-				} else {
-					String[] lineArray = line.split("\t");
-					if (lineArray.length > 2) {
-						// only works when -v1 or -v2 is set
-						String labelAndConfidence = lineArray[lineArray.length - 1];
-						int dashIndex = labelAndConfidence.indexOf('/');
 
-						String label = labelAndConfidence.substring(0, dashIndex);
-						double conf = Double.parseDouble(labelAndConfidence.substring(dashIndex + 1));
-						LabeledWord res = new LabeledWord(label, lineArray[0], conf, position++);
+		Iterator<Map.Entry<String,LabeledWord>> it = pictureResult.entrySet().iterator();
+		incorrectWriter.append("XMLFile\t Tesseract\t crf Label \t precision\t recall\t f-measure\n");
+		while (it.hasNext()) {
+			int inserted = 0;
+			int deleted = 0;
+			int correct = 0;
+			Map.Entry<String,LabeledWord> pairs = it.next();
+			it.remove(); // avoids a ConcurrentModificationException
+			correctWord = inHashMap(pairs.getKey());
 
-						correctWord = inHashMap(res.getLabel());
+			if (correctWord != null) {
+				List<Diff> differences = diffEngine.diff_main(correctWord.trim(), pairs.getValue().getWordAsString().trim());
+				for (Diff d : differences)
+					if (d.operation == Operation.DELETE)
+						// deleted = false negative
+						deleted += d.text.length();
+					else if (d.operation == Operation.INSERT)
+						// inserted = false positive
+						inserted += d.text.length();
+					else
+						correct += d.text.length();
+				// System.out.println(d.text + "changed");
+				double precision = correct / (double) (correct + inserted);
+				double recall = correct / (double) (correct + deleted);
+				double fmeasure = 2 * precision * recall / (precision + recall);
+				incorrectWriter.append(correctWord + "\t" + pairs.getValue().getWordAsString() + "\t" + pairs.getKey() + "\t" + precision + "\t" + recall + "\t" + fmeasure
+						+ "\n");
+			} else
+				incorrectWriter.append("label not found\t" + pairs.getValue().getWordAsString() + "\t" + pairs.getKey() + "\n");
 
-						if (correctWord != null) {
-							List<Diff> differences = diffEngine.diff_main(correctWord, res.getWordAsString());
-							for (Diff d : differences)
-								if (d.operation == Operation.DELETE)
-									// deleted = false negative
-									deleted += d.text.length();
-								else if (d.operation == Operation.INSERT)
-									// inserted = false positive
-									inserted += d.text.length();
-								else
-									correct += d.text.length();
-							// System.out.println(d.text + "changed");
-							double precision = correct / (double) (correct + inserted);
-							double recall = correct / (double) (correct + deleted);
-							double fmeasure = 2 * precision * recall / (precision + recall);
-							incorrectWriter.append(correctWord + "\t" + res.getWordAsString() + "\t" + res.getLabel() + "\t" + precision + "\t" + recall + "\t"
-									+ fmeasure + "\n");
-						} else
-							incorrectWriter.append("label not found\t" + res.getWordAsString() + "\t" + res.getLabel() + "\n");
-
-					}
-				}
+		}
 		incorrectWriter.close();
 
 	}
