@@ -3,14 +3,33 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Business Card Service</title>
+<style type="text/css">
+body {
+	font-family: Arial, Helvetica, Verdana;
+	font-size: 10px;
+}
+#container {
+	padding: 5px;
+}
+#container form {
+	background-color: #ccc;
+	border: 1px solid #999;
+	width: 390px;
+	padding: 5px;
+}
+</style>
 </head>
 <body>
-<h1>Hello, do you want me to read your Business Card?</h1>
-<img src="start.png"/>
-<form enctype="multipart/form-data" method="post" name="input" action="reader">
-  <input type="hidden" name="step" value="1" />
-  <input type="file" name="file" id="file" accept="image/*"/>
-  <input type="submit" value="Upload" name="upload" id="upload" />
-</form>
+<div id="container">
+<center>
+	<h1>Hello, do you want me to read your Business Card?</h1>
+	<img src="/BusinessCardService/BusinessCardService/start.png" width="400" vspace="10" />
+	<form enctype="multipart/form-data" method="post" name="input" action="reader">
+	  <input type="hidden" name="step" value="1" />
+	  <input type="file" name="file" id="file" accept="image/*"/>
+	  <input type="submit" value="Upload" name="upload" id="upload" />
+	</form>
+</center>
+</div>
 </body>
 </html>

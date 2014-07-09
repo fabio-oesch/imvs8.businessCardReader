@@ -191,13 +191,13 @@ public class BusinessCardServiceServlet extends HttpServlet {
 				+ folder.getAbsolutePath() + "\">");
 		if (card != null) {
 			scanOutput.write(card.writeDebugOutput());
-			for (int i = 0; i < labels.length; i++) {
+			for (int i = 0; i < BusinessCard.FIELD_LABELS.length; i++) {
 
 				StringBuilder outputString = new StringBuilder();
 					//write debug output
-					BusinessCardField word= card.getField(labelNames[i]);
+					BusinessCardField word= card.getField(BusinessCard.FIELD_LABELS[i]);
 					
-					outputString.append(labelNames[i]);
+					outputString.append(BusinessCard.FIELD_LABELS[i]);
 					outputString.append(": <input type=\"text\" name=\"");
 					outputString.append(labels[i]);
 					outputString.append("\" id=\"");
