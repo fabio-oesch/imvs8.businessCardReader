@@ -36,6 +36,12 @@ public class ocrAndCrfTest {
 
 	private static OCREngine engine;
 	private static HashMap<String, String> xmlAtts;
+	private static HashMap<String, Double> fMeasurePerLabel = new HashMap<>();
+	private static HashMap<String, Integer> CountPerLabel = new HashMap<>();
+	private static HashMap<String, Integer> CountFMeasureOne = new HashMap<>();
+	private static String[] xmlAttName = { "FN", "LN", "ST", "PLZ", "ORT", "I-TN", "I-FN", "I-MN", "EMA", "ORG", "TIT" };
+	private static boolean[] xmlAttUsed = new boolean[11];
+
 	private static String toCRF = "/usr/local/bin";
 	private static String toSVN = "/home/jon/dev/fuckingsvn/svn/";
 
@@ -54,6 +60,32 @@ public class ocrAndCrfTest {
 
 		engine = new OCREngine(filters);
 		readBusinessCards();
+
+		createOverallFile();
+	}
+
+	private static void createOverallFile() {
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/allFiles.txt")));
+			writer.append("F-Measure Per Label:\n");
+			Iterator<String> it = fMeasurePerLabel.keySet().iterator();
+			while (it.hasNext()) {
+				String label = it.next();
+				writer.append(label + "\t " + fMeasurePerLabel.get(label) / CountPerLabel.get(label) + "\n");
+			}
+
+			writer.append("\nCount of F-Measures = 1 per label\n");
+			Iterator<String> it2 = CountFMeasureOne.keySet().iterator();
+			while (it2.hasNext()) {
+				String label = it2.next();
+				writer.append(label + "\t " + CountFMeasureOne.get(label) + " / " + CountPerLabel.get(label) + "\t" + CountFMeasureOne.get(label)
+						/ (double)CountPerLabel.get(label) * 100 + "%\n");
+			}
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public static void readBusinessCards() {
@@ -77,6 +109,7 @@ public class ocrAndCrfTest {
 
 	private static void testPicture(String fileName, String folderName, HashMap<String, String> solution) {
 		try {
+			Arrays.fill(xmlAttUsed, false);
 			System.out.println(toSVN + "testdata/business-cards/" + folderName + "/testimages/" + fileName);
 			AnalysisResult result = engine.analyzeImage(new File(toSVN + "testdata/business-cards/" + folderName + "/testimages/" + fileName));
 
@@ -86,7 +119,7 @@ public class ocrAndCrfTest {
 			ner = new NEREngine(CRF_LOCATION, toSVN + toModel + "crossval0.txtModelNewF", creator);
 			Map<String, LabeledWord> pictureResult = ner.analyse(result);
 
-			readOutput(pictureResult, fileName);
+			readOutput(pictureResult, fileName, folderName);
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -97,20 +130,33 @@ public class ocrAndCrfTest {
 		}
 	}
 
-	private static void readOutput(Map<String, LabeledWord> pictureResult, String fileName) throws IOException, InterruptedException {
 
-		BufferedWriter incorrectWriter = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/pipeline " + fileName +".txt")));
+	private static void xmlAttsNotUsed(BufferedWriter writer) {
+		try {
+			writer.append("\n ---------------------------------------------------------------- \n");
+			writer.append("XMLAttributes which have not been used\n");
+			for (int i = 0; i < xmlAttUsed.length; i++)
+				if (!xmlAttUsed[i])
+					writer.append(xmlAttName[i] + " " + inHashMap(xmlAttName[i]) + "\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void readOutput(Map<String, LabeledWord> pictureResult, String fileName, String folderName) throws IOException, InterruptedException {
+
+		BufferedWriter incorrectWriter = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/" + folderName + " pipeline " + fileName + ".txt")));
 		String correctWord;
 		String line;
 		diff_match_patch diffEngine = new diff_match_patch();
 
-		Iterator<Map.Entry<String,LabeledWord>> it = pictureResult.entrySet().iterator();
+		Iterator<Map.Entry<String, LabeledWord>> it = pictureResult.entrySet().iterator();
 		incorrectWriter.append("XMLFile\t Tesseract\t crf Label \t precision\t recall\t f-measure\n");
 		while (it.hasNext()) {
 			int inserted = 0;
 			int deleted = 0;
 			int correct = 0;
-			Map.Entry<String,LabeledWord> pairs = it.next();
+			Map.Entry<String, LabeledWord> pairs = it.next();
 			it.remove(); // avoids a ConcurrentModificationException
 			correctWord = inHashMap(pairs.getKey());
 
@@ -129,42 +175,66 @@ public class ocrAndCrfTest {
 				double precision = correct / (double) (correct + inserted);
 				double recall = correct / (double) (correct + deleted);
 				double fmeasure = 2 * precision * recall / (precision + recall);
-				incorrectWriter.append(correctWord + "\t" + pairs.getValue().getWordAsString() + "\t" + pairs.getKey() + "\t" + precision + "\t" + recall + "\t" + fmeasure
-						+ "\n");
+				if (Double.isNaN(fmeasure)) {
+					fmeasure = 0;
+				}
+				
+				fMeasurePerLabel.put(pairs.getKey(), fMeasurePerLabel.containsKey(pairs.getKey()) ? fMeasurePerLabel.get(pairs.getKey()) + fmeasure : fmeasure);
+				CountPerLabel.put(pairs.getKey(), CountPerLabel.containsKey(pairs.getKey()) ? CountPerLabel.get(pairs.getKey()) + 1 : 1);
+
+				if (fmeasure == 1)
+					CountFMeasureOne.put(pairs.getKey(), CountFMeasureOne.containsKey(pairs.getKey()) ? CountFMeasureOne.get(pairs.getKey()) + 1 : 1);
+
+				incorrectWriter.append(correctWord + "\t" + pairs.getValue().getWordAsString() + "\t" + pairs.getKey() + "\t" + precision + "\t" + recall
+						+ "\t" + fmeasure + "\n");
 			} else
 				incorrectWriter.append("label not found\t" + pairs.getValue().getWordAsString() + "\t" + pairs.getKey() + "\n");
 
 		}
+		xmlAttsNotUsed(incorrectWriter);
 		incorrectWriter.close();
 
 	}
 
 	public static String inHashMap(String label) {
-		if (label.equals("FN"))
+		if (label.equals("FN")) {
+			xmlAttUsed[0] = true;
 			return xmlAtts.get("First Name");
-		else if (label.equals("LN"))
+		} else if (label.equals("LN")) {
+			xmlAttUsed[1] = true;
 			return xmlAtts.get("Last Name");
-		else if (label.equals("ST"))
+		} else if (label.equals("ST")) {
+			xmlAttUsed[2] = true;
 			return xmlAtts.get("Street Address");
-		else if (label.equals("PLZ"))
+		} else if (label.equals("PLZ")) {
+			xmlAttUsed[3] = true;
 			return xmlAtts.get("Postal Code");
-		else if (label.equals("ORT"))
+		} else if (label.equals("ORT")) {
+			xmlAttUsed[4] = true;
 			return xmlAtts.get("City");
-		else if (label.equals("I-TN"))
+		} else if (label.equals("I-TN")) {
+			xmlAttUsed[5] = true;
 			return xmlAtts.get("Phone");
-		else if (label.equals("I-FN"))
+		} else if (label.equals("I-FN")) {
+			xmlAttUsed[6] = true;
 			return xmlAtts.get("Phone.Fax");
-		else if (label.equals("I-MN"))
+		} else if (label.equals("I-MN")) {
+			xmlAttUsed[7] = true;
 			return xmlAtts.get("Phone.Mobile");
-		else if (label.equals("EMA"))
+		} else if (label.equals("EMA")) {
+			xmlAttUsed[8] = true;
 			return xmlAtts.get("E-mail");
+		}
 		/*
 		 * else if (label.equals("WEB")) return xmlAtts.get("");
 		 */
-		else if (label.equals("ORG"))
+		else if (label.equals("ORG")) {
+			xmlAttUsed[9] = true;
 			return xmlAtts.get("Company");
-		else if (label.equals("TIT"))
+		} else if (label.equals("TIT")) {
+			xmlAttUsed[10] = true;
 			return xmlAtts.get("Title");
+		}
 		return null;
 	}
 
