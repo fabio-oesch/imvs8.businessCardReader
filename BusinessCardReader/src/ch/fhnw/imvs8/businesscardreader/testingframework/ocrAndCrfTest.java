@@ -47,6 +47,10 @@ public class ocrAndCrfTest {
 	private static double[] fmeas = new double[11];
 	private static boolean[] xmlAttUsed = new boolean[11];
 
+	private static HashMap<String, Integer> truePositive = new HashMap<>();
+	private static HashMap<String, Integer> falsePositive = new HashMap<>();
+	private static HashMap<String, Integer> falseNegative = new HashMap<>();
+
 	private static String toCRF = "/usr/local/bin";
 	private static String toSVN = "/home/jon/dev/fuckingsvn/svn/";
 
@@ -90,6 +94,16 @@ public class ocrAndCrfTest {
 				String label = it2.next();
 				writer.append(label + "\t " + CountFMeasureOne.get(label) + " / " + CountPerLabel.get(label) + "\t" + CountFMeasureOne.get(label)
 						/ (double) CountPerLabel.get(label) * 100 + "%\n");
+			}
+
+			writer.append("\nF-Measure for each Label\n");
+			Iterator<String> it3 = truePositive.keySet().iterator();
+			while (it3.hasNext()) {
+				String label = it3.next();
+				double precision = truePositive.get(label) / (truePositive.get(label) + falsePositive.get(label));
+				double recall = truePositive.get(label) / (truePositive.get(label) + falseNegative.get(label));
+				double fmeasure = 2 * precision * recall / (precision + recall);
+				writer.append(label + "\t" + precision + "\t" + recall + "\t" + fmeasure + "\n");
 			}
 			writer.close();
 		} catch (IOException e) {
@@ -185,7 +199,12 @@ public class ocrAndCrfTest {
 				reca[Arrays.asList(xmlStuff).indexOf(pairs.getKey())] = recall;
 				fmeas[Arrays.asList(xmlStuff).indexOf(pairs.getKey())] = fmeasure;
 
-			}
+				if (precision > 0.6)
+					truePositive.put(pairs.getKey(), truePositive.containsKey(pairs.getKey()) ? truePositive.get(pairs.getKey()) + 1 : 1);
+				else
+					falsePositive.put(pairs.getKey(), falsePositive.containsKey(pairs.getKey()) ? falsePositive.get(pairs.getKey()) + 1 : 1);
+			} else
+				falseNegative.put(pairs.getKey(), falseNegative.containsKey(pairs.getKey()) ? falseNegative.get(pairs.getKey()) + 1 : 1);
 			saveCRFOutput.put(pairs.getKey(), pairs.getValue().getWordAsString());
 		}
 
