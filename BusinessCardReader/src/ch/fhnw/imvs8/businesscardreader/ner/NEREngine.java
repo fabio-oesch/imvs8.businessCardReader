@@ -90,7 +90,7 @@ public class NEREngine {
 	 * @throws IOException
 	 */
 	private List<LabeledWord> readOutput(String toTestData, int size) throws IOException {
-		Process process = new ProcessBuilder(toCRF + "/crf_test", "-v1", "-m", toModel + "/model", toTestData).start();
+		Process process = new ProcessBuilder(toCRF + "/crf_test", "-v1", "-m", toModel, toTestData).start();
 		InputStream is = process.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
@@ -105,7 +105,6 @@ public class NEREngine {
 				String labelAndConfidence = lineArray[lineArray.length - 1];
 				int dashIndex = labelAndConfidence.indexOf('/');
 
-				ModelGenerator.countFuckingWords(positionIndex, line);
 				String label = labelAndConfidence.substring(0, dashIndex);
 				double conf = Double.parseDouble(labelAndConfidence.substring(dashIndex + 1));
 				LabeledWord res = new LabeledWord(label, lineArray[0], conf, positionIndex++);

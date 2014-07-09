@@ -67,6 +67,9 @@ public class OCREngine {
 	 */
 	public AnalysisResult analyzeImage(File im) throws FileNotFoundException {
 		AnalysisResult res = null;
+		if (!im.exists()) {
+			throw new FileNotFoundException(im.getAbsolutePath());
+		}
 		try {
 			BufferedImage image = ImageIO.read(new FileInputStream(im)); // loadimage
 			if (processor != null)

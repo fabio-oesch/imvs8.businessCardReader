@@ -40,7 +40,7 @@ public class ocrAndCrfTest {
 	private static String toSVN = "/home/jon/dev/fuckingsvn/svn/";
 
 	private static String toModel = "testdata/CRF/crfModels/";
-	private static String toLogs = "/testdata/CRF/crfLogs/";
+	private static String toLogs = "/testdata/CRF/pipelineLogs/";
 
 	private static final String LOOKUP_TABLES_FOLDER = "lookup_tables";
 	private static final String NER_CONFIGURATION_FOLDER = "crfdata";
@@ -70,13 +70,14 @@ public class ocrAndCrfTest {
 
 			String[] testFiles = new File(toSVN + "testdata/business-cards/" + folderList[i] + "/testimages/").list();
 			for (String fileName : testFiles)
-				if (!fileName.contains("debug") || !fileName.contains("scale"))
+				if (!(fileName.contains("debug") || fileName.contains("scale")))
 					testPicture(fileName, folderList[i], solution);
 		}
 	}
 
 	private static void testPicture(String fileName, String folderName, HashMap<String, String> solution) {
 		try {
+			System.out.println(toSVN + "testdata/business-cards/" + folderName + "/testimages/" + fileName);
 			AnalysisResult result = engine.analyzeImage(new File(toSVN + "testdata/business-cards/" + folderName + "/testimages/" + fileName));
 
 			LookupTables tables = new LookupTables("." + File.separator + LOOKUP_TABLES_FOLDER);
@@ -98,23 +99,23 @@ public class ocrAndCrfTest {
 
 	private static void readOutput(Map<String, LabeledWord> pictureResult, String fileName) throws IOException, InterruptedException {
 
-		BufferedWriter incorrectWriter = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/pipeline " + fileName)));
+		BufferedWriter incorrectWriter = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/pipeline " + fileName +".txt")));
 		String correctWord;
 		String line;
 		diff_match_patch diffEngine = new diff_match_patch();
-		int inserted = 0;
-		int deleted = 0;
-		int correct = 0;
 
-		Iterator it = pictureResult.entrySet().iterator();
+		Iterator<Map.Entry<String,LabeledWord>> it = pictureResult.entrySet().iterator();
+		incorrectWriter.append("XMLFile\t Tesseract\t crf Label \t precision\t recall\t f-measure\n");
 		while (it.hasNext()) {
-			Map.Entry pairs = (Map.Entry) it.next();
-			System.out.println(pairs.getKey() + " " + pairs.getValue());
+			int inserted = 0;
+			int deleted = 0;
+			int correct = 0;
+			Map.Entry<String,LabeledWord> pairs = it.next();
 			it.remove(); // avoids a ConcurrentModificationException
-			correctWord = inHashMap(pairs.getKey().toString());
+			correctWord = inHashMap(pairs.getKey());
 
 			if (correctWord != null) {
-				List<Diff> differences = diffEngine.diff_main(correctWord, pairs.getValue().toString());
+				List<Diff> differences = diffEngine.diff_main(correctWord.trim(), pairs.getValue().getWordAsString().trim());
 				for (Diff d : differences)
 					if (d.operation == Operation.DELETE)
 						// deleted = false negative
@@ -128,10 +129,10 @@ public class ocrAndCrfTest {
 				double precision = correct / (double) (correct + inserted);
 				double recall = correct / (double) (correct + deleted);
 				double fmeasure = 2 * precision * recall / (precision + recall);
-				incorrectWriter.append(correctWord + "\t" + pairs.getValue() + "\t" + pairs.getKey() + "\t" + precision + "\t" + recall + "\t" + fmeasure
+				incorrectWriter.append(correctWord + "\t" + pairs.getValue().getWordAsString() + "\t" + pairs.getKey() + "\t" + precision + "\t" + recall + "\t" + fmeasure
 						+ "\n");
 			} else
-				incorrectWriter.append("label not found\t" + pairs.getValue() + "\t" + pairs.getKey() + "\n");
+				incorrectWriter.append("label not found\t" + pairs.getValue().getWordAsString() + "\t" + pairs.getKey() + "\n");
 
 		}
 		incorrectWriter.close();
