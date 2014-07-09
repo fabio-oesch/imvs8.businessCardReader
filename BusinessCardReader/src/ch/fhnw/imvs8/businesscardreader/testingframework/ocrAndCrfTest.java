@@ -53,13 +53,18 @@ public class ocrAndCrfTest {
 	private static final String CRF_LOCATION = "/usr/local/bin";
 	private static NEREngine ner;
 
+	private static final String[] LAST_EMAIL_PERSON = { "a.mathur@axes-systems.com", "edgar.gmuer@noser.com", "edgar.gmuer@noser.com", "edgar.gmuer@noser.com",
+			"edgar.gmuer@noser.com" };
+	private static final String[] MODELS = {};
+
 	public static void main(String[] args) {
 		GenericFilterProcessor filters = new GenericFilterProcessor();
 		filters.appendFilter(new GrayScaleFilter());
 		filters.appendFilter(new Phansalkar());
 
 		engine = new OCREngine(filters);
-		readBusinessCards();
+		for (int i = 0; i < LAST_EMAIL_PERSON.length - 1; i++)
+			readBusinessCards(LAST_EMAIL_PERSON[i], LAST_EMAIL_PERSON[i + 1], i);
 
 		createOverallFile();
 	}
@@ -79,7 +84,7 @@ public class ocrAndCrfTest {
 			while (it2.hasNext()) {
 				String label = it2.next();
 				writer.append(label + "\t " + CountFMeasureOne.get(label) + " / " + CountPerLabel.get(label) + "\t" + CountFMeasureOne.get(label)
-						/ (double)CountPerLabel.get(label) * 100 + "%\n");
+						/ (double) CountPerLabel.get(label) * 100 + "%\n");
 			}
 			writer.close();
 		} catch (IOException e) {
@@ -88,26 +93,28 @@ public class ocrAndCrfTest {
 
 	}
 
-	public static void readBusinessCards() {
+	public static void readBusinessCards(String firstEmail, String lastEmail, int index) {
 		String[] folderList = new File(toSVN + "testdata/business-cards/").list();
 		Arrays.sort(folderList);
 		int i = 0;
-		while (!folderList[i++].equals("edgar.gmuer@noser.com")) {
+		while (!folderList[i].equals(firstEmail))
+			i++;
+		while (!folderList[i++].equals(lastEmail)) {
 			String[] solutionfiles = new File(toSVN + "testdata/business-cards/" + folderList[i] + "/cardscan_raw/").list();
 			int j = 0;
-			while (!solutionfiles[j++].endsWith(".xml"))
-				;
-			File xmlFile = new File(toSVN + "testdata/business-cards/" + folderList[i] + "/cardscan_raw/" + solutionfiles[j - 1]);
+			while (!solutionfiles[j].endsWith(".xml"))
+				j++;
+			File xmlFile = new File(toSVN + "testdata/business-cards/" + folderList[i] + "/cardscan_raw/" + solutionfiles[j]);
 			HashMap<String, String> solution = readScannerXML(xmlFile);
 
 			String[] testFiles = new File(toSVN + "testdata/business-cards/" + folderList[i] + "/testimages/").list();
 			for (String fileName : testFiles)
 				if (!(fileName.contains("debug") || fileName.contains("scale")))
-					testPicture(fileName, folderList[i], solution);
+					testPicture(fileName, folderList[i], solution, index);
 		}
 	}
 
-	private static void testPicture(String fileName, String folderName, HashMap<String, String> solution) {
+	private static void testPicture(String fileName, String folderName, HashMap<String, String> solution, int index) {
 		try {
 			Arrays.fill(xmlAttUsed, false);
 			System.out.println(toSVN + "testdata/business-cards/" + folderName + "/testimages/" + fileName);
@@ -116,7 +123,7 @@ public class ocrAndCrfTest {
 			LookupTables tables = new LookupTables("." + File.separator + LOOKUP_TABLES_FOLDER);
 			FeatureCreator creator = new FeatureCreator(tables, new GermanStemming());
 
-			ner = new NEREngine(CRF_LOCATION, toSVN + toModel + "crossval0.txtModelNewF", creator);
+			ner = new NEREngine(CRF_LOCATION, toSVN + toModel + MODELS[index], creator);
 			Map<String, LabeledWord> pictureResult = ner.analyse(result);
 
 			readOutput(pictureResult, fileName, folderName);
@@ -129,7 +136,6 @@ public class ocrAndCrfTest {
 			e.printStackTrace();
 		}
 	}
-
 
 	private static void xmlAttsNotUsed(BufferedWriter writer) {
 		try {
@@ -175,10 +181,9 @@ public class ocrAndCrfTest {
 				double precision = correct / (double) (correct + inserted);
 				double recall = correct / (double) (correct + deleted);
 				double fmeasure = 2 * precision * recall / (precision + recall);
-				if (Double.isNaN(fmeasure)) {
+				if (Double.isNaN(fmeasure))
 					fmeasure = 0;
-				}
-				
+
 				fMeasurePerLabel.put(pairs.getKey(), fMeasurePerLabel.containsKey(pairs.getKey()) ? fMeasurePerLabel.get(pairs.getKey()) + fmeasure : fmeasure);
 				CountPerLabel.put(pairs.getKey(), CountPerLabel.containsKey(pairs.getKey()) ? CountPerLabel.get(pairs.getKey()) + 1 : 1);
 
