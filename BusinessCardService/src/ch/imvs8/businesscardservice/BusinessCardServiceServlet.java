@@ -39,8 +39,9 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String scanResultFile = "scanresults.txt";
 	private static final String actualResultFile = "actualresults.txt";
-	private static final String[] labels = {"TIT", "FN", "LN", "EMA" ,"ORG","I-MN", "I-TN", "I-FN","ST", "PLZ",
+	private static final String[] labels = {"TIT", "FN", "LN", "EMA" ,"ORG","I-TN","I-MN", "I-FN","ST", "PLZ",
 			"ORT", "WEB", "IDK" };
+	private static final  String[] FIELD_LABELS = { "Title","First Name", "Last Name", "Email","Organisation","Fixnet Number"," Mobile Number", "Fax Number","Street", "Zip Code", "City", "Web","Unknown"};
 	
 	private BusinessCardReader reader;
 	private String uploadedFolder;
@@ -190,13 +191,13 @@ public class BusinessCardServiceServlet extends HttpServlet {
 		
 		if (card != null) {
 			scanOutput.write(card.writeDebugOutput());
-			for (int i = 0; i < BusinessCard.FIELD_LABELS.length; i++) {
+			for (int i = 0; i < FIELD_LABELS.length; i++) {
 
 				StringBuilder outputString = new StringBuilder();
 					//write debug output
-					BusinessCardField word= card.getField(BusinessCard.FIELD_LABELS[i]);
+					BusinessCardField word= card.getField(FIELD_LABELS[i]);
 					outputString.append("<tr><td>");
-					outputString.append(BusinessCard.FIELD_LABELS[i]);
+					outputString.append(FIELD_LABELS[i]);
 					outputString.append("</td><td>");
 					outputString.append("<input type=\"text\" name=\"");
 					outputString.append(word.getNERLabel());
