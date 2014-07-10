@@ -186,6 +186,8 @@ public class BusinessCardServiceServlet extends HttpServlet {
 		out.println("<input type=\"hidden\" name=\"step\" value=\"2\" />");
 		out.println("<input type=\"hidden\" name=\"folder\" value=\""
 				+ folder.getAbsolutePath() + "\">");
+		out.println("<center><table border=\"0\" style=\"width:300px\">\n");
+		
 		if (card != null) {
 			scanOutput.write(card.writeDebugOutput());
 			for (int i = 0; i < BusinessCard.FIELD_LABELS.length; i++) {
@@ -193,9 +195,10 @@ public class BusinessCardServiceServlet extends HttpServlet {
 				StringBuilder outputString = new StringBuilder();
 					//write debug output
 					BusinessCardField word= card.getField(BusinessCard.FIELD_LABELS[i]);
-					
+					outputString.append("<tr><td>");
 					outputString.append(BusinessCard.FIELD_LABELS[i]);
-					outputString.append(": <input type=\"text\" name=\"");
+					outputString.append("</td><td>");
+					outputString.append("<input type=\"text\" name=\"");
 					outputString.append(word.getNERLabel());
 					outputString.append("\" id=\"");
 					outputString.append(word.getNERLabel());
@@ -205,9 +208,8 @@ public class BusinessCardServiceServlet extends HttpServlet {
 					if(word.isUnsure())
 						outputString.append(" STYLE=\"background-color: #FF9933;\"");
 					if(word.isWrong())
-						outputString.append(" STYLE=\"color: #FFFFFF; background-color: #800000;\"");
-					outputString.append("/><br>");
-
+						outputString.append(" STYLE=\"color: #FFFFFF; background-color: #800000;\"/>");
+					outputString.append("</td></tr><br>");
 					out.println(outputString.toString());
 			}
 			scanOutput.close();
@@ -215,8 +217,9 @@ public class BusinessCardServiceServlet extends HttpServlet {
 		// color
 		// class="textbox"
 		// STYLE="color: #FFFFFF; font-family: Verdana; font-weight: bold; font-size: 12px; background-color: #72A4D2;"
-
+		out.println("</table>");
 		out.println("<input type=\"submit\" value=\"Submit\">");
+		out.println("</center>");
 		out.println("</form>");
 	}
 }
