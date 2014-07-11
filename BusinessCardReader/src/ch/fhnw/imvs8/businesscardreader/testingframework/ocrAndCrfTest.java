@@ -80,6 +80,7 @@ public class ocrAndCrfTest {
 	}
 
 	private static void createOverallFile() {
+		DecimalFormat df = new DecimalFormat("#.###");
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/allFiles.txt")));
 			writer.append("F-Measure Per Label:\n");
@@ -98,13 +99,14 @@ public class ocrAndCrfTest {
 			}
 
 			writer.append("\nF-Measure for each Label\n");
+			writer.append("Label\tf-mes\tPrec\tRecall\n");
 			Iterator<String> it3 = truePositive.keySet().iterator();
 			while (it3.hasNext()) {
 				String label = it3.next();
 				double precision = truePositive.get(label) / (double)(truePositive.get(label) + (falsePositive.containsKey(label) ? falsePositive.get(label) : 0));
 				double recall = truePositive.get(label) / (double)(truePositive.get(label) + (falseNegative.containsKey(label) ? falseNegative.get(label):0));
 				double fmeasure = 2 * precision * recall / (double)(precision + recall);
-				writer.append(label + "\t" + precision + "\t" + recall + "\t" + fmeasure + "\n");
+				writer.append(label + "\t"+ df.format(fmeasure) + "\t" + df.format(precision) + "\t" + df.format(recall) + "\n");
 			}
 			writer.close();
 		} catch (IOException e) {

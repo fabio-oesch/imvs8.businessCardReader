@@ -97,27 +97,6 @@ public class StandardProcessor implements Processor {
 		return answer;
 	}
 	
-	public static void main(String[] args) {
-		StandardProcessor p = new StandardProcessor();
-		
-		LabeledWord fn = new LabeledWord("FN","Max",90.0,0);
-		LabeledWord ema = new LabeledWord("EMA","bla@max.bla",90.0,1);
-		
-		ArrayList<String> words = new ArrayList<String>();
-		words.add("Max");words.add("bla@max.bla");
-		ArrayList<Float> confidences = new ArrayList<>();
-		confidences.add(70f);confidences.add(40f);
-		AnalysisResult result = new AnalysisResult(null,words , null, confidences, 0, null, null, null);
-		Map<String,LabeledWord> ner = new HashMap<>();
-		ner.put("FN", fn);
-		ner.put("EMA", ema);
-		
-		Map<String, BusinessCardField> fields = p.process(result, ner);
-		for(BusinessCardField f : fields.values()) {
-			System.out.println(f.getNERLabel()+" "+f.getField()+" isWrong:"+f.isWrong()+" isUnsure:"+f.isUnsure());
-		}
-		
-	}
 	
 
 	private class IntermediateField{
