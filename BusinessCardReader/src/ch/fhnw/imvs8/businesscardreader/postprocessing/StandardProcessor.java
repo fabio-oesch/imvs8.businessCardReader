@@ -58,11 +58,11 @@ public class StandardProcessor implements Processor {
 				
 				for(int i = 0; i < w.getSubwordSize();i++) {
 					double conf = ocrResult.getConfidence(w.getSubwordPosition(i));
-					Math.min(ocrConfidence,conf);
+					ocrConfidence = Math.min(ocrConfidence,conf);
 				}
 			}
-			
-			f.isUnsure = ocrConfidence > ocrConfidenceThreshold ? true : false;
+			boolean bla = ocrConfidence <= ocrConfidenceThreshold;
+			f.isUnsure = ocrConfidence <= ocrConfidenceThreshold;
 		}
 	}
 	
@@ -75,7 +75,6 @@ public class StandardProcessor implements Processor {
 			if(LabeledWord.HUMAN_READABLE_LABELS[i] != null) {
 				IntermediateField f = new IntermediateField();
 				f.word = nerResult.get(LabeledWord.LABELS[i]);
-				System.out.println(f.word);
 				f.nerLabel = LabeledWord.LABELS[i];
 				f.humanLabel = LabeledWord.HUMAN_READABLE_LABELS[i];
 				f.isFalse = false;
@@ -103,11 +102,17 @@ public class StandardProcessor implements Processor {
 		
 		LabeledWord fn = new LabeledWord("FN","Max",90.0,0);
 		LabeledWord ema = new LabeledWord("EMA","bla@max.bla",90.0,1);
+		
+		ArrayList<String> words = new ArrayList<String>();
+		words.add("Max");words.add("bla@max.bla");
+		ArrayList<Float> confidences = new ArrayList<>();
+		confidences.add(70f);confidences.add(40f);
+		AnalysisResult result = new AnalysisResult(null,words , null, confidences, 0, null, null, null);
 		Map<String,LabeledWord> ner = new HashMap<>();
 		ner.put("FN", fn);
 		ner.put("EMA", ema);
 		
-		Map<String, BusinessCardField> fields = p.process(null, ner);
+		Map<String, BusinessCardField> fields = p.process(result, ner);
 		for(BusinessCardField f : fields.values()) {
 			System.out.println(f.getNERLabel()+" "+f.getField()+" isWrong:"+f.isWrong()+" isUnsure:"+f.isUnsure());
 		}
