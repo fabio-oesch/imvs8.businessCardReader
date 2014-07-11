@@ -41,14 +41,14 @@ public class BusinessCardReaderIntegrationTest {
 			BusinessCard card = reader.readImage("unittest_data/validimage.jpg");
 			//assertSame("didn't find enough or too much", 16, entities.size());
 			
-			assertEquals("Max", card.getField("First Name"));
-			assertEquals("Seldenstrasse 1", card.getField("Street"));
+			assertEquals("Max", card.getField("First Name").getField());
+			assertEquals("Seldenstrasse 1", card.getField("Street").getField());
 			for(int i = 0; i < BusinessCard.FIELD_LABELS.length;i++) {
 				BusinessCardField e = card.getField(BusinessCard.FIELD_LABELS[i]);
 				System.out.println(e.getLabel() + ": " + e.getField() + " ");
 			}
-
 		}
+		
 		catch(Exception e) {
 			e.printStackTrace();
 			fail("Exception was thrown. Exception: "+e.getMessage());

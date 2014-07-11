@@ -70,7 +70,7 @@ public class LabeledWord {
 			b.append(" ");
 		}
 		
-		return b.toString();
+		return (b.toString()).trim();
 	}
 	
 	public int getSubwordSize() {

@@ -7,23 +7,24 @@ import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 
 public class BusinessCardField {
 	private final String label;
-	@Deprecated
-	private final LabeledWord word;
 	private final String field;
+	private final String NERLabel;
 	private boolean isWrong;
 	private boolean isUnsure;
 	
 	
-	public BusinessCardField(String humanReadableLabel) {
-		this.word = null;
+	public BusinessCardField(boolean isWrong, String NERLabel,String humanReadableLabel) {
+		this.NERLabel = NERLabel;
 		this.field = null;
 		label = humanReadableLabel;
 	}
 	
-	public BusinessCardField(String field, LabeledWord w, String humanReadableLabel) {
-		this.word = w;
+	public BusinessCardField(String field,boolean isWrong,boolean isUnsure, String NERLabel, String humanReadableLabel) {
+		this.NERLabel = NERLabel;
 		this.field = field;
 		label = humanReadableLabel;
+		this.isWrong = isWrong;
+		this.isUnsure = isUnsure;
 		//only make important fields isWrong if they are empty
 	}
 	
@@ -45,30 +46,11 @@ public class BusinessCardField {
 		return "";
 	}
 	
-	public int getSubwordSize() {
-		if(word != null)	
-			return word.getSubwordSize();
-		else
-			return 0;
-	}
-	
 	public String getNERLabel() {
-		if(word != null)
-			return word.getLabel();
-		return "";
+		return this.NERLabel;
 	}
 	
 	public String getLabel() {
 		return this.label;
-	}
-	/**
-	 * 
-	 * @param index
-	 * @return
-	 */
-	public String getSubwordAndPosition(int index) {
-		if(word == null || index < 0 || index > word.getSubwordSize())
-			return null;
-		return word.getSubword(index)+";"+word.getSubwordPosition(index);
 	}
 }
