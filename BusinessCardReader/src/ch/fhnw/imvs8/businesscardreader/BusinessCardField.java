@@ -17,6 +17,7 @@ public class BusinessCardField {
 		this.NERLabel = NERLabel;
 		this.field = null;
 		label = humanReadableLabel;
+		this.isWrong = isWrong;
 	}
 	
 	public BusinessCardField(String field,boolean isWrong,boolean isUnsure, String NERLabel, String humanReadableLabel) {

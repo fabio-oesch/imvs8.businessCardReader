@@ -29,7 +29,6 @@ public class StandardProcessor implements Processor {
 	private void checkFalse(ArrayList<IntermediateField> fields) {
 		checkMissing(fields);
 		
-		
 		//numbers contains words
 		//special characters
 		//important fields missing, special case for telephone number
@@ -44,7 +43,7 @@ public class StandardProcessor implements Processor {
 	private void checkMissing(ArrayList<IntermediateField> fields) {
 		for(IntermediateField f : fields) {
 			if(importantFields.contains(f.nerLabel)) { 
-				if(f.word == null || f.word.getWordAsString().equals(""));
+				if(f.word == null)
 					f.isFalse = true;
 			}
 		}
@@ -64,6 +63,7 @@ public class StandardProcessor implements Processor {
 			if(LabeledWord.HUMAN_READABLE_LABELS[i] != null) {
 				IntermediateField f = new IntermediateField();
 				f.word = nerResult.get(LabeledWord.LABELS[i]);
+				System.out.println(f.word);
 				f.nerLabel = LabeledWord.LABELS[i];
 				f.humanLabel = LabeledWord.HUMAN_READABLE_LABELS[i];
 				f.isFalse = false;
@@ -85,6 +85,23 @@ public class StandardProcessor implements Processor {
 		
 		return answer;
 	}
+	
+	public static void main(String[] args) {
+		StandardProcessor p = new StandardProcessor();
+		
+		LabeledWord fn = new LabeledWord("FN","Max",90.0,0);
+		LabeledWord ema = new LabeledWord("EMA","bla@max.bla",90.0,1);
+		Map<String,LabeledWord> ner = new HashMap<>();
+		ner.put("FN", fn);
+		ner.put("EMA", ema);
+		
+		Map<String, BusinessCardField> fields = p.process(null, ner);
+		for(BusinessCardField f : fields.values()) {
+			System.out.println(f.getNERLabel()+" "+f.getField()+" isWrong:"+f.isWrong()+" isUnsure:"+f.isUnsure());
+		}
+		
+	}
+	
 
 	private class IntermediateField{
 		public LabeledWord word;
