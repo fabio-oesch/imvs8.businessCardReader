@@ -34,7 +34,9 @@ public class BusinessCardField {
 	}
 	
 	public boolean isUnsure() {
-		return isUnsure;
+		//only returns isUnsure if isWrong = false. 
+		//because isWrong and isUnsure should not both be true at the same time. This BusinessCardField is either wrong, or either not sure if true but not both at the same time.
+		return !isWrong ? isUnsure : false;
 	}
 	
 	/**

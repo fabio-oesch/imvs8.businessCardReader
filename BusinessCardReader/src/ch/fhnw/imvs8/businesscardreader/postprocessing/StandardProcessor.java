@@ -31,7 +31,6 @@ public class StandardProcessor implements Processor {
 		
 		//numbers contains words
 		//special characters
-		//important fields missing, special case for telephone number
 		//field web is not a valid url
 		//field email not a valid email
 	}
@@ -50,8 +49,21 @@ public class StandardProcessor implements Processor {
 	}
 	
 	
-	private void checkUnsure(ArrayList<IntermediateField> fields) {
-		//confidences
+	private void checkUnsure(AnalysisResult ocrResult,ArrayList<IntermediateField> fields) {
+		for(IntermediateField f: fields) {
+			double ocrConfidence = 100.0;
+			
+			if(f.word != null) {
+				LabeledWord w = f.word;
+				
+				for(int i = 0; i < w.getSubwordSize();i++) {
+					double conf = ocrResult.getConfidence(w.getSubwordPosition(i));
+					Math.min(ocrConfidence,conf);
+				}
+			}
+			
+			f.isUnsure = ocrConfidence > ocrConfidenceThreshold ? true : false;
+		}
 	}
 	
 	@Override
@@ -73,7 +85,7 @@ public class StandardProcessor implements Processor {
 		}
 		
 		checkFalse(fields);
-		checkUnsure(fields);
+		checkUnsure(ocrResult,fields);
 		
 		for(IntermediateField f : fields) {
 			if(f.word != null)
