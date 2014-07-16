@@ -20,12 +20,14 @@ import net.sourceforge.cardme.vcard.features.EmailFeature;
 import net.sourceforge.cardme.vcard.features.FormattedNameFeature;
 import net.sourceforge.cardme.vcard.features.OrganizationFeature;
 import net.sourceforge.cardme.vcard.features.TelephoneFeature;
+import net.sourceforge.cardme.vcard.features.TitleFeature;
 import net.sourceforge.cardme.vcard.types.AddressType;
 import net.sourceforge.cardme.vcard.types.EmailType;
 import net.sourceforge.cardme.vcard.types.FormattedNameType;
 import net.sourceforge.cardme.vcard.types.NameType;
 import net.sourceforge.cardme.vcard.types.OrganizationType;
 import net.sourceforge.cardme.vcard.types.TelephoneType;
+import net.sourceforge.cardme.vcard.types.TitleType;
 import net.sourceforge.cardme.vcard.types.URLType;
 import net.sourceforge.cardme.vcard.types.parameters.ExtendedParameterType;
 import net.sourceforge.cardme.vcard.types.parameters.ParameterTypeStyle;
@@ -76,6 +78,7 @@ public class VCardCreator {
 		NameType name = new NameType();
 		AddressFeature address = new AddressType();
 		address.setCharset("UTF-8");
+		TitleFeature title = new TitleType();
 
 		while (it.hasNext()) {
 			String label = it.next();
@@ -89,7 +92,7 @@ public class VCardCreator {
 				name.setFamilyName(word);
 				break;
 			case "TIT":
-				name.addHonorificPrefix(word);
+				title.setTitle(word);
 				break;
 			case "ST":
 				address.setStreetAddress(word);
@@ -144,6 +147,7 @@ public class VCardCreator {
 		vcard.setName(name);
 		String first = words.get("FN");
 		String last = words.get("LN");
+		vcard.setTitle(title);
 		vcard.setFormattedName(new FormattedNameType(first + " "+last));
 		vcard.addAddress(address);
 	}
