@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -14,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -22,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
+
+import org.apache.catalina.Context;
 
 import ch.fhnw.imvs8.businesscardreader.BusinessCardReader;
 import ch.fhnw.imvs8.businesscardreader.BusinessCard;
@@ -63,8 +69,15 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("BusinessCardService/start.html").forward(
-				request, response);
+		ServletContext c = getServletContext();
+		String path = c.getContextPath();
+		path = path +"/BusinessCardService/start.png";
+
+		PrintWriter w = response.getWriter();
+		w.append("<!DOCTYPE html><html><head><meta charset=\"ISO-8859-1\"><title>Business Card Service</title><style type=\"text/css\">body {font-family: Arial, Helvetica, Verdana;font-size: 10px;}#container {padding: 5px;}#container form {background-color: #ccc;border: 1px solid #999;width: 790px;padding: 5px;}</style></head><body><div id=\"container\"><center><h1>Hello, do you want me to read your Business Card?</h1>");
+		w.append("<img src=\""+path+"\" width=\"800\" vspace=\"10\" /><form enctype=\"multipart/form-data\" method=\"post\" name=\"input\" action=\"reader\"><input type=\"hidden\" name=\"step\" value=\"1\" /><input type=\"file\" name=\"file\" id=\"file\" accept=\"image/*\"/><input type=\"submit\" value=\"Upload\" name=\"upload\" id=\"upload\" /></form></center></div></body></html>");
+
+		//request.getRequestDispatcher("/BusinessCardReader/start.html").forward(request, response);
 	}
 
 	@Override
