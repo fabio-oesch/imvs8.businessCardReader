@@ -23,7 +23,7 @@ public class StandardProcessorTest {
 		LabeledWord ln = new LabeledWord("LN","Muster",80.0,1);
 		LabeledWord street = new LabeledWord("ST","Seidenstrasse",80.0,2);
 		street.addWordAfter(new LabeledWord("ST","11",40.0,3));
-		LabeledWord plz = new LabeledWord("PLZ", "5200", 45.0, 4);
+		LabeledWord plz = new LabeledWord("PLZ", "52A0", 45.0, 4);
 		LabeledWord ort = new LabeledWord("ORT","Brugg",70,5);
 		LabeledWord ema = new LabeledWord("EMA","max.muster@mail.com",90.0,6);
 		
