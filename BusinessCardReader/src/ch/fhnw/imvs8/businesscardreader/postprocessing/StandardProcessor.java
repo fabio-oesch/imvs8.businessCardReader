@@ -48,6 +48,7 @@ public class StandardProcessor implements Processor {
 	
 	private void cleanNumber(IntermediateField number) {
 		number.cleanedWord.replaceAll("[Oo]", "0");
+		number.cleanedWord.replaceAll("[iIlL]", "1");
 	}
 	
 	private void cleanTelNumber(IntermediateField number) {
