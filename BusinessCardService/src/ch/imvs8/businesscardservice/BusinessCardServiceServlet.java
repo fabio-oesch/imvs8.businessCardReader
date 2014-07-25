@@ -74,10 +74,9 @@ public class BusinessCardServiceServlet extends HttpServlet {
 		path = path +"/BusinessCardService/title.jpg";
 
 		PrintWriter w = response.getWriter();
-		w.append("<!DOCTYPE html><html><head><meta charset=\"ISO-8859-1\"><title>Business Card Service</title><style type=\"text/css\">body {font-family: Arial, Helvetica, Verdana;font-size: 10px;} input{ font-size:20px;font-family: Arial, Helvetica, Verdana;}#container {padding: 5px;}#container form {background-color: #ccc;border: 1px solid #999;width: 990px;padding: 5px;}</style></head><body><div id=\"container\"><center><h1>Hello, do you want me to read your Business Card?</h1>");
+		w.append("<!DOCTYPE html><html><head><meta charset=\"ISO-8859-1\"><title>Business Card Reader</title><style type=\"text/css\">body {font-family: Arial, Helvetica, Verdana;font-size: 45px;} input{ font-size:40px;font-family: Arial, Helvetica, Verdana;}#container {padding: 5px;}#container form {background-color: #ccc;border: 1px solid #999;width: 990px;padding: 10px;} </style></head><body><div id=\"container\"><center><h1>Business Card Reader</h1>");
 		w.append("<img src=\""+path+"\" width=\"1000\" vspace=\"10\" /><form enctype=\"multipart/form-data\" method=\"post\" name=\"input\" action=\"reader\"><input type=\"hidden\" name=\"step\" value=\"1\" /><input type=\"file\" name=\"file\" id=\"file\" accept=\"image/*\"/><input type=\"submit\" value=\"Upload\" name=\"upload\" id=\"upload\" /></form></center></div></body></html>");
 
-		//request.getRequestDispatcher("/BusinessCardReader/start.html").forward(request, response);
 	}
 
 	@Override
@@ -120,7 +119,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 
 				out.println("<html>");
 				out.println("<head>");
-				out.println("<title>Business Card Service</title>");
+				out.println("<title>Business Card Reader</title>");
 				out.println("<style type=\"text/css\">");
 				out.println("input{ font-size:20px;font-family: Arial, Helvetica, Verdana;}");
 				out.println("input[type=text] {font-size:20px;font-family: Arial, Helvetica, Verdana;width:500;}");
