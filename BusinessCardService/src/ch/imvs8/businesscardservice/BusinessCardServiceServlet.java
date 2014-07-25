@@ -43,7 +43,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	private static final String actualResultFile = "actualresults.txt";
 	private static final String[] labels = {"TIT", "FN", "LN", "EMA" ,"ORG","I-TN","I-MN", "I-FN","ST", "PLZ",
 			"ORT", "WEB", "IDK" };
-	private static final  String[] FIELD_LABELS = { "Title","First Name", "Last Name", "Email","Organisation","Fixnet Number"," Mobile Number", "Fax Number","Street", "Zip Code", "City", "Web","Unknown"};
+	private static final  String[] FIELD_LABELS = { "Title","First Name", "Last Name", "Email","Organisation","Telephone Number"," Mobile Number", "Fax Number","Street", "Zip Code", "City", "Web","Unknown"};
 	
 	private BusinessCardReader reader;
 	private String uploadedFolder;
@@ -71,7 +71,7 @@ public class BusinessCardServiceServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		ServletContext c = getServletContext();
 		String path = c.getContextPath();
-		path = path +"/BusinessCardService/start.png";
+		path = path +"/BusinessCardService/title.jpg";
 
 		PrintWriter w = response.getWriter();
 		w.append("<!DOCTYPE html><html><head><meta charset=\"ISO-8859-1\"><title>Business Card Service</title><style type=\"text/css\">body {font-family: Arial, Helvetica, Verdana;font-size: 10px;} input{ font-size:20px;font-family: Arial, Helvetica, Verdana;}#container {padding: 5px;}#container form {background-color: #ccc;border: 1px solid #999;width: 990px;padding: 5px;}</style></head><body><div id=\"container\"><center><h1>Hello, do you want me to read your Business Card?</h1>");

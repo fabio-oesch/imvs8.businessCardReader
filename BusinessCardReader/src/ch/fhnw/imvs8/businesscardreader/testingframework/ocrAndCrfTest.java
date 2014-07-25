@@ -41,7 +41,7 @@ public class ocrAndCrfTest {
 	private static HashMap<String, Integer> CountPerLabel = new HashMap<>();
 	private static HashMap<String, Integer> CountFMeasureOne = new HashMap<>();
 	private static String[] xmlAttName = { "FN", "LN", "ST", "PLZ", "ORT", "I-TN", "I-FN", "I-MN", "EMA", "ORG", "TIT" };
-	private static String[] xmlStuff = { "First Name", "Last Name", "Street Address", "Postal Code", "City", "Phone", "Phone.Fax", "Phone.Mobile", "E-mail",
+	private static String[] xmlStuff = { "First Name", "Last Name", "Street Address", "Postal Code", "City", "Phone", "Fax", "Phone.Mobile", "E-mail",
 			"Company", "Title" };
 	private static double[] prec = new double[11];
 	private static double[] reca = new double[11];
@@ -257,7 +257,7 @@ public class ocrAndCrfTest {
 			return xmlAtts.get("Phone");
 		} else if (label.equals("I-FN")) {
 			xmlAttUsed[6] = true;
-			return xmlAtts.get("Phone.Fax");
+			return xmlAtts.get("Fax");
 		} else if (label.equals("I-MN")) {
 			xmlAttUsed[7] = true;
 			return xmlAtts.get("Phone.Mobile");
