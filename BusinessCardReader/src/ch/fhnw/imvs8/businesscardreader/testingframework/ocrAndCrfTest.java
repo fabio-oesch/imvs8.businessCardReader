@@ -34,6 +34,7 @@ import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Di
 import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Operation;
 
 public class ocrAndCrfTest {
+	private static boolean testWithFailure = false;
 
 	private static OCREngine engine;
 	private static HashMap<String, String> xmlAtts;
@@ -229,23 +230,23 @@ public class ocrAndCrfTest {
 			saveCRFOutput.put(pairs.getKey(), pairs.getValue().getWordAsString());
 		}
 
-		for (int i = 0; i < xmlAttUsed.length; i++)
-			if (!xmlAttUsed[i])
-				if (inHashMap(xmlAttName[i]) != null) {
-					double fmeasure = 0;
-					double recall = 0;
-					double precision = 0;
+		if (testWithFailure)
+			for (int i = 0; i < xmlAttUsed.length; i++)
+				if (!xmlAttUsed[i])
+					if (inHashMap(xmlAttName[i]) != null) {
+						double fmeasure = 0;
+						double recall = 0;
+						double precision = 0;
 
-					precisionPerLabel.put(xmlAttName[i], precisionPerLabel.containsKey(xmlAttName[i]) ? precisionPerLabel.get(xmlAttName[i]) + precision
-							: precision);
-					recallPerLabel.put(xmlAttName[i], recallPerLabel.containsKey(xmlAttName[i]) ? recallPerLabel.get(xmlAttName[i]) + recall : recall);
-					fMeasurePerLabel
-							.put(xmlAttName[i], fMeasurePerLabel.containsKey(xmlAttName[i]) ? fMeasurePerLabel.get(xmlAttName[i]) + fmeasure : fmeasure);
-					CountPerLabel.put(xmlAttName[i], CountPerLabel.containsKey(xmlAttName[i]) ? CountPerLabel.get(xmlAttName[i]) + 1 : 1);
+						precisionPerLabel.put(xmlAttName[i], precisionPerLabel.containsKey(xmlAttName[i]) ? precisionPerLabel.get(xmlAttName[i]) + precision
+								: precision);
+						recallPerLabel.put(xmlAttName[i], recallPerLabel.containsKey(xmlAttName[i]) ? recallPerLabel.get(xmlAttName[i]) + recall : recall);
+						fMeasurePerLabel.put(xmlAttName[i], fMeasurePerLabel.containsKey(xmlAttName[i]) ? fMeasurePerLabel.get(xmlAttName[i]) + fmeasure
+								: fmeasure);
+						CountPerLabel.put(xmlAttName[i], CountPerLabel.containsKey(xmlAttName[i]) ? CountPerLabel.get(xmlAttName[i]) + 1 : 1);
 
-					falseNegative.put(xmlAttName[i], falseNegative.containsKey(xmlAttName[i]) ? falseNegative.get(xmlAttName[i]) + 1 : 1);
-				}
-
+						falseNegative.put(xmlAttName[i], falseNegative.containsKey(xmlAttName[i]) ? falseNegative.get(xmlAttName[i]) + 1 : 1);
+					}
 		BufferedWriter incorrectWriter = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/" + folderName + " pipeline " + fileName + ".txt")));
 		writeOutputIntoFile(incorrectWriter, saveCRFOutput);
 		incorrectWriter.close();
