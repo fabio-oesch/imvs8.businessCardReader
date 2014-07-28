@@ -38,6 +38,9 @@ public class ocrAndCrfTest {
 	private static OCREngine engine;
 	private static HashMap<String, String> xmlAtts;
 	private static HashMap<String, Double> fMeasurePerLabel = new HashMap<>();
+	private static HashMap<String, Double> precisionPerLabel = new HashMap<>();
+	private static HashMap<String, Double> recallPerLabel = new HashMap<>();
+
 	private static HashMap<String, Integer> CountPerLabel = new HashMap<>();
 	private static HashMap<String, Integer> CountFMeasureOne = new HashMap<>();
 	private static String[] xmlAttName = { "FN", "LN", "ST", "PLZ", "ORT", "I-TN", "I-FN", "I-MN", "EMA", "ORG", "TIT" };
@@ -52,20 +55,19 @@ public class ocrAndCrfTest {
 	private static HashMap<String, Integer> falsePositive = new HashMap<>();
 	private static HashMap<String, Integer> falseNegative = new HashMap<>();
 
-	private static String toCRF = "/usr/local/bin";
 	private static String toSVN = "/home/jon/dev/fuckingsvn/svn/";
 
 	private static String toModel = "testdata/CRF/crfModels/";
 	private static String toLogs = "/testdata/CRF/pipelineLogs/";
 
 	private static final String LOOKUP_TABLES_FOLDER = "lookup_tables";
-	private static final String NER_CONFIGURATION_FOLDER = "crfdata";
 	private static final String CRF_LOCATION = "/usr/local/bin";
 	private static NEREngine ner;
 
-	private static final String[] LAST_EMAIL_PERSON = { "a.mathur@axes-systems.com", "edgar.gmuer@noser.com","markus.berner@scs.ch", "peter.brandt@ergon.ch", "simon.stamm@actelion.com",
-			"zeno.staemmer@albistechnologies.com" };
-	private static final String[] MODELS = {"crossval0.txtModelWithConfidence","crossval1.txtModelWithConfidence","crossval2.txtModelWithConfidence","crossval3.txtModelWithConfidence","crossval4.txtModelWithConfidence"};
+	private static final String[] LAST_EMAIL_PERSON = { "a.mathur@axes-systems.com", "edgar.gmuer@noser.com", "markus.berner@scs.ch", "peter.brandt@ergon.ch",
+			"simon.stamm@actelion.com", "zeno.staemmer@albistechnologies.com" };
+	private static final String[] MODELS = { "crossval0.txtModelWithConfidence", "crossval1.txtModelWithConfidence", "crossval2.txtModelWithConfidence",
+			"crossval3.txtModelWithConfidence", "crossval4.txtModelWithConfidence" };
 
 	public static void main(String[] args) {
 		GenericFilterProcessor filters = new GenericFilterProcessor();
@@ -103,10 +105,12 @@ public class ocrAndCrfTest {
 			Iterator<String> it3 = truePositive.keySet().iterator();
 			while (it3.hasNext()) {
 				String label = it3.next();
-				double precision = truePositive.get(label) / (double)(truePositive.get(label) + (falsePositive.containsKey(label) ? falsePositive.get(label) : 0));
-				double recall = truePositive.get(label) / (double)(truePositive.get(label) + (falseNegative.containsKey(label) ? falseNegative.get(label):0));
-				double fmeasure = 2 * precision * recall / (double)(precision + recall);
-				writer.append(label + "\t"+ df.format(fmeasure) + "\t" + df.format(precision) + "\t" + df.format(recall) + "\n");
+				double precision = truePositive.get(label)
+						/ (double) (truePositive.get(label) + (falsePositive.containsKey(label) ? falsePositive.get(label) : 0));
+				double recall = truePositive.get(label)
+						/ (double) (truePositive.get(label) + (falseNegative.containsKey(label) ? falseNegative.get(label) : 0));
+				double fmeasure = 2 * precision * recall / (precision + recall);
+				writer.append(label + "\t" + df.format(fmeasure) + "\t" + df.format(precision) + "\t" + df.format(recall) + "\n");
 			}
 			writer.close();
 		} catch (IOException e) {
@@ -121,9 +125,8 @@ public class ocrAndCrfTest {
 		int i = 0;
 		while (!folderList[i].equals(firstEmail))
 			i++;
-		if (index != 0) {
+		if (index != 0)
 			i++;
-		}
 		while (!folderList[i++].equals(lastEmail)) {
 			String[] solutionfiles = new File(toSVN + "testdata/business-cards/" + folderList[i] + "/cardscan_raw/").list();
 			int j = 0;
@@ -134,7 +137,7 @@ public class ocrAndCrfTest {
 
 			String[] testFiles = new File(toSVN + "testdata/business-cards/" + folderList[i] + "/testimages/").list();
 			for (String fileName : testFiles)
-				if (!(fileName.contains("debug") || fileName.contains("scale")))
+				if (!(fileName.contains("debug") || fileName.contains("scale") || fileName.contains("IMAG")))
 					testPicture(fileName, folderList[i], solution, index);
 		}
 	}
@@ -165,7 +168,6 @@ public class ocrAndCrfTest {
 	private static void readOutput(Map<String, LabeledWord> pictureResult, String fileName, String folderName) throws IOException, InterruptedException {
 
 		String correctWord;
-		String line;
 		diff_match_patch diffEngine = new diff_match_patch();
 		HashMap<String, String> saveCRFOutput = new HashMap<>();
 
@@ -199,6 +201,9 @@ public class ocrAndCrfTest {
 				if (Double.isNaN(fmeasure))
 					fmeasure = 0;
 
+				precisionPerLabel.put(pairs.getKey(), precisionPerLabel.containsKey(pairs.getKey()) ? precisionPerLabel.get(pairs.getKey()) + precision
+						: precision);
+				recallPerLabel.put(pairs.getKey(), recallPerLabel.containsKey(pairs.getKey()) ? recallPerLabel.get(pairs.getKey()) + recall : recall);
 				fMeasurePerLabel.put(pairs.getKey(), fMeasurePerLabel.containsKey(pairs.getKey()) ? fMeasurePerLabel.get(pairs.getKey()) + fmeasure : fmeasure);
 				CountPerLabel.put(pairs.getKey(), CountPerLabel.containsKey(pairs.getKey()) ? CountPerLabel.get(pairs.getKey()) + 1 : 1);
 
@@ -217,6 +222,23 @@ public class ocrAndCrfTest {
 			saveCRFOutput.put(pairs.getKey(), pairs.getValue().getWordAsString());
 		}
 
+		for (int i = 0; i < xmlAttUsed.length; i++)
+			if (xmlAttUsed[i])
+				if (inHashMap(xmlAttName[i]) != null) {
+					double fmeasure = 0;
+					double recall = 0;
+					double precision = 0;
+
+					precisionPerLabel.put(xmlAttName[i], precisionPerLabel.containsKey(xmlAttName[i]) ? precisionPerLabel.get(xmlAttName[i]) + precision
+							: precision);
+					recallPerLabel.put(xmlAttName[i], recallPerLabel.containsKey(xmlAttName[i]) ? recallPerLabel.get(xmlAttName[i]) + recall : recall);
+					fMeasurePerLabel
+							.put(xmlAttName[i], fMeasurePerLabel.containsKey(xmlAttName[i]) ? fMeasurePerLabel.get(xmlAttName[i]) + fmeasure : fmeasure);
+					CountPerLabel.put(xmlAttName[i], CountPerLabel.containsKey(xmlAttName[i]) ? CountPerLabel.get(xmlAttName[i]) + 1 : 1);
+
+					falseNegative.put(xmlAttName[i], falseNegative.containsKey(xmlAttName[i]) ? falseNegative.get(xmlAttName[i]) + 1 : 1);
+				}
+
 		BufferedWriter incorrectWriter = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/" + folderName + " pipeline " + fileName + ".txt")));
 		writeOutputIntoFile(incorrectWriter, saveCRFOutput);
 		incorrectWriter.close();
@@ -227,10 +249,9 @@ public class ocrAndCrfTest {
 		try {
 			incorrectWriter.append("XMLAttribute\tTessAtt\tprec\treca\tfmeas\txmlText\tTesseractText\n");
 			DecimalFormat df = new DecimalFormat("#.##");
-			for (int i = 0; i < xmlAttName.length; i++) {
-				incorrectWriter.append(xmlStuff[i] + (xmlStuff[i].length() > 8 ? "\t" : "\t\t") + xmlAttName[i] + "\t" + df.format(prec[i]) + "\t" + df.format(reca[i]) + "\t"
-						+ df.format(prec[i]) + "\t" + xmlAtts.get(xmlStuff[i]) + "\t" + crfOutput.get(xmlAttName[i]) + "\n");
-			}
+			for (int i = 0; i < xmlAttName.length; i++)
+				incorrectWriter.append(xmlStuff[i] + (xmlStuff[i].length() > 8 ? "\t" : "\t\t") + xmlAttName[i] + "\t" + df.format(prec[i]) + "\t"
+						+ df.format(reca[i]) + "\t" + df.format(prec[i]) + "\t" + xmlAtts.get(xmlStuff[i]) + "\t" + crfOutput.get(xmlAttName[i]) + "\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -301,7 +322,6 @@ public class ocrAndCrfTest {
 			// Create a reader with the ANSI Encoding
 			XMLStreamReader reader = inputFactor.createXMLStreamReader(new InputStreamReader(new FileInputStream(xmlInputFile), "ISO-8859-1"));
 			// Save text and fieldName in a String
-			String text = null;
 			String fieldName = null;
 
 			// goes through every element
