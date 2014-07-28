@@ -86,10 +86,13 @@ public class ocrAndCrfTest {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(new File(toSVN + toLogs + "/allFiles.txt")));
 			writer.append("F-Measure Per Label:\n");
+			writer.append("Label\tf-mes\tPrec\tRecall\n");
 			Iterator<String> it = fMeasurePerLabel.keySet().iterator();
 			while (it.hasNext()) {
 				String label = it.next();
-				writer.append(label + "\t " + fMeasurePerLabel.get(label) / CountPerLabel.get(label) + "\n");
+				writer.append(label + "\t" + df.format(fMeasurePerLabel.get(label) / CountPerLabel.get(label)) + "\t"
+						+ df.format(precisionPerLabel.get(label) / CountPerLabel.get(label)) + "\t"
+						+ df.format(recallPerLabel.get(label) / CountPerLabel.get(label)) + "\n");
 			}
 
 			writer.append("\nCount of F-Measures = 1 per label\n");
@@ -223,7 +226,7 @@ public class ocrAndCrfTest {
 		}
 
 		for (int i = 0; i < xmlAttUsed.length; i++)
-			if (xmlAttUsed[i])
+			if (!xmlAttUsed[i])
 				if (inHashMap(xmlAttName[i]) != null) {
 					double fmeasure = 0;
 					double recall = 0;
