@@ -203,6 +203,10 @@ public class ocrAndCrfTest {
 				double fmeasure = 2 * precision * recall / (precision + recall);
 				if (Double.isNaN(fmeasure))
 					fmeasure = 0;
+				if (Double.isNaN(recall))
+					recall = 0;
+				if (Double.isNaN(precision))
+					precision = 0;
 
 				precisionPerLabel.put(pairs.getKey(), precisionPerLabel.containsKey(pairs.getKey()) ? precisionPerLabel.get(pairs.getKey()) + precision
 						: precision);
