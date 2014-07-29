@@ -34,7 +34,7 @@ import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Di
 import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Operation;
 
 public class ocrAndCrfTest {
-	private static boolean testWithFailure = false;
+	private static boolean testWithFailure = true;
 
 	private static OCREngine engine;
 	private static HashMap<String, String> xmlAtts;
