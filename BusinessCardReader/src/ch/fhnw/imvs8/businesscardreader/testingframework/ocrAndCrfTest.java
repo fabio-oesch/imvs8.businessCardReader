@@ -105,7 +105,7 @@ public class ocrAndCrfTest {
 			}
 
 			writer.append("\nF-Measure for each Label\n");
-			writer.append("Label\tf-mes\tPrec\tRecall\n");
+			writer.append("Label\tProzent pro Label\n");
 			Iterator<String> it3 = truePositive.keySet().iterator();
 			while (it3.hasNext()) {
 				String label = it3.next();
@@ -114,7 +114,7 @@ public class ocrAndCrfTest {
 				double recall = truePositive.get(label)
 						/ (double) (truePositive.get(label) + (falseNegative.containsKey(label) ? falseNegative.get(label) : 0));
 				double fmeasure = 2 * precision * recall / (precision + recall);
-				writer.append(label + "\t" + df.format(fmeasure) + "\t" + df.format(precision) + "\t" + df.format(recall) + "\n");
+				writer.append(label + "\t" + df.format(truePositive.get(label) / CountPerLabel.get(label)) + "\n");
 			}
 			writer.close();
 		} catch (IOException e) {
