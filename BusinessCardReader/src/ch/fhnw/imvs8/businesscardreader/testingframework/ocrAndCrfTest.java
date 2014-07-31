@@ -114,7 +114,7 @@ public class ocrAndCrfTest {
 				double recall = truePositive.get(label)
 						/ (double) (truePositive.get(label) + (falseNegative.containsKey(label) ? falseNegative.get(label) : 0));
 				double fmeasure = 2 * precision * recall / (precision + recall);
-				writer.append(label + "\t" + df.format(truePositive.get(label) / CountPerLabel.get(label)) + "\n");
+				writer.append(label + "\t" + df.format(truePositive.get(label) / (double)CountPerLabel.get(label)) + "\n");
 			}
 			writer.close();
 		} catch (IOException e) {

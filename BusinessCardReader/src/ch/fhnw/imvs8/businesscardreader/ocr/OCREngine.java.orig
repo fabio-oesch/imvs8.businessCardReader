@@ -50,8 +50,12 @@ public class OCREngine {
 
 		// configuration
 		TessAPI1.TessBaseAPIInit3(api, "tessdata", "deu");
+<<<<<<< HEAD
 		TessAPI1.TessBaseAPISetPageSegMode(api, TessAPI1.TessPageSegMode.PSM_SINGLE_BLOCK);
+=======
+		TessAPI1.TessBaseAPISetPageSegMode(api, TessAPI1.TessPageSegMode.PSM_AUTO);
 		TessAPI1.TessBaseAPIReadConfigFile(api,"bazaar",0);
+>>>>>>> TessUser-Words
 	}
 
 	/**
