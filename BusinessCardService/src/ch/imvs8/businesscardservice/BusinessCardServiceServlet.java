@@ -42,8 +42,8 @@ public class BusinessCardServiceServlet extends HttpServlet {
 	private static final String scanResultFile = "scanresults.txt";
 	private static final String actualResultFile = "actualresults.txt";
 	private static final String[] labels = {"TIT", "FN", "LN", "EMA" ,"ORG","I-TN","I-MN", "I-FN","ST", "PLZ",
-			"ORT", "WEB", "IDK" };
-	private static final  String[] FIELD_LABELS = { "Title","First Name", "Last Name", "Email","Organisation","Telephone Number"," Mobile Number", "Fax Number","Street", "Zip Code", "City", "Web","Unknown"};
+			"ORT", "WEB" };
+	private static final  String[] FIELD_LABELS = { "Title","First Name", "Last Name", "Email","Organisation","Telephone Number"," Mobile Number", "Fax Number","Street", "Zip Code", "City", "Web"};
 	
 	private BusinessCardReader reader;
 	private String uploadedFolder;

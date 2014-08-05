@@ -41,14 +41,14 @@ public class StandardProcessor implements Processor {
 				cleanTelNumber(f);
 			}
 			
-			if(f.equals(plzField))
+			if(f.nerLabel.equals(plzField))
 				cleanNumber(f);
 		}
 	}
 	
 	private void cleanNumber(IntermediateField number) {
-		number.cleanedWord.replaceAll("[Oo]", "0");
-		number.cleanedWord.replaceAll("[iIlL]", "1");
+		number.cleanedWord = number.cleanedWord.replaceAll("[Oo]", "0");
+		number.cleanedWord = number.cleanedWord.replaceAll("[iIlL]", "1");
 	}
 	
 	private void cleanTelNumber(IntermediateField number) {
@@ -60,26 +60,27 @@ public class StandardProcessor implements Processor {
 		
 		for(int i = 0; i < fields.size();i++) {
 			IntermediateField f = fields.get(i);
-			if(!f.isFalse) {
+			if(!f.isFalse && f.word != null) {
 				switch(f.nerLabel) 
 				{
 					case "I-TN":
 					case "I-FN":
 					case "I-MN":
 					case "PLZ":
-						f.isFalse = Pattern.matches("\\w+", f.cleanedWord);
+						f.isFalse = Pattern.matches("\\w*", f.cleanedWord);
 						break;
 					case "FN":
 					case "LN":
 					case "ORT":
-						f.isFalse = Pattern.matches("\\d+", f.cleanedWord);
+						f.isFalse = Pattern.matches("\\d*", f.cleanedWord);
 						break;
 					case "WEB":
-						try {
-							URL u = new URL(f.cleanedWord);
-						} catch (MalformedURLException e) {
-							f.isFalse = true;
-						}
+							try {
+								URL u = new URL(f.cleanedWord);
+							} catch (MalformedURLException e) {
+								f.isFalse = true;
+							}
+					
 						break;
 					default:
 						break;
@@ -99,11 +100,8 @@ public class StandardProcessor implements Processor {
 	 */
 	private void checkMissing(ArrayList<IntermediateField> fields) {
 		for(IntermediateField f : fields) {
-			System.out.println(f.nerLabel);
-			System.out.println(f.word == null);
 			if(importantFields.contains(f.nerLabel)) { 
 				f.isFalse = f.word == null;
-				System.out.println(f.isFalse);
 			}
 		}
 	}

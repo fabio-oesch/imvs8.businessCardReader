@@ -10,7 +10,7 @@ import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
 
 public class BusinessCard {
-	public static final String[] FIELD_LABELS = { "Title","First Name", "Last Name", "Street", "Zip Code", "City", " Mobile Number","Fixnet Number", "Fax Number", "Email","Web", "Organisation","Unknown"};
+	public static final String[] FIELD_LABELS = { "Title","First Name", "Last Name", "Street", "Zip Code", "City", " Mobile Number","Telephone Number", "Fax Number", "Email","Web", "Organisation","Unknown"};
 	private final Map<String,LabeledWord> nerResult;
 	private final AnalysisResult ocrResult;
 	private final Map<String,BusinessCardField> fields;
