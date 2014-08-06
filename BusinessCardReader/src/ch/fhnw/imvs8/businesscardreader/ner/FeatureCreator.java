@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 import ch.fhnw.imvs8.businesscardreader.ner.stemming.StemmingStrategy;
-import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.ocr.OcrResult;
 
 /**
  * Creates features from the AnalysisResult for a CRF analysis
@@ -36,7 +36,7 @@ public class FeatureCreator {
 	 * 
 	 * @throws IOException 
 	 */
-	public String createFeatures(AnalysisResult res,String tmpFile) throws IOException {
+	public String createFeatures(OcrResult res,String tmpFile) throws IOException {
 		File f = new File(tmpFile);
 		
 		if(!f.exists())

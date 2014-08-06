@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.ocr.OcrResult;
 import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Diff;
 import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Operation;
 
@@ -59,7 +59,7 @@ public class XMLTest {
 	 *            name of the test
 	 * @throws IOException
 	 */
-	public XMLTest(File scannerFileName, File tesseractFileName, AnalysisResult analysisResult, BufferedWriter bw)
+	public XMLTest(File scannerFileName, File tesseractFileName, OcrResult analysisResult, BufferedWriter bw)
 			throws IOException {
 		this.bw = bw;
 

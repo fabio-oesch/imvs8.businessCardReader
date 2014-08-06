@@ -45,6 +45,7 @@ import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
  */
 public class VCardCreator {
 
+
 	/**
 	 * Greates a vCard String out of the provided words
 	 * 
@@ -59,7 +60,7 @@ public class VCardCreator {
 		 writer.setVCard(vcard);
 		 return writer.buildVCardString();
 	}
-	
+
 	/**
 	 * Converts the Business Card in a VCard
 	 * 
@@ -71,7 +72,7 @@ public class VCardCreator {
 	public static String getVCardString(BusinessCard card) {
 		return VCardCreator.getVCardString(card.getFieldsAsStringMap());
 	}
-	
+
 	private static void addFeatures(VCard vcard, Map<String, String> words) {
 		Iterator<String> it = words.keySet().iterator();
 
@@ -83,7 +84,7 @@ public class VCardCreator {
 		while (it.hasNext()) {
 			String label = it.next();
 			String word = words.get(label);
-			
+
 			switch (label) {
 			case "FN":
 				name.setGivenName(word);

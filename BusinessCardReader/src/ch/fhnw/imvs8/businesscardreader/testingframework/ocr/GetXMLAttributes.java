@@ -15,7 +15,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.ocr.OcrResult;
 
 /**
  * This is where the magic happens!
@@ -41,7 +41,7 @@ public final class GetXMLAttributes {
 	 * @return an arraylist of tesseractAttributes
 	 */
 	private static ArrayList<TesseractAttributes> getAnalysisResult(
-			AnalysisResult analysisResult) {
+			OcrResult analysisResult) {
 		// creates new array list which will hold all the tesseract attributes
 		ArrayList<TesseractAttributes> tesseractAttribute = new ArrayList<>();
 		for (int index = 0; index < analysisResult.getResultSize(); index++) {
@@ -73,7 +73,7 @@ public final class GetXMLAttributes {
 	 * @throws NumberFormatException
 	 */
 	public ArrayList<ScannerAttributes> readScannerXML(File xmlInputFile,
-			File tesseractFileName, AnalysisResult analysisResult)
+			File tesseractFileName, OcrResult analysisResult)
 			throws NumberFormatException, IOException {
 		// get the tesseract HTML attributes
 		ArrayList<TesseractAttributes> tesseractAttribute = getAnalysisResult(analysisResult);

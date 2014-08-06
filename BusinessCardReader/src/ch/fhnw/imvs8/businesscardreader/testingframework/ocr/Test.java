@@ -22,7 +22,7 @@ import ch.fhnw.imvs8.businesscardreader.imagefilters.Otsu;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Phansalkar;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Preprocessor;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Sauvola;
-import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.ocr.OcrResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
 public class Test {
@@ -99,7 +99,7 @@ public class Test {
 		for (int file = 0; file < testFolderList.length; file++) {
 			if (!testFolderList[file].getAbsolutePath().contains("debug") && !testFolderList[file].getAbsolutePath().contains("_scale.txt")) {
 				System.out.println(testFolderList[file].getAbsolutePath());
-				AnalysisResult analysisResult = engine.analyzeImage(testFolderList[file]);
+				OcrResult analysisResult = engine.analyzeImage(testFolderList[file]);
 
 				if (file == 0) {
 					bw.write("# of pictures: " + testFolderList.length + "\n");

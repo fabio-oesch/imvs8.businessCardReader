@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import ch.fhnw.imvs8.businesscardreader.BusinessCardField;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
-import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.ocr.OcrResult;
 import ch.fhnw.imvs8.businesscardreader.postprocessing.StandardProcessor;
 
 public class StandardProcessorTest {
@@ -31,7 +31,7 @@ public class StandardProcessorTest {
 		words.add("Max");words.add("Muster");words.add("Seidenstrasse");words.add("11");words.add("5200");words.add("Brugg");words.add("max.muster@mail.com");
 		ArrayList<Float> confidences = new ArrayList<>();
 		confidences.add(70f);confidences.add(40f);confidences.add(70f);confidences.add(20f);confidences.add(90f);confidences.add(40f);confidences.add(80f);
-		AnalysisResult result = new AnalysisResult(null,words , null, confidences, 0, null, null, null);
+		OcrResult result = new OcrResult(null,words , null, confidences, 0, null, null, null);
 		Map<String,LabeledWord> ner = new HashMap<>();
 		ner.put("FN", fn);
 		ner.put("LN", ln);

@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.ocr.OcrResult;
 import ch.fhnw.imvs8.businesscardreader.testingframework.crf.createtestdata.ModelGenerator;
 
 /**
@@ -66,7 +66,7 @@ public class NEREngine {
 	 * @return Named Entities. Table with the NamedEntities, the Label (for
 	 *         example "email") is the Key and the NamedEntity the value;
 	 */
-	public Map<String, LabeledWord> analyse(AnalysisResult results) {
+	public Map<String, LabeledWord> analyse(OcrResult results) {
 		Map<String, LabeledWord> answer = null;
 		try {
 			creator.createFeatures(results, tmpFileLoc);

@@ -26,8 +26,8 @@ import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
 import ch.fhnw.imvs8.businesscardreader.ner.NEREngine;
-import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
-import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.ner.stemming.SimpleGermanStemming;
+import ch.fhnw.imvs8.businesscardreader.ocr.OcrResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch;
 import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Diff;
@@ -150,10 +150,10 @@ public class ocrAndCrfTest {
 		try {
 			Arrays.fill(xmlAttUsed, false);
 			System.out.println(toSVN + "testdata/business-cards/" + folderName + "/testimages/" + fileName);
-			AnalysisResult result = engine.analyzeImage(new File(toSVN + "testdata/business-cards/" + folderName + "/testimages/" + fileName));
+			OcrResult result = engine.analyzeImage(new File(toSVN + "testdata/business-cards/" + folderName + "/testimages/" + fileName));
 
 			LookupTables tables = new LookupTables("." + File.separator + LOOKUP_TABLES_FOLDER);
-			FeatureCreator creator = new FeatureCreator(tables, new GermanStemming());
+			FeatureCreator creator = new FeatureCreator(tables, new SimpleGermanStemming());
 
 			ner = new NEREngine(CRF_LOCATION, toSVN + toModel + MODELS[index], creator);
 			Map<String, LabeledWord> pictureResult = ner.analyse(result);

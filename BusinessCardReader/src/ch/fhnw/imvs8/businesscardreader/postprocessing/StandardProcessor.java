@@ -12,13 +12,13 @@ import java.util.regex.Pattern;
 
 import ch.fhnw.imvs8.businesscardreader.BusinessCardField;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
-import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.ocr.OcrResult;
 
 /**
  *
  * @author jon
  */
-public class StandardProcessor implements Processor {
+public class StandardProcessor implements PostProcessor {
 	private final HashSet<String> importantFields;
 	private final HashSet<String> telNumbers;
 	private static final String plzField = "PLZ";
@@ -106,7 +106,7 @@ public class StandardProcessor implements Processor {
 		}
 	}
 	
-	private void checkUnsure(AnalysisResult ocrResult,ArrayList<IntermediateField> fields) {
+	private void checkUnsure(OcrResult ocrResult,ArrayList<IntermediateField> fields) {
 		for(IntermediateField f: fields) {
 			double ocrConfidence = 100.0;
 			
@@ -124,7 +124,7 @@ public class StandardProcessor implements Processor {
 	}
 	
 	@Override
-	public Map<String, BusinessCardField> process(AnalysisResult ocrResult,Map<String, LabeledWord> nerResult) {
+	public Map<String, BusinessCardField> process(OcrResult ocrResult,Map<String, LabeledWord> nerResult) {
 		HashMap<String,BusinessCardField> answer = new HashMap<>();
 		
 		ArrayList<IntermediateField> fields = new ArrayList<>(nerResult.size());

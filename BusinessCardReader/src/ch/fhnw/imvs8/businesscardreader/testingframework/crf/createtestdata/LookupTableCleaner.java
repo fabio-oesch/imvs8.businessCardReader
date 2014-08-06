@@ -13,7 +13,7 @@ import java.util.TreeSet;
 
 import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
-import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
+import ch.fhnw.imvs8.businesscardreader.ner.stemming.SimpleGermanStemming;
 import ch.fhnw.imvs8.businesscardreader.ner.stemming.StemmingStrategy;
 
 public class LookupTableCleaner {
@@ -29,7 +29,7 @@ public class LookupTableCleaner {
 		}*/
 		//addCH();
 		LookupTables table = new LookupTables("lookup_tables");
-		FeatureCreator creator = new FeatureCreator(table, new GermanStemming());
+		FeatureCreator creator = new FeatureCreator(table, new SimpleGermanStemming());
 		//System.out.println(creator.createLine("Robert"));
 	}
 	

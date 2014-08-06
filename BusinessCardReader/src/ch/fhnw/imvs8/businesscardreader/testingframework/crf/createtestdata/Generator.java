@@ -11,7 +11,7 @@ import ch.fhnw.imvs8.businesscardreader.imagefilters.GenericFilterProcessor;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.GrayScaleFilter;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Phansalkar;
 import ch.fhnw.imvs8.businesscardreader.imagefilters.Preprocessor;
-import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.ocr.OcrResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 
 public class Generator {
@@ -98,7 +98,7 @@ public class Generator {
 					&& !testFolderList[file].getAbsolutePath().contains("_scale.txt")
 					&& testFolderList[file].getAbsolutePath().contains("scan")) {
 				System.out.println(testFolderList[file].getAbsolutePath());
-				AnalysisResult analysisResult = engine.analyzeImage(testFolderList[file]);
+				OcrResult analysisResult = engine.analyzeImage(testFolderList[file]);
 
 				HashMap<String, String> xmlResuls = GetXMLAttributes.readXMLAttributes(scannerFile);
 				boolean found;

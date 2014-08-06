@@ -1,7 +1,9 @@
 package ch.fhnw.imvs8.businesscardreader.ner.stemming;
 
 /**
- * Strategy Pattern for the stemming
+ * Strategy Pattern for the stemming in the NER Engine.
+ * The implementation Classes are responsible for the Stemming in the NER Engine.
+ * Stemming is used to reduce the number of Words in the dictionary.
  * 
  * @author jon
  *
@@ -9,7 +11,7 @@ package ch.fhnw.imvs8.businesscardreader.ner.stemming;
 public interface StemmingStrategy {
 
 	/**
-	 * So stemming for given input word
+	 * Do stemming for given input word
 	 * @param input input word to do stemming
 	 * @return output, stemmed word
 	 */

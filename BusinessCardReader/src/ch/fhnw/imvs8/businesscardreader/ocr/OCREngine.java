@@ -65,8 +65,8 @@ public class OCREngine {
 	 *            to analyse
 	 * @throws FileNotFoundException
 	 */
-	public AnalysisResult analyzeImage(File im) throws FileNotFoundException {
-		AnalysisResult res = null;
+	public OcrResult analyzeImage(File im) throws FileNotFoundException {
+		OcrResult res = null;
 		if (!im.exists()) {
 			throw new FileNotFoundException(im.getAbsolutePath());
 		}
@@ -156,7 +156,7 @@ public class OCREngine {
 	 * @param lines
 	 * @return
 	 */
-	private AnalysisResult getWords(File im,TesseractLine lines) {
+	private OcrResult getWords(File im,TesseractLine lines) {
 		TessResultIterator ri = TessAPI1.TessBaseAPIGetIterator(this.api);
 		TessPageIterator pi = TessAPI1.TessResultIteratorGetPageIterator(ri);
 		
@@ -196,7 +196,7 @@ public class OCREngine {
 
 		} while (TessAPI1.TessPageIteratorNext(pi, TessAPI1.TessPageIteratorLevel.RIL_WORD) == TessAPI1.TRUE);
 
-		return new AnalysisResult(im, new ArrayList<String>(words), new ArrayList<Rectangle>(bBoxes), new ArrayList<Float>(confidences),lines);
+		return new OcrResult(im, new ArrayList<String>(words), new ArrayList<Rectangle>(bBoxes), new ArrayList<Float>(confidences),lines);
 	}
 
 	/**

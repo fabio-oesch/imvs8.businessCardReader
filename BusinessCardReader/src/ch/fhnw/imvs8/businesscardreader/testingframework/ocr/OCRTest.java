@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.ocr.OcrResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
 import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Diff;
 import ch.fhnw.imvs8.businesscardreader.testingframework.ocr.diff_match_patch.Operation;
@@ -118,7 +118,7 @@ public class OCRTest {
 		}
 	}
 
-	private static String buildResultString(AnalysisResult res) {
+	private static String buildResultString(OcrResult res) {
 		StringBuilder answer = new StringBuilder();
 		for (int i = 0; i < res.getResultSize(); i++) {
 			answer.append(res.getWord(i));

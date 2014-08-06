@@ -6,13 +6,8 @@ import java.util.List;
 /**
  * Represents word labeled by the NEREngine class.
  * 
- * a word can consist of multiple subwords.
+ * A word can consist of multiple subwords. Each subword for this label is held in this class
  * 
- * this class also holds the position in which each subword was found in the original text
- * 
- * It also contains a list of all possible labels;
- * 
- * This object is Immutable
  * @author jon
  *
  */

@@ -11,14 +11,14 @@ import org.junit.Test;
 
 import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
-import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
-import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.ner.stemming.SimpleGermanStemming;
+import ch.fhnw.imvs8.businesscardreader.ocr.OcrResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.TesseractLine;
 
 public class FeatureCreatorTest {
 	final String tmpFile = "featureCreatorTest.txt";
 	
-	private static AnalysisResult createValidExample() {
+	private static OcrResult createValidExample() {
 		ArrayList<String> words = new ArrayList<>(16);
 		words.add("Meisterfirma");
 		words.add("AG");
@@ -107,7 +107,7 @@ public class FeatureCreatorTest {
 		confidences.add(80.0f);
 		confidences.add(80.0f);
 		
-		return new AnalysisResult(null,words,null,confidences,7,lineIndex,colIndex,totalColumns);
+		return new OcrResult(null,words,null,confidences,7,lineIndex,colIndex,totalColumns);
 	}
 	@Test
 	public void completeTest() {
@@ -117,7 +117,7 @@ public class FeatureCreatorTest {
 		BufferedReader actualReader =null;
 		try {
 			LookupTables table = new LookupTables("lookup_tables");
-			FeatureCreator creator = new FeatureCreator(table, new GermanStemming());
+			FeatureCreator creator = new FeatureCreator(table, new SimpleGermanStemming());
 			creator.createFeatures(createValidExample(), tmpFile);
 			
 			//check file
@@ -153,7 +153,7 @@ public class FeatureCreatorTest {
 	public void TestSingleFeature() {
 		try {
 			LookupTables table = new LookupTables("lookup_tables");
-			FeatureCreator creator = new FeatureCreator(table, new GermanStemming());
+			FeatureCreator creator = new FeatureCreator(table, new SimpleGermanStemming());
 			System.out.println(creator.createLine("direkt",0,1,0,1,90.0));
 			
 		} catch (Exception e) {

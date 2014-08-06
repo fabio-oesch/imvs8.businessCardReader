@@ -14,10 +14,10 @@ import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
 import ch.fhnw.imvs8.businesscardreader.ner.NEREngine;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
-import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
-import ch.fhnw.imvs8.businesscardreader.ocr.AnalysisResult;
+import ch.fhnw.imvs8.businesscardreader.ner.stemming.SimpleGermanStemming;
+import ch.fhnw.imvs8.businesscardreader.ocr.OcrResult;
 import ch.fhnw.imvs8.businesscardreader.ocr.OCREngine;
-import ch.fhnw.imvs8.businesscardreader.postprocessing.Processor;
+import ch.fhnw.imvs8.businesscardreader.postprocessing.PostProcessor;
 import ch.fhnw.imvs8.businesscardreader.postprocessing.StandardProcessor;
 import ch.fhnw.imvs8.businesscardreader.vcard.VCardCreator;
 
@@ -38,7 +38,7 @@ public class BusinessCardReader {
 	private static final String CRF_LOCATION = "/usr/local/bin";
 	private final OCREngine ocr;
 	private final NEREngine ner;
-	private final Processor proc;
+	private final PostProcessor proc;
 
 	/**
 	 * Creates a Business Card Reader Object
@@ -63,7 +63,7 @@ public class BusinessCardReader {
 		ocr = new OCREngine(filters);
 
 		LookupTables tables = new LookupTables(dataFolder + File.separator + LOOKUP_TABLES_FOLDER);
-		FeatureCreator creator = new FeatureCreator(tables, new GermanStemming());
+		FeatureCreator creator = new FeatureCreator(tables, new SimpleGermanStemming());
 		
 		ner = new NEREngine(CRF_LOCATION, dataFolder + File.separator + NER_CONFIGURATION_FOLDER +File.separator + "model", creator);
 		
@@ -93,7 +93,7 @@ public class BusinessCardReader {
 	 * @throws FileNotFoundException
 	 */
 	public BusinessCard readImage(File image) throws FileNotFoundException {
-		AnalysisResult ocrResult = ocr.analyzeImage(image);
+		OcrResult ocrResult = ocr.analyzeImage(image);
 		Map<String, LabeledWord> nerResult = ner.analyse(ocrResult);
 		Map<String, BusinessCardField> fields = proc.process(ocrResult, nerResult);
 			

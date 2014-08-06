@@ -21,7 +21,7 @@ import java.util.Arrays;
 import ch.fhnw.imvs8.businesscardreader.ner.FeatureCreator;
 import ch.fhnw.imvs8.businesscardreader.ner.LabeledWord;
 import ch.fhnw.imvs8.businesscardreader.ner.LookupTables;
-import ch.fhnw.imvs8.businesscardreader.ner.stemming.GermanStemming;
+import ch.fhnw.imvs8.businesscardreader.ner.stemming.SimpleGermanStemming;
 import ch.fhnw.imvs8.businesscardreader.testingframework.crf.CRFLogGenerator;
 
 public class ModelGenerator {
@@ -129,7 +129,7 @@ public class ModelGenerator {
 		int lineNumber = 1;
 		
 		LookupTables table = new LookupTables("lookup_tables");
-		FeatureCreator creator = new FeatureCreator(table, new GermanStemming());
+		FeatureCreator creator = new FeatureCreator(table, new SimpleGermanStemming());
 
 		BufferedReader reader = new BufferedReader(new FileReader(inFile));
 		BufferedWriter out = new BufferedWriter(new FileWriter(testFile));
